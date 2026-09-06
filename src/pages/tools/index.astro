@@ -1,0 +1,63 @@
+---
+import Base from '../../layouts/Base.astro';
+
+// ツールを1本足す = この配列に1行足して、同名のページを作るだけ。
+const tools = [
+  { slug: 'square',   name: '出品写真を正方形にする', status: 'soon',
+    note: '複数枚まとめて 1080×1080 に。余白は白・ぼかし・単色から選べます。' },
+  { slug: 'resize',   name: '画像を一括リサイズ', status: 'soon',
+    note: '長辺を指定して、比率を保ったまままとめて縮小します。' },
+  { slug: 'compress', name: '画像を軽くする', status: 'soon',
+    note: '目標のファイルサイズを指定すると、画質を自動で調整します。' },
+  { slug: 'heic',     name: 'HEIC を JPG に変換', status: 'soon',
+    note: 'iPhoneで撮った写真を、Windowsでも開ける形式にまとめて変換します。' },
+  { slug: 'rename',   name: '連番でリネームして ZIP', status: 'soon',
+    note: '商品ごとに 01, 02 … と番号を振り直して、まとめて書き出します。' },
+];
+---
+<Base
+  title="無料Webツール"
+  description="アップロード不要・登録不要の無料Webツール。フリマやネットショップの出品画像を、ブラウザの中だけで一括処理します。"
+>
+  <section class="wrap block">
+    <h1>ツール</h1>
+    <p class="lede">
+      フリマ・ネットショップの出品作業を短くするための道具です。
+      すべてブラウザの中で動くので、写真がどこかへ送られることはありません。
+    </p>
+
+    <ul class="shelf">
+      {tools.map((t) => (
+        <li class="shelf-row">
+          <div class="shelf-head">
+            <span class="shelf-name">{t.name}</span>
+            <span class="tag">準備中</span>
+          </div>
+          <p class="muted small">{t.note}</p>
+        </li>
+      ))}
+    </ul>
+
+    <p class="small muted note">
+      順番に公開していきます。更新は <a href="https://x.com/Purin_Labo" rel="noopener">@Purin_Labo</a> で。
+    </p>
+  </section>
+</Base>
+
+<style>
+  .block { padding-block: var(--s7); }
+  h1 { margin-bottom: var(--s3); }
+  .lede { margin-bottom: var(--s6); }
+
+  .shelf { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line-soft); }
+  .shelf-row { padding-block: var(--s4); border-bottom: 1px solid var(--line-soft); }
+  .shelf-head { display: flex; align-items: baseline; gap: var(--s3); }
+  .shelf-name {
+    font-family: var(--font-display);
+    font-size: var(--step-1);
+    letter-spacing: .06em;
+  }
+  .tag { font-size: var(--step--1); letter-spacing: .16em; color: var(--gold); white-space: nowrap; }
+  .shelf-row p { margin-top: var(--s1); }
+  .note { margin-top: var(--s5); }
+</style>

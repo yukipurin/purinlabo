@@ -1,0 +1,162 @@
+/* =========================================================
+   Purin_Labo — 共通デザイントークン
+   アートディレクション：撮影台（ライトボックス）
+   - 地 = 撮影台の影 / 面 = 天板の白
+   - UIは低彩度に抑える（画像加工ツールでUIが色被りしないこと）
+   - ダークモード = リオナの夜の面（既存ブランドのパレットを継承）
+   ========================================================= */
+
+:root {
+  color-scheme: light dark;
+
+  /* --- 面 --- */
+  --ground:      #e9ebee;   /* 撮影台の影 */
+  --surface:     #ffffff;   /* 天板 */
+  --surface-sub: #f3f5f7;
+  --line:        #ccd2d9;
+  --line-soft:   #e2e6ea;
+
+  /* --- 文字 --- */
+  --ink:      #15181d;
+  --ink-mute: #59626e;
+  --ink-weak: #8a939f;
+
+  /* --- アクセント（既存 --glow #7ec4cf と同色相） --- */
+  --accent:      #14707f;
+  --accent-deep: #0d5460;
+  --accent-on:   #ffffff;
+  --accent-wash: #e4f1f3;
+
+  /* --- ブランドの金（既存 --gold #c9a86a を昼用に） --- */
+  --gold: #a8843c;
+
+  /* --- タイプ --- */
+  --font-display: "Hiragino Mincho ProN", "Yu Mincho", YuMincho, "Noto Serif JP", serif;
+  --font-body: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic", YuGothic,
+               "Noto Sans JP", system-ui, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+
+  --step--1: 0.813rem;
+  --step-0:  1rem;
+  --step-1:  1.125rem;
+  --step-2:  1.375rem;
+  --step-3:  1.75rem;
+  --step-4:  2.25rem;
+
+  /* --- 間隔（8pxスケール） --- */
+  --s1: 4px;  --s2: 8px;  --s3: 16px; --s4: 24px;
+  --s5: 32px; --s6: 48px; --s7: 72px; --s8: 112px;
+
+  --radius: 2px;
+  --measure: 34rem;
+  --wrap: 61rem;
+}
+
+/* ダークモード = リオナの夜（既存サイトのパレットをそのまま継承） */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ground:      #0d1420;
+    --surface:     #141e2e;
+    --surface-sub: #101827;
+    --line:        #2b3a4d;
+    --line-soft:   #1e2b3c;
+
+    --ink:      #e8e2d2;
+    --ink-mute: #8fa8c4;
+    --ink-weak: #64798f;
+
+    --accent:      #7ec4cf;
+    --accent-deep: #a5d9e1;
+    --accent-on:   #0d1420;
+    --accent-wash: #16283e;
+
+    --gold: #c9a86a;
+  }
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--ground);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: var(--step-0);
+  line-height: 1.75;
+  font-feature-settings: "palt";
+  letter-spacing: .02em;
+}
+
+h1, h2, h3 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: .04em;
+  margin: 0;
+  text-wrap: balance;
+}
+h1 { font-size: var(--step-4); }
+h2 { font-size: var(--step-2); }
+h3 { font-size: var(--step-1); }
+p  { margin: 0; max-width: var(--measure); }
+
+a { color: var(--accent); text-underline-offset: .25em; }
+a:hover { color: var(--accent-deep); }
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+img, svg { max-width: 100%; height: auto; }
+
+.wrap {
+  max-width: var(--wrap);
+  margin-inline: auto;
+  padding-inline: var(--s4);
+}
+
+/* 面（天板）。カードを敷き詰めない — 影は最小限、角丸は2px */
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--line-soft);
+  border-radius: var(--radius);
+}
+
+/* 節の見出し：小さく、字間を開け、罫で伸ばす */
+.eyebrow {
+  font-family: var(--font-body);
+  font-size: var(--step--1);
+  font-weight: 600;
+  letter-spacing: .28em;
+  color: var(--ink-mute);
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: var(--s3);
+  margin: 0 0 var(--s4);
+}
+.eyebrow::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--line);
+}
+
+.lede { color: var(--ink-mute); font-size: var(--step-1); }
+.muted { color: var(--ink-mute); }
+.small { font-size: var(--step--1); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    transition-duration: .01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@media (max-width: 40rem) {
+  :root { --step-4: 1.875rem; --step-3: 1.5rem; }
+  .wrap { padding-inline: var(--s3); }
+}

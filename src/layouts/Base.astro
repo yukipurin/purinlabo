@@ -1,0 +1,169 @@
+---
+import '../styles/global.css';
+
+export interface Props {
+  title: string;
+  description: string;
+  /** OGP画像（未指定ならサイト既定） */
+  image?: string;
+  /** 検索結果に出さないページ */
+  noindex?: boolean;
+}
+
+const { title, description, image = '/ogp.png', noindex = false } = Astro.props;
+
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const ogImage = new URL(image, Astro.site).href;
+const siteName = 'Purin_Labo';
+const fullTitle = Astro.url.pathname === '/' ? title : `${title}｜${siteName}`;
+
+const nav = [
+  { href: '/tools/', label: 'ツール' },
+  { href: '/#games', label: 'ゲーム' },
+  { href: '/#about', label: 'About' },
+];
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: siteName,
+  url: 'https://purinlabo.com/',
+  inLanguage: 'ja',
+  publisher: {
+    '@type': 'Organization',
+    name: siteName,
+    url: 'https://purinlabo.com/',
+  },
+};
+---
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{fullTitle}</title>
+  <meta name="description" content={description} />
+  <link rel="canonical" href={canonical} />
+  {noindex && <meta name="robots" content="noindex,follow" />}
+
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content={siteName} />
+  <meta property="og:title" content={fullTitle} />
+  <meta property="og:description" content={description} />
+  <meta property="og:url" content={canonical} />
+  <meta property="og:image" content={ogImage} />
+  <meta property="og:locale" content="ja_JP" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:site" content="@Purin_Labo" />
+
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <meta name="theme-color" content="#e9ebee" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#0d1420" media="(prefers-color-scheme: dark)" />
+
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+</head>
+<body>
+  <a class="skip" href="#main">本文へスキップ</a>
+
+  <header class="site-head">
+    <div class="wrap head-inner">
+      <a class="brand" href="/">
+        <span class="brand-mark">Purin_Labo</span>
+      </a>
+      <nav aria-label="サイト内">
+        <ul>
+          {nav.map((n) => <li><a href={n.href}>{n.label}</a></li>)}
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <slot />
+  </main>
+
+  <footer class="site-foot">
+    <div class="wrap foot-inner">
+      <p class="small muted">© Purin_Labo</p>
+      <ul class="foot-links small">
+        <li><a href="/tools/">ツール</a></li>
+        <li><a href="/privacy/">プライバシー</a></li>
+        <li><a href="https://x.com/Purin_Labo" rel="noopener">X</a></li>
+      </ul>
+    </div>
+  </footer>
+</body>
+</html>
+
+<style>
+  .skip {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    background: var(--accent);
+    color: var(--accent-on);
+    padding: var(--s2) var(--s3);
+    z-index: 10;
+  }
+  .skip:focus { left: 0; }
+
+  .site-head {
+    border-bottom: 1px solid var(--line);
+    background: var(--surface);
+  }
+  .head-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--s4);
+    min-height: 60px;
+  }
+  .brand { text-decoration: none; color: var(--ink); }
+  .brand-mark {
+    font-family: var(--font-display);
+    font-size: var(--step-1);
+    letter-spacing: .12em;
+  }
+  .site-head nav ul {
+    display: flex;
+    gap: var(--s4);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .site-head nav a {
+    color: var(--ink-mute);
+    text-decoration: none;
+    font-size: var(--step--1);
+    letter-spacing: .1em;
+  }
+  .site-head nav a:hover { color: var(--accent); }
+
+  .site-foot {
+    margin-top: var(--s8);
+    border-top: 1px solid var(--line);
+    background: var(--surface);
+  }
+  .foot-inner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--s3);
+    padding-block: var(--s5);
+  }
+  .foot-links {
+    display: flex;
+    gap: var(--s4);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .foot-links a { color: var(--ink-mute); text-decoration: none; }
+  .foot-links a:hover { color: var(--accent); }
+
+  @media (max-width: 34rem) {
+    .head-inner { flex-direction: column; align-items: flex-start; gap: var(--s2); padding-block: var(--s3); }
+    .site-head nav ul { gap: var(--s3); }
+  }
+</style>

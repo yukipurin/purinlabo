@@ -1,0 +1,56 @@
+---
+import Base from '../layouts/Base.astro';
+const updated = '2026年9月7日';
+---
+<Base
+  title="プライバシーポリシー"
+  description="Purin_Labo のプライバシーポリシー。Webツールで扱うファイルは端末内で処理され、サーバーへ送信されません。"
+>
+  <section class="wrap block">
+    <h1>プライバシーポリシー</h1>
+    <p class="small muted">最終更新：{updated}</p>
+
+    <h2>扱うファイルについて</h2>
+    <p>
+      Purin_Labo のWebツールは、ブラウザの中だけで処理を行います。
+      あなたが選んだ画像やファイルが Purin_Labo のサーバーへ送信されることはなく、
+      保存されることもありません。処理はページを閉じた時点で消えます。
+    </p>
+
+    <h2>アクセス解析</h2>
+    <p>
+      サイトの利用状況を知るために Cloudflare Web Analytics を使用しています。
+      これは Cookie を使わず、個人を識別する情報も集めません。
+      ページの表示回数や参照元といった統計だけを記録します。
+    </p>
+
+    <h2>検索エンジンとの連携</h2>
+    <p>
+      どのような検索語でこのサイトが表示されたかを知るために Google Search Console を使用しています。
+      ここで得られるのは検索語や表示回数の統計で、個人を特定する情報は含まれません。
+    </p>
+
+    <h2>広告について</h2>
+    <p>現在、このサイトに広告は掲載していません。</p>
+
+    <h2>外部へのリンク</h2>
+    <p>
+      App Store や X など、外部サイトへのリンクを掲載しています。
+      リンク先での情報の扱いについては、各サイトの方針をご確認ください。
+    </p>
+
+    <h2>お問い合わせ</h2>
+    <p>
+      ご連絡は <a href="https://x.com/Purin_Labo" rel="noopener">@Purin_Labo</a> までお願いします。
+    </p>
+  </section>
+</Base>
+
+<style>
+  /* .wrap と同居するため max-width は付けない（付けると margin-inline:auto で中央寄せになりヘッダーとズレる） */
+  .block { padding-block: var(--s7); }
+  h2 { max-width: var(--measure); }
+  h1 { margin-bottom: var(--s2); }
+  h2 { margin-top: var(--s6); margin-bottom: var(--s2); }
+  p + p { margin-top: var(--s3); }
+</style>
