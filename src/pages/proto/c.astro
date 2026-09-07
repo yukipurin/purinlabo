@@ -1,0 +1,206 @@
+---
+// 比較用プロトタイプ C：案Bの温かさを残したまま、AI臭さの原因を1つずつ潰したもの
+//
+// 適用した手法（NN/G「Handmade Designs」の特徴リストに対応）：
+//  ・線の太さが一定でない  → 枠線を手描き風の不揃いな角丸に
+//  ・きっちり揃ってない    → 見出し・スタンプ・番号をわずかに傾ける
+//  ・テクスチャ           → feTurbulence のノイズを data URI で敷く（数百バイト）
+//  ・書体を選ぶ           → Zen Maru Gothic / Kiwi Maru をサブセットして自前配信
+//  ・人の声の文章         → 説明文をやめて、本人が喋る文体に
+//  ・ピル型バッジを使わない → 判子（スタンプ）に置き換え
+---
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="robots" content="noindex,nofollow" />
+<title>案C｜出品写真をまとめて正方形に</title>
+<style>
+  @font-face{
+    font-family:"ZenMaru";src:url("/fonts/zenmaru-bold.woff2") format("woff2");
+    font-weight:700;font-style:normal;font-display:swap;
+  }
+  @font-face{
+    font-family:"KiwiMaru";src:url("/fonts/kiwimaru-medium.woff2") format("woff2");
+    font-weight:500;font-style:normal;font-display:swap;
+  }
+
+  :root{
+    --paper:#faf4e8;      /* クラフト紙 */
+    --card:#fffdf7;
+    --ink:#2f2618;
+    --ink2:#6f6353;
+    --ink3:#a89b88;
+    --rule:#ded0b8;
+    --kraft:#b87d45;      /* ダンボール */
+    --kraft-d:#8a5a2b;
+    --tape:#3d8b64;       /* 養生テープ */
+    --tape-d:#2c6b4b;
+    --stamp:#c8402f;      /* 朱肉 */
+    --marker:#ffe08a;
+    --body:"Hiragino Sans","Hiragino Kaku Gothic ProN","Yu Gothic",YuGothic,system-ui,sans-serif;
+  }
+  *{box-sizing:border-box}
+
+  /* 紙のざらつき。SVGノイズを data URI で敷く＝画像リクエストなし */
+  body{
+    margin:0;color:var(--ink);font-family:var(--body);line-height:1.9;
+    background-color:var(--paper);
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.055'/%3E%3C/svg%3E");
+  }
+  .wrap{max-width:880px;margin-inline:auto;padding-inline:20px}
+
+  header{border-bottom:2px solid var(--kraft)}
+  .hd{display:flex;align-items:center;justify-content:space-between;height:62px}
+  .logo{font-family:"KiwiMaru",var(--body);font-size:20px;color:var(--kraft-d)}
+  nav a{color:var(--ink2);text-decoration:none;font-size:13px;font-weight:700;margin-left:18px}
+  nav a:hover{color:var(--tape-d)}
+
+  h1{
+    font-family:"ZenMaru",var(--body);font-weight:700;
+    font-size:30px;line-height:1.5;margin:34px 0 6px;letter-spacing:.01em;
+  }
+  /* マーカーは真横に引かない。少し傾けて、端をはみ出させる */
+  h1 .mark{position:relative;white-space:nowrap}
+  h1 .mark::after{
+    content:"";position:absolute;left:-4px;right:-7px;bottom:.12em;height:.44em;
+    background:var(--marker);z-index:-1;transform:rotate(-.7deg);
+    border-radius:40% 60% 55% 45% / 60% 40% 60% 40%;
+  }
+  .sub{margin:0 0 22px;font-size:15px;color:var(--ink2)}
+
+  /* 手描きの箱：4隅の丸みを全部変える＝定規で描いてない線に見せる */
+  .tool{
+    background:var(--card);border:2.5px solid var(--kraft);
+    border-radius:18px 8px 22px 10px / 10px 20px 8px 18px;
+    padding:20px;
+  }
+  .drop{
+    border:3px dashed var(--kraft);
+    border-radius:9px 20px 7px 18px / 16px 8px 20px 9px;
+    background:#fffef9;padding:40px 16px;text-align:center;
+  }
+  .drop:hover{border-color:var(--tape)}
+  /* 写真の見立て。1枚ずつ傾きが違う＝機械が並べたのではない */
+  .pics{display:flex;gap:9px;justify-content:center;margin-bottom:16px}
+  .pics i{width:42px;height:42px;display:block;border:2px solid var(--kraft-d);border-radius:3px}
+  .pics i:nth-child(1){background:#e9c9a0;transform:rotate(-4deg)}
+  .pics i:nth-child(2){background:#bcd8c4;transform:rotate(2.5deg)}
+  .pics i:nth-child(3){background:#d8c6de;transform:rotate(-1.5deg)}
+  .drop .big{font-family:"ZenMaru",var(--body);font-weight:700;font-size:19px;margin:0 0 3px}
+  .drop .small{margin:0;font-size:13px;color:var(--ink2)}
+  .pick{
+    font-family:"ZenMaru",var(--body);font-weight:700;
+    display:inline-block;margin-top:16px;background:var(--tape);color:#fff;border:0;
+    font-size:16px;padding:13px 32px;cursor:pointer;
+    border-radius:16px 7px 18px 8px / 8px 17px 7px 15px;
+  }
+  .pick:hover{background:var(--tape-d)}
+
+  /* 設定はカードにしない。伝票の記入欄のように罫で並べる */
+  .form{margin-top:18px;border-top:1px dashed var(--rule)}
+  .row{display:flex;align-items:baseline;gap:14px;padding:9px 2px;border-bottom:1px dashed var(--rule);flex-wrap:wrap}
+  .row .k{font-size:13px;color:var(--ink2);min-width:8.5em}
+  .row .v{font-family:"ZenMaru",var(--body);font-weight:700;font-size:15px;color:var(--kraft-d)}
+
+  .safe{margin-top:16px;display:flex;gap:9px;align-items:flex-start;font-size:13.5px;color:var(--tape-d)}
+  .safe svg{flex:none;margin-top:5px}
+  .safe b{font-weight:700}
+
+  section{margin-top:40px}
+  h2{
+    font-family:"ZenMaru",var(--body);font-weight:700;font-size:18px;margin:0 0 12px;
+    display:flex;align-items:center;gap:9px;
+  }
+  /* 手で引いた罫。直線でなく、少し波打たせる */
+  h2::after{
+    content:"";flex:1;height:6px;
+    background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='6'%3E%3Cpath d='M0 4 Q 10 1.5 20 3.6 T 40 3.4 T 60 4' fill='none' stroke='%23ded0b8' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E") repeat-x center;
+  }
+  ol.steps{list-style:none;margin:0;padding:0}
+  ol.steps li{display:flex;gap:12px;align-items:flex-start;padding:7px 0;font-size:14.5px;color:var(--ink2)}
+  /* 番号の丸も手描き。1つずつ傾きを変える */
+  ol.steps .n{
+    flex:none;width:27px;height:27px;display:grid;place-items:center;
+    font-family:"ZenMaru",var(--body);font-weight:700;font-size:13px;color:var(--kraft-d);
+    border:2px solid var(--kraft);border-radius:52% 48% 45% 55% / 48% 55% 45% 52%;
+  }
+  ol.steps li:nth-child(1) .n{transform:rotate(-3deg)}
+  ol.steps li:nth-child(2) .n{transform:rotate(2deg)}
+  ol.steps li:nth-child(3) .n{transform:rotate(-1deg)}
+  p{margin:0;font-size:14.5px;color:var(--ink2);max-width:34em}
+  p+p{margin-top:10px}
+
+  /* 「準備中」はピルではなく判子 */
+  .stamp{
+    display:inline-block;font-family:"ZenMaru",var(--body);font-weight:700;font-size:12px;
+    color:var(--stamp);border:2px solid var(--stamp);padding:2px 10px;
+    border-radius:46% 54% 50% 50% / 52% 46% 54% 48%;
+    transform:rotate(-4deg);opacity:.82;
+  }
+  .who{border-top:2px solid var(--rule);margin-top:44px;padding-top:20px}
+  footer{padding:26px 0 52px;font-size:12px;color:var(--ink3)}
+  @media(max-width:560px){h1{font-size:24px}}
+</style>
+</head>
+<body>
+  <header>
+    <div class="wrap hd">
+      <span class="logo">ぷりんラボ</span>
+      <nav><a href="#">道具</a><a href="#">ゲーム</a><a href="#">このサイトについて</a></nav>
+    </div>
+  </header>
+
+  <div class="wrap">
+    <h1>出品写真、<span class="mark">まとめて正方形</span>に。</h1>
+    <p class="sub">1枚ずつトリミングするの、面倒ですよね。</p>
+
+    <div class="tool">
+      <div class="drop">
+        <div class="pics"><i></i><i></i><i></i></div>
+        <p class="big">ここに写真を放りこむ</p>
+        <p class="small">JPG / PNG / HEIC ・ 何枚でも</p>
+        <button class="pick">写真を選ぶ</button>
+      </div>
+
+      <div class="form">
+        <div class="row"><span class="k">できあがるサイズ</span><span class="v">1080 × 1080</span></div>
+        <div class="row"><span class="k">あまった余白は</span><span class="v">白でうめる</span></div>
+        <div class="row"><span class="k">受け取りかた</span><span class="v">ZIPでまとめて</span></div>
+      </div>
+
+      <p class="safe">
+        <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="M8 1.6l5.4 2v3.9c0 3.1-2.2 5.9-5.4 6.9-3.2-1-5.4-3.8-5.4-6.9V3.6l5.4-2z"
+                stroke="#2c6b4b" stroke-width="1.7" stroke-linejoin="round"/>
+        </svg>
+        <span><b>写真はアップロードしません。というか、できません。</b><br>
+        全部このページの中で動いていて、送る先がありません。</span>
+      </p>
+    </div>
+
+    <section>
+      <h2>つかいかた</h2>
+      <ol class="steps">
+        <li><span class="n">1</span><span>写真をドラッグするか、「写真を選ぶ」から選ぶ</span></li>
+        <li><span class="n">2</span><span>サイズと、余白のうめかたを決める</span></li>
+        <li><span class="n">3</span><span>まとめてダウンロード</span></li>
+      </ol>
+    </section>
+
+    <section>
+      <h2>なぜ正方形なのか</h2>
+      <p>メルカリの検索結果は正方形で並びます。長方形のまま出すと勝手に切り取られて、せっかく写した部分が見切れることがあります。先に正方形にしておくと、自分が見せたいところを自分で決められます。</p>
+    </section>
+
+    <section class="who">
+      <h2>作っているのは</h2>
+      <p>ぷりんラボという、ひとりでやっている小さな開発スタジオです。ふだんはゲームを作っていて、その合間に、自分が欲しかった道具をここに置いています。</p>
+      <p style="margin-top:14px"><span class="stamp">ほかの道具は準備中</span></p>
+    </section>
+
+    <footer>© Purin_Labo ／ 案C</footer>
+  </div>
+</body>
+</html>
