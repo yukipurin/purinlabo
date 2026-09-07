@@ -1,0 +1,142 @@
+---
+// 見た目の比較用プロトタイプ A：「道具箱」
+// 素材が地になる型（Squoosh の考え方を日本の出品ツールに置き換えたもの）
+// 地＝トリミング枠の方眼。彩度を捨てて、朱橙1色だけを効かせる。
+---
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="robots" content="noindex,nofollow" />
+<title>案A 道具箱｜出品写真を正方形にする</title>
+<style>
+  :root{
+    --paper:#ffffff;
+    --grid:#e7e9ec;
+    --ink:#101215;
+    --ink2:#5d646d;
+    --ink3:#9aa1a9;
+    --line:#d5d9de;
+    --hot:#ff4d17;
+    --hot-ink:#ffffff;
+    --sans:"Hiragino Sans","Hiragino Kaku Gothic ProN","Yu Gothic",YuGothic,system-ui,sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; color:var(--ink); font-family:var(--sans); line-height:1.8;
+    background-color:var(--paper);
+    background-image:
+      linear-gradient(var(--grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size:24px 24px;
+  }
+  .wrap{max-width:960px;margin-inline:auto;padding-inline:20px}
+
+  header{border-bottom:2px solid var(--ink);background:var(--paper)}
+  .hd{display:flex;align-items:center;justify-content:space-between;height:56px}
+  .logo{font-weight:800;letter-spacing:.02em;font-size:17px}
+  .logo b{color:var(--hot)}
+  nav a{color:var(--ink2);text-decoration:none;font-size:13px;font-weight:700;margin-left:20px}
+
+  /* 道具が最初に来る。説明は後 */
+  .tool{background:var(--paper);border:2px solid var(--ink);margin-top:28px}
+  .tool-hd{
+    display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;
+    padding:16px 20px;border-bottom:2px solid var(--ink);
+  }
+  .tool-hd h1{margin:0;font-size:21px;font-weight:800;letter-spacing:.01em}
+  .tool-hd .sub{font-size:13px;color:var(--ink2)}
+
+  .drop{
+    margin:20px;padding:56px 20px;text-align:center;
+    border:3px dashed var(--line);
+  }
+  .drop:hover{border-color:var(--hot)}
+  .drop .big{font-size:19px;font-weight:800;margin:0 0 6px}
+  .drop .small{font-size:13px;color:var(--ink2);margin:0}
+  .pick{
+    display:inline-block;margin-top:18px;background:var(--hot);color:var(--hot-ink);
+    font-weight:800;font-size:15px;padding:12px 28px;border:0;cursor:pointer;
+  }
+
+  .opts{display:flex;gap:0;border-top:2px solid var(--ink);flex-wrap:wrap}
+  .opt{flex:1;min-width:180px;padding:14px 20px;border-right:1px solid var(--line)}
+  .opt:last-child{border-right:0}
+  .opt .k{font-size:11px;font-weight:800;letter-spacing:.14em;color:var(--ink3);display:block;margin-bottom:4px}
+  .opt .v{font-size:14px;font-weight:700}
+  .opt .v .on{color:var(--hot)}
+
+  .note{
+    display:flex;align-items:center;gap:10px;
+    padding:12px 20px;border-top:2px solid var(--ink);background:#fbfbfc;
+    font-size:13px;color:var(--ink2);font-weight:700;
+  }
+  .note svg{flex:none}
+
+  section.txt{background:var(--paper);border:2px solid var(--ink);border-top:0;padding:28px 20px}
+  section.txt h2{font-size:16px;font-weight:800;margin:0 0 10px;
+    display:inline-block;border-bottom:3px solid var(--hot);padding-bottom:2px}
+  section.txt ol{margin:0;padding-left:1.3em;font-size:14px;color:var(--ink2)}
+  section.txt p{font-size:14px;color:var(--ink2);margin:0}
+  .cols{display:grid;grid-template-columns:1fr 1fr;gap:32px}
+  @media(max-width:680px){.cols{grid-template-columns:1fr;gap:20px}}
+  footer{padding:28px 0 48px;font-size:12px;color:var(--ink3)}
+</style>
+</head>
+<body>
+  <header>
+    <div class="wrap hd">
+      <span class="logo">Purin<b>_</b>Labo</span>
+      <nav><a href="#">ツール</a><a href="#">ゲーム</a><a href="#">About</a></nav>
+    </div>
+  </header>
+
+  <div class="wrap">
+    <div class="tool">
+      <div class="tool-hd">
+        <h1>出品写真を正方形にする</h1>
+        <span class="sub">まとめて 1080×1080 に。無料・登録なし</span>
+      </div>
+
+      <div class="drop">
+        <p class="big">ここに写真をドラッグ</p>
+        <p class="small">JPG / PNG / HEIC ・ 枚数の制限なし</p>
+        <button class="pick">写真を選ぶ</button>
+      </div>
+
+      <div class="opts">
+        <div class="opt"><span class="k">SIZE</span><span class="v"><span class="on">1080</span> × <span class="on">1080</span></span></div>
+        <div class="opt"><span class="k">はみ出す分</span><span class="v">白で埋める</span></div>
+        <div class="opt"><span class="k">書き出し</span><span class="v">JPG ／ ZIPでまとめる</span></div>
+      </div>
+
+      <div class="note">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="M8 1.5l5.5 2v4c0 3.2-2.2 6-5.5 7-3.3-1-5.5-3.8-5.5-7v-4l5.5-2z" stroke="#ff4d17" stroke-width="1.6" stroke-linejoin="round"/>
+        </svg>
+        写真はこのページの中だけで処理されます。どこにも送信されません。
+      </div>
+    </div>
+
+    <section class="txt">
+      <div class="cols">
+        <div>
+          <h2>使い方</h2>
+          <ol>
+            <li>写真をドラッグするか、選ぶ</li>
+            <li>サイズと余白の埋め方を決める</li>
+            <li>まとめてダウンロード</li>
+          </ol>
+        </div>
+        <div>
+          <h2>なぜ正方形なのか</h2>
+          <p>メルカリなどの検索結果は正方形で表示されます。長方形のまま出すと自動で切り取られ、商品が見切れることがあります。</p>
+        </div>
+      </div>
+    </section>
+
+    <footer>© Purin_Labo ／ 案A「道具箱」</footer>
+  </div>
+</body>
+</html>

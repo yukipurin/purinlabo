@@ -1,0 +1,138 @@
+---
+// 見た目の比較用プロトタイプ B：「作業台」
+// 日本の大衆向けサービス（SUZURI等）の作法に寄せた型。
+// 情報密度は高め、太いゴシック、作業場由来の色（ダンボール茶・テープの緑）、手描きの罫。
+---
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="robots" content="noindex,nofollow" />
+<title>案B 作業台｜出品写真を正方形にする</title>
+<style>
+  :root{
+    --desk:#f6efe2;      /* 作業机の天板 */
+    --paper:#fffdf8;
+    --kraft:#c08a4e;     /* ダンボール */
+    --kraft-d:#8f5f2c;
+    --tape:#1f9d6b;      /* 養生テープの緑 */
+    --tape-d:#157a52;
+    --ink:#2a2318;
+    --ink2:#6b6152;
+    --ink3:#a0968a;
+    --line:#e3d8c4;
+    --sans:"Hiragino Sans","Hiragino Kaku Gothic ProN","Yu Gothic",YuGothic,system-ui,sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;color:var(--ink);font-family:var(--sans);line-height:1.85;background:var(--desk)}
+  .wrap{max-width:920px;margin-inline:auto;padding-inline:18px}
+
+  header{background:var(--paper);border-bottom:3px solid var(--kraft)}
+  .hd{display:flex;align-items:center;justify-content:space-between;height:58px}
+  .logo{font-weight:800;font-size:18px;letter-spacing:.02em;color:var(--kraft-d)}
+  nav a{color:var(--ink2);text-decoration:none;font-size:13px;font-weight:800;margin-left:18px}
+
+  /* 帯：何のページかを最初の1行で言い切る */
+  .ribbon{background:var(--kraft);color:#fff;text-align:center;font-size:13px;font-weight:800;padding:7px 0;letter-spacing:.04em}
+
+  .lead{padding:26px 0 18px;text-align:center}
+  .lead h1{margin:0 0 8px;font-size:26px;font-weight:800;line-height:1.5}
+  .lead h1 em{font-style:normal;background:linear-gradient(transparent 62%, #ffe08a 62%);padding:0 2px}
+  .lead p{margin:0;font-size:14px;color:var(--ink2);font-weight:700}
+
+  .tool{background:var(--paper);border:3px solid var(--kraft);border-radius:14px;padding:18px;box-shadow:0 4px 0 rgba(143,95,44,.22)}
+  .drop{
+    border:3px dashed var(--kraft);border-radius:10px;background:#fffaf0;
+    padding:38px 16px;text-align:center;
+  }
+  .thumbs{display:flex;gap:8px;justify-content:center;margin-bottom:14px}
+  .thumbs i{width:38px;height:38px;border-radius:5px;display:block;border:2px solid var(--kraft)}
+  .thumbs i:nth-child(1){background:#e8c39a}
+  .thumbs i:nth-child(2){background:#bcd6c2}
+  .thumbs i:nth-child(3){background:#d9c3dc}
+  .drop .big{margin:0 0 4px;font-size:18px;font-weight:800}
+  .drop .small{margin:0;font-size:13px;color:var(--ink2);font-weight:700}
+  .pick{
+    display:inline-block;margin-top:16px;background:var(--tape);color:#fff;border:0;
+    font-weight:800;font-size:16px;padding:14px 34px;border-radius:999px;cursor:pointer;
+    box-shadow:0 4px 0 var(--tape-d);
+  }
+  .pick:active{transform:translateY(2px);box-shadow:0 2px 0 var(--tape-d)}
+
+  .opts{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap}
+  .opt{flex:1;min-width:150px;background:#fff;border:2px solid var(--line);border-radius:10px;padding:10px 14px}
+  .opt .k{display:block;font-size:11px;font-weight:800;color:var(--ink3);letter-spacing:.1em}
+  .opt .v{font-size:15px;font-weight:800;color:var(--kraft-d)}
+
+  .safe{
+    margin-top:14px;background:#eaf7f1;border:2px solid #bfe6d4;border-radius:10px;
+    padding:10px 14px;font-size:13px;font-weight:800;color:var(--tape-d);
+    display:flex;gap:8px;align-items:center;
+  }
+
+  section.txt{margin-top:26px}
+  .card{background:var(--paper);border:2px solid var(--line);border-radius:12px;padding:18px 20px;margin-bottom:14px}
+  .card h2{margin:0 0 8px;font-size:16px;font-weight:800;display:flex;align-items:center;gap:8px}
+  .card h2::before{content:"";width:10px;height:10px;background:var(--tape);border-radius:3px;transform:rotate(45deg)}
+  .card ol{margin:0;padding-left:1.3em;font-size:14px;color:var(--ink2);font-weight:600}
+  .card p{margin:0;font-size:14px;color:var(--ink2);font-weight:600}
+  footer{padding:26px 0 48px;font-size:12px;color:var(--ink3);text-align:center;font-weight:700}
+</style>
+</head>
+<body>
+  <header>
+    <div class="wrap hd">
+      <span class="logo">Purin_Labo</span>
+      <nav><a href="#">ツール</a><a href="#">ゲーム</a><a href="#">About</a></nav>
+    </div>
+  </header>
+  <div class="ribbon">アップロードなし・登録なし・そのまま使えます</div>
+
+  <div class="wrap">
+    <div class="lead">
+      <h1>出品写真を、<em>まとめて正方形</em>に。</h1>
+      <p>メルカリ・ヤフオク・BASE の推奨サイズにそろえます</p>
+    </div>
+
+    <div class="tool">
+      <div class="drop">
+        <div class="thumbs"><i></i><i></i><i></i></div>
+        <p class="big">ここに写真をドラッグ</p>
+        <p class="small">JPG / PNG / HEIC ・ 何枚でも</p>
+        <button class="pick">写真を選ぶ</button>
+      </div>
+
+      <div class="opts">
+        <div class="opt"><span class="k">サイズ</span><span class="v">1080 × 1080</span></div>
+        <div class="opt"><span class="k">あまった余白</span><span class="v">白で埋める</span></div>
+        <div class="opt"><span class="k">書き出し</span><span class="v">ZIPでまとめて</span></div>
+      </div>
+
+      <div class="safe">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="M8 1.5l5.5 2v4c0 3.2-2.2 6-5.5 7-3.3-1-5.5-3.8-5.5-7v-4l5.5-2z" stroke="#157a52" stroke-width="1.7" stroke-linejoin="round"/>
+        </svg>
+        写真はあなたの端末から出ません。サーバーに送らずに処理します。
+      </div>
+    </div>
+
+    <section class="txt">
+      <div class="card">
+        <h2>使い方</h2>
+        <ol>
+          <li>写真をドラッグするか、「写真を選ぶ」から選ぶ</li>
+          <li>サイズと、余白の埋め方を決める</li>
+          <li>まとめてダウンロード</li>
+        </ol>
+      </div>
+      <div class="card">
+        <h2>なぜ正方形がいいの？</h2>
+        <p>メルカリなどの検索結果は正方形で表示されます。長方形のまま出すと自動で切り取られて、商品が見切れてしまうことがあります。</p>
+      </div>
+    </section>
+
+    <footer>© Purin_Labo ／ 案B「作業台」</footer>
+  </div>
+</body>
+</html>
