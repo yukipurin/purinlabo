@@ -17,18 +17,25 @@ const games = [
   { name: '推し日和', tag: '準備中', href: null,
     note: '推しへの気持ちを、毎日ひとことだけ。推し活の記録帳。' },
 ];
+
+const points = [
+  { t: 'アップロードしない', d: '写真もファイルも、あなたのパソコンやスマホから出ません。' },
+  { t: '登録もインストールも不要', d: 'ページを開いたらすぐ使えます。会員登録はありません。' },
+  { t: 'スマホでも使える', d: '出先でも、パソコンと同じことができます。' },
+];
 ---
 <Base
-  title="Purin_Labo — ブラウザの中で完結する道具と、ひとりで作るゲーム"
-  description="アップロードなしで使える無料Webツールと、個人開発のゲーム・アプリを置いている店。ファイルはあなたの端末から出ません。"
+  title="Purin_Labo — アップロードしないで使える無料ツールと、ひとりで作るゲーム"
+  description="写真やファイルをアップロードせずに使える無料Webツールと、個人開発のゲーム・アプリ。登録不要、インストール不要。すべてブラウザの中だけで動きます。"
 >
   <section class="hero">
     <div class="wrap hero-inner">
       <div class="hero-copy">
-        <h1>道具は、<br />端末の外に出さない。</h1>
+        <p class="eyebrow">無料・登録不要</p>
+        <h1>ファイルを<br />どこにも送らない道具。</h1>
         <p class="lede">
-          Purin_Labo は、ひとりで作った道具とゲームを並べている店です。
-          Webツールはすべてブラウザの中だけで動きます。ファイルはどこにも送られません。
+          写真の加工も変換も、ぜんぶブラウザの中だけで終わります。
+          アップロードしないので、待ち時間もありません。
         </p>
         <p class="hero-cta">
           <a class="btn" href="/tools/">ツールを見る</a>
@@ -38,163 +45,153 @@ const games = [
 
       <figure class="signature" aria-labelledby="sig-cap">
         <svg viewBox="0 0 320 160" role="img" aria-label="ファイルが端末の中だけで処理され、外部のサーバーへは送信されない仕組みの図">
-          <!-- あなたの端末：この枠の中で全部が完結する -->
-          <rect x="8" y="12" width="196" height="124" rx="3"
-                fill="var(--surface)" stroke="var(--accent)" stroke-width="1.5" />
-          <text x="20" y="32" class="sig-label" fill="var(--accent)">あなたの端末</text>
+          <rect x="8" y="12" width="196" height="124" rx="12"
+                fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="2" />
+          <text x="24" y="36" class="sig-label" fill="var(--accent-deep)">あなたのパソコン・スマホ</text>
 
-          <!-- 元のファイル -->
-          <rect x="36" y="62" width="34" height="44" rx="2"
-                fill="none" stroke="var(--ink-mute)" stroke-width="1.5" />
-          <path d="M44 74h18M44 82h18M44 90h11" stroke="var(--ink-weak)" stroke-width="1.5" />
+          <rect x="36" y="62" width="34" height="46" rx="5"
+                fill="var(--surface)" stroke="var(--ink-weak)" stroke-width="2" />
+          <path d="M45 76h16M45 85h16M45 94h10" stroke="var(--ink-weak)" stroke-width="2" stroke-linecap="round" />
 
-          <!-- 処理 -->
-          <path d="M82 84h24" stroke="var(--accent)" stroke-width="1.5" />
-          <path d="M100 79l6 5-6 5" fill="none" stroke="var(--accent)" stroke-width="1.5"
+          <path d="M84 85h20" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" />
+          <path d="M99 79l6 6-6 6" fill="none" stroke="var(--accent)" stroke-width="2"
                 stroke-linecap="round" stroke-linejoin="round" />
 
-          <!-- 処理後のファイル -->
-          <rect x="118" y="62" width="34" height="44" rx="2"
-                fill="var(--accent-wash)" stroke="var(--accent)" stroke-width="1.5" />
-          <path d="M126 84l6 6 12-14" fill="none" stroke="var(--accent)" stroke-width="1.75"
+          <rect x="118" y="62" width="34" height="46" rx="5"
+                fill="var(--surface)" stroke="var(--accent)" stroke-width="2" />
+          <path d="M126 85l6 7 13-15" fill="none" stroke="var(--accent)" stroke-width="2.5"
                 stroke-linecap="round" stroke-linejoin="round" />
 
-          <!-- 外へ出ようとする経路が断たれている -->
-          <path d="M212 84h44" stroke="var(--ink-weak)" stroke-width="1.5" stroke-dasharray="3 4" />
-          <circle cx="234" cy="84" r="12" fill="var(--ground)" />
-          <path d="M228 78l12 12M240 78l-12 12" stroke="var(--ink-weak)" stroke-width="1.75"
-                stroke-linecap="round" />
+          <path d="M212 85h44" stroke="var(--ink-weak)" stroke-width="2" stroke-dasharray="2 6" stroke-linecap="round" />
+          <circle cx="234" cy="85" r="14" fill="var(--ground)" stroke="var(--line)" stroke-width="2" />
+          <path d="M229 80l10 10M239 80l-10 10" stroke="var(--ink-weak)" stroke-width="2.5" stroke-linecap="round" />
 
-          <!-- サーバー（使わない） -->
-          <rect x="264" y="64" width="46" height="40" rx="2"
-                fill="none" stroke="var(--ink-weak)" stroke-width="1.5" />
-          <path d="M272 76h20M272 92h20" stroke="var(--ink-weak)" stroke-width="1.5" />
-          <circle cx="302" cy="76" r="1.75" fill="var(--ink-weak)" />
-          <circle cx="302" cy="92" r="1.75" fill="var(--ink-weak)" />
-          <text x="264" y="122" class="sig-label" fill="var(--ink-weak)">サーバー</text>
+          <rect x="266" y="64" width="46" height="42" rx="6"
+                fill="none" stroke="var(--ink-weak)" stroke-width="2" />
+          <path d="M276 77h20M276 93h20" stroke="var(--ink-weak)" stroke-width="2" stroke-linecap="round" />
+          <text x="266" y="126" class="sig-label" fill="var(--ink-weak)">サーバー</text>
         </svg>
         <figcaption id="sig-cap" class="small muted">
-          処理はすべてブラウザ内。送信も保存もありません。
+          処理はぜんぶブラウザの中。送信も保存もしません。
         </figcaption>
       </figure>
     </div>
   </section>
 
-  <section class="wrap block" id="tools">
-    <h2 class="eyebrow">Tools</h2>
-    <div class="panel notice">
-      <h3>無料Webツール</h3>
-      <p class="muted">
-        フリマ・ネットショップの出品作業を短くする画像の道具から作っています。
-        登録なし、インストールなし、アップロードなし。
-      </p>
-      <p><a href="/tools/">準備中のツール一覧を見る</a></p>
+  <section class="band">
+    <div class="wrap block">
+      <ul class="points">
+        {points.map((p) => (
+          <li>
+            <h3>{p.t}</h3>
+            <p class="muted small">{p.d}</p>
+          </li>
+        ))}
+      </ul>
     </div>
   </section>
 
-  <section class="wrap block" id="games">
-    <h2 class="eyebrow">Games &amp; Apps</h2>
-    <ul class="shelf">
-      {games.map((g) => (
-        <li class="shelf-row">
-          <div class="shelf-head">
-            {g.href
-              ? <a class="shelf-name" href={g.href} rel="noopener">{g.name}</a>
-              : <span class="shelf-name">{g.name}</span>}
-            <span class="tag">{g.tag}</span>
-          </div>
-          <p class="muted small">{g.note}</p>
-        </li>
-      ))}
-    </ul>
+  <section class="wrap block" id="tools">
+    <p class="eyebrow">Tools</p>
+    <h2>無料Webツール</h2>
+    <p class="lede">
+      フリマやネットショップの出品作業を、ちょっと短くする道具から作っています。
+    </p>
+    <p class="mt"><a class="btn" href="/tools/">これから出るツールを見る</a></p>
+  </section>
+
+  <section class="band-warm">
+    <div class="wrap block" id="games">
+      <p class="eyebrow warm">Games &amp; Apps</p>
+      <h2>作ったゲーム・アプリ</h2>
+      <ul class="shelf">
+        {games.map((g) => (
+          <li class="shelf-row">
+            <div class="shelf-head">
+              {g.href
+                ? <a class="shelf-name" href={g.href} rel="noopener">{g.name}</a>
+                : <span class="shelf-name">{g.name}</span>}
+              <span class={g.href ? 'tag' : 'tag soon'}>{g.tag}</span>
+            </div>
+            <p class="muted small">{g.note}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
   </section>
 
   <section class="wrap block" id="about">
-    <h2 class="eyebrow">About</h2>
+    <p class="eyebrow">About</p>
+    <h2>Purin_Labo について</h2>
     <p>
-      Purin_Labo（ぷりんラボ）は、ひとりで運営している開発スタジオです。
-      ゲーム、iPhoneアプリ、無料のWebツールを作っています。
+      ぷりんラボは、ひとりでやっている小さな開発スタジオです。
+      ゲームと、iPhoneアプリと、無料のWebツールを作っています。
     </p>
-    <p class="muted">
-      作るものの基準はひとつだけで、
-      「自分が使いたいか」です。使わなくなったものは、静かに畳みます。
+    <p class="mt muted">
+      作るかどうかの基準はひとつだけで、「自分が使いたいか」。
+      使わなくなったものは、静かに畳みます。
     </p>
-    <p class="small muted">
-      お問い合わせ：<a href="https://x.com/Purin_Labo" rel="noopener">@Purin_Labo</a>
+    <p class="mt small muted">
+      ご連絡は <a href="https://x.com/Purin_Labo" rel="noopener">@Purin_Labo</a> まで。
     </p>
   </section>
 </Base>
 
 <style>
-  .hero { background: var(--surface); border-bottom: 1px solid var(--line); }
   .hero-inner {
     display: grid;
-    grid-template-columns: 1fr minmax(0, 340px);
+    grid-template-columns: 1fr minmax(0, 350px);
     gap: var(--s7);
     align-items: center;
-    padding-block: var(--s8);
+    padding-block: var(--s7) var(--s8);
   }
-  .hero h1 { letter-spacing: .06em; }
-  .hero .lede { margin-top: var(--s4); }
+  .hero h1 { margin-bottom: var(--s4); }
   .hero-cta { display: flex; gap: var(--s3); margin-top: var(--s5); flex-wrap: wrap; }
 
-  .btn {
-    display: inline-block;
-    background: var(--accent);
-    color: var(--accent-on);
-    text-decoration: none;
-    padding: var(--s2) var(--s4);
-    border-radius: var(--radius);
-    letter-spacing: .08em;
-  }
-  .btn:hover { background: var(--accent-deep); color: var(--accent-on); }
-  .btn-quiet {
-    display: inline-block;
-    color: var(--ink-mute);
-    text-decoration: none;
-    padding: var(--s2) var(--s4);
-    border: 1px solid var(--line);
-    border-radius: var(--radius);
-    letter-spacing: .08em;
-  }
-  .btn-quiet:hover { border-color: var(--accent); color: var(--accent); }
-
-  .signature { margin: 0; }
   .signature svg { width: 100%; display: block; }
+  .signature { margin: 0; }
   .signature figcaption { margin-top: var(--s2); }
-  :global(.sig-label) { font-size: 11px; letter-spacing: .14em; font-family: var(--font-body); }
+  :global(.sig-label) { font-size: 11px; font-weight: 700; letter-spacing: .04em; font-family: var(--font-body); }
 
   .block { padding-block: var(--s7); }
+  .mt { margin-top: var(--s4); }
 
-  .notice { padding: var(--s5); }
-  .notice h3 { margin-bottom: var(--s2); }
-  .notice p { margin-bottom: var(--s3); }
-  .notice p:last-child { margin-bottom: 0; }
+  /* 3点の要約。カードにせず、上に色罫を引いた列で並べる */
+  .points {
+    list-style: none; margin: 0; padding: 0;
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--s5);
+  }
+  .points li { border-top: 3px solid var(--accent); padding-top: var(--s3); }
+  .points h3 { margin-bottom: var(--s1); }
 
-  /* カードを敷き詰めず、罫線で仕切った棚として並べる */
-  .shelf { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line-soft); }
-  .shelf-row { padding-block: var(--s4); border-bottom: 1px solid var(--line-soft); }
-  .shelf-head { display: flex; align-items: baseline; gap: var(--s3); }
+  /* 一覧は罫線で仕切った「棚」。カードを敷き詰めない */
+  .shelf { list-style: none; margin: var(--s5) 0 0; padding: 0; border-top: 1px solid var(--line); }
+  .shelf-row { padding-block: var(--s4); border-bottom: 1px solid var(--line); }
+  .shelf-head { display: flex; align-items: center; gap: var(--s3); flex-wrap: wrap; }
   .shelf-name {
     font-family: var(--font-display);
+    font-weight: 700;
     font-size: var(--step-1);
-    letter-spacing: .06em;
     color: var(--ink);
     text-decoration: none;
   }
-  a.shelf-name:hover { color: var(--accent); text-decoration: underline; }
+  a.shelf-name:hover { color: var(--accent-deep); text-decoration: underline; }
   .tag {
     font-size: var(--step--1);
-    letter-spacing: .16em;
-    color: var(--gold);
-    white-space: nowrap;
+    font-weight: 700;
+    letter-spacing: .08em;
+    color: var(--accent-on);
+    background: var(--accent);
+    border-radius: 999px;
+    padding: 1px 12px;
+    line-height: 1.6;
   }
+  .tag.soon { color: var(--ink-mute); background: transparent; border: 1px solid var(--line); }
   .shelf-row p { margin-top: var(--s1); }
-
-  #about p + p { margin-top: var(--s3); }
 
   @media (max-width: 52rem) {
     .hero-inner { grid-template-columns: 1fr; gap: var(--s6); padding-block: var(--s6); }
-    .signature { max-width: 340px; }
+    .signature { max-width: 350px; }
+    .points { grid-template-columns: 1fr; gap: var(--s4); }
   }
 </style>

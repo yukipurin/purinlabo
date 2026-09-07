@@ -20,6 +20,7 @@ const tools = [
   description="アップロード不要・登録不要の無料Webツール。フリマやネットショップの出品画像を、ブラウザの中だけで一括処理します。"
 >
   <section class="wrap block">
+    <p class="eyebrow">無料・登録不要</p>
     <h1>ツール</h1>
     <p class="lede">
       フリマ・ネットショップの出品作業を短くするための道具です。
@@ -31,7 +32,7 @@ const tools = [
         <li class="shelf-row">
           <div class="shelf-head">
             <span class="shelf-name">{t.name}</span>
-            <span class="tag">準備中</span>
+            <span class="tag soon">準備中</span>
           </div>
           <p class="muted small">{t.note}</p>
         </li>
@@ -49,15 +50,19 @@ const tools = [
   h1 { margin-bottom: var(--s3); }
   .lede { margin-bottom: var(--s6); }
 
-  .shelf { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line-soft); }
-  .shelf-row { padding-block: var(--s4); border-bottom: 1px solid var(--line-soft); }
-  .shelf-head { display: flex; align-items: baseline; gap: var(--s3); }
+  .shelf { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
+  .shelf-row { padding-block: var(--s4); border-bottom: 1px solid var(--line); }
+  .shelf-head { display: flex; align-items: center; gap: var(--s3); flex-wrap: wrap; }
   .shelf-name {
     font-family: var(--font-display);
+    font-weight: 700;
     font-size: var(--step-1);
-    letter-spacing: .06em;
   }
-  .tag { font-size: var(--step--1); letter-spacing: .16em; color: var(--gold); white-space: nowrap; }
+  .tag.soon {
+    font-size: var(--step--1); font-weight: 700; letter-spacing: .08em;
+    color: var(--ink-mute); border: 1px solid var(--line); border-radius: 999px;
+    padding: 1px 12px; line-height: 1.6; white-space: nowrap;
+  }
   .shelf-row p { margin-top: var(--s1); }
   .note { margin-top: var(--s5); }
 </style>
