@@ -50,8 +50,14 @@ export const square = {
   // ---- 誰が作ったか ----
   aboutTitle: "製作者について",
   about: [
-    "ぷりんラボ（個人開発）。App Storeでゲームアプリを公開しています。",
+    "ぷりんラボ。ひとりでゲームアプリとWebツールを作っています。YouTubeでは異世界ケルト音楽の作業用BGMを公開しています。",
     "このツールは、ゲームのストア画像を作るために書いたスクリプトを、ブラウザで動くようにしたものです。同じ処理が出品写真にも使えるため公開しています。",
+  ],
+  // 製作者についての下に並ぶリンク。増減自由
+  aboutLinks: [
+    { label: "ゲーム・アプリ", url: "/#games" },
+    { label: "音の図書館（YouTube）", url: "https://www.youtube.com/@soundlibrarystudio" },
+    { label: "X", url: "https://x.com/Purin_Labo" },
   ],
   stamp: "ほかの道具は準備中",
 } as const;

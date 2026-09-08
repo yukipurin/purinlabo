@@ -145,6 +145,9 @@ import { square as t } from '../../content/square';
     transform:rotate(-4deg);opacity:.82;
   }
   .who{border-top:2px solid var(--rule);margin-top:44px;padding-top:20px}
+  ul.links{display:flex;flex-wrap:wrap;gap:8px 20px;list-style:none;margin:14px 0 0;padding:0}
+  ul.links a{font-size:14px;color:var(--tape-d);text-underline-offset:.25em}
+  ul.links a:hover{color:var(--kraft-d)}
   footer{padding:26px 0 52px;font-size:12px;color:var(--ink3)}
   @media(max-width:560px){h1{font-size:24px}}
 </style>
@@ -204,6 +207,11 @@ import { square as t } from '../../content/square';
     <section class="who">
       <h2>{t.aboutTitle}</h2>
       {t.about.map((para) => <p>{para}</p>)}
+      <ul class="links">
+        {t.aboutLinks.map((l) => (
+          <li><a href={l.url} rel="noopener">{l.label}</a></li>
+        ))}
+      </ul>
       <p style="margin-top:16px"><span class="stamp">{t.stamp}</span></p>
     </section>
 
