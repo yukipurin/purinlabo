@@ -6,7 +6,7 @@ const updated = '2026年9月7日';
   title="プライバシーポリシー"
   description="Purin_Labo のプライバシーポリシー。Webツールで扱うファイルは端末内で処理され、サーバーへ送信されません。"
 >
-  <section class="wrap block">
+  <section class="block">
     <h1>プライバシーポリシー</h1>
     <p class="small muted">最終更新：{updated}</p>
 
@@ -47,10 +47,7 @@ const updated = '2026年9月7日';
 </Base>
 
 <style>
-  /* .wrap と同居するため max-width は付けない（付けると margin-inline:auto で中央寄せになりヘッダーとズレる） */
-  .block { padding-block: var(--s7); }
-  h2 { max-width: var(--measure); }
-  h1 { margin-bottom: var(--s2); }
-  h2 { margin-top: var(--s6); margin-bottom: var(--s2); }
-  p + p { margin-top: var(--s3); }
+  .block { padding-block: 34px 0; }
+  h1 { margin-bottom: 6px; }
+  h2 { margin-top: 36px; margin-bottom: 8px; }
 </style>

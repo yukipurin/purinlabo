@@ -4,9 +4,7 @@ import '../styles/global.css';
 export interface Props {
   title: string;
   description: string;
-  /** OGP画像（未指定ならサイト既定） */
   image?: string;
-  /** 検索結果に出さないページ */
   noindex?: boolean;
 }
 
@@ -14,26 +12,22 @@ const { title, description, image = '/ogp.png', noindex = false } = Astro.props;
 
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
 const ogImage = new URL(image, Astro.site).href;
-const siteName = 'Purin_Labo';
+const siteName = 'ぷりんラボ';
 const fullTitle = Astro.url.pathname === '/' ? title : `${title}｜${siteName}`;
 
 const nav = [
   { href: '/tools/', label: 'ツール' },
   { href: '/#games', label: 'ゲーム' },
-  { href: '/#about', label: 'About' },
+  { href: '/about/', label: 'ぷりんラボとは' },
 ];
 
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'WebSite',
   name: siteName,
+  alternateName: 'Purin_Labo',
   url: 'https://purinlabo.com/',
   inLanguage: 'ja',
-  publisher: {
-    '@type': 'Organization',
-    name: siteName,
-    url: 'https://purinlabo.com/',
-  },
 };
 ---
 <!doctype html>
@@ -57,8 +51,7 @@ const jsonLd = {
   <meta name="twitter:site" content="@Purin_Labo" />
 
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
-  <meta name="theme-color" content="#0d1420" media="(prefers-color-scheme: dark)" />
+  <meta name="theme-color" content="#faf4e8" />
 
   <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
 </head>
@@ -66,106 +59,42 @@ const jsonLd = {
   <a class="skip" href="#main">本文へスキップ</a>
 
   <header class="site-head">
-    <div class="wrap head-inner">
-      <a class="brand" href="/">
-        <span class="brand-mark">Purin_Labo</span>
-      </a>
+    <div class="wrap hd">
+      <a class="logo" href="/">ぷりんラボ</a>
       <nav aria-label="サイト内">
-        <ul>
-          {nav.map((n) => <li><a href={n.href}>{n.label}</a></li>)}
-        </ul>
+        {nav.map((n) => <a href={n.href}>{n.label}</a>)}
       </nav>
     </div>
   </header>
 
-  <main id="main">
-    <slot />
-  </main>
+  <main id="main" class="wrap"><slot /></main>
 
   <footer class="site-foot">
-    <div class="wrap foot-inner">
-      <p class="small muted">© Purin_Labo</p>
-      <ul class="foot-links small">
-        <li><a href="/tools/">ツール</a></li>
-        <li><a href="/privacy/">プライバシー</a></li>
-        <li><a href="https://x.com/Purin_Labo" rel="noopener">X</a></li>
-      </ul>
+    <div class="wrap">
+      <a href="/tools/">ツール</a>
+      <a href="/privacy/">プライバシー</a>
+      <a href="https://x.com/Purin_Labo" rel="noopener">X</a>
+      <span class="c">© Purin_Labo</span>
     </div>
   </footer>
 </body>
 </html>
 
 <style>
-  .skip {
-    position: absolute;
-    left: -9999px;
-    top: 0;
-    background: var(--accent);
-    color: var(--accent-on);
-    padding: var(--s2) var(--s3);
-    z-index: 10;
-  }
+  .skip { position: absolute; left: -9999px; top: 0; background: var(--tape); color: #fff; padding: 8px 16px; z-index: 10; }
   .skip:focus { left: 0; }
 
-  .site-head {
-    border-bottom: 1px solid var(--line);
-    background: var(--surface);
-  }
-  .head-inner {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: var(--s4);
-    min-height: 60px;
-  }
-  .brand { text-decoration: none; color: var(--ink); }
-  .brand-mark {
-    font-family: var(--font-display);
-    font-weight: 700;
-    font-size: var(--step-1);
-    letter-spacing: .04em;
-  }
-  .site-head nav ul {
-    display: flex;
-    gap: var(--s4);
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
-  .site-head nav a {
-    color: var(--ink-mute);
-    text-decoration: none;
-    font-weight: 700;
-    font-size: var(--step--1);
-    letter-spacing: .04em;
-  }
-  .site-head nav a:hover { color: var(--accent); }
+  .site-head { border-bottom: 2px solid var(--kraft); }
+  .hd { display: flex; align-items: center; justify-content: space-between; min-height: 62px; gap: 16px; flex-wrap: wrap; }
+  .logo { font-family: var(--logo); font-size: 20px; color: var(--kraft-d); text-decoration: none; }
+  .site-head nav { display: flex; gap: 18px; }
+  .site-head nav a { color: var(--ink2); text-decoration: none; font-size: 13px; font-weight: 700; }
+  .site-head nav a:hover { color: var(--tape-d); }
 
-  .site-foot {
-    margin-top: var(--s8);
-    border-top: 1px solid var(--line);
-    background: var(--surface);
-  }
-  .foot-inner {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: var(--s3);
-    padding-block: var(--s5);
-  }
-  .foot-links {
-    display: flex;
-    gap: var(--s4);
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
-  .foot-links a { color: var(--ink-mute); text-decoration: none; }
-  .foot-links a:hover { color: var(--accent); }
-
-  @media (max-width: 34rem) {
-    .head-inner { flex-direction: column; align-items: flex-start; gap: var(--s2); padding-block: var(--s3); }
-    .site-head nav ul { gap: var(--s3); }
-  }
+  .site-foot { margin-top: 64px; border-top: 2px solid var(--rule); }
+  .site-foot > div { display: flex; gap: 20px; flex-wrap: wrap; align-items: center; padding-block: 24px 48px; font-size: 13px; }
+  .site-foot a { color: var(--ink2); text-decoration: none; font-weight: 700; }
+  .site-foot a:hover { color: var(--tape-d); }
+  .c { color: var(--ink3); margin-left: auto; }
+  @media (max-width: 480px) { .c { margin-left: 0; } }
 </style>

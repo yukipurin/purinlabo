@@ -20,12 +20,25 @@ export const square = {
   button: "写真を選ぶ",
   buttonNote: "選択したファイルは送信されません",
 
-  // ---- 設定欄（左＝項目名／右＝値）----
-  settings: [
-    { label: "出力サイズ",  value: "1080 × 1080" },
-    { label: "余白の処理",  value: "白で塗りつぶす" },
-    { label: "書き出し",    value: "ZIPで一括" },
+  // ---- 設定欄のラベル ----
+  settingSize: "出力サイズ",
+  settingFill: "余白の処理",
+  settingName: "ファイル名",
+  settingNamePlaceholder: "空欄なら元のファイル名を使います",
+
+  fillOptions: [
+    { value: "contain", label: "白で塗りつぶす（写真は切れません）" },
+    { value: "cover",   label: "正方形に切り抜く（はみ出す部分は切れます）" },
   ],
+
+  // ---- 操作 ----
+  runButton: "正方形にする",
+  runningLabel: "変換しています",
+  downloadZip: "ZIPでまとめてダウンロード",
+  resultHeading: "できあがり",
+  clearButton: "選び直す",
+  selectedCount: "枚選択中",
+  errorUnreadable: "この形式はこのブラウザで開けません",
 
   // ---- 安全のひとこと ----
   privacy: "処理はすべてブラウザ内で行います。写真を受け取る仕組みがないため、外部に送信されることはありません。",
