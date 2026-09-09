@@ -19,22 +19,24 @@ const tools = [
   title="無料Webツール"
   description="アップロード不要・登録不要の無料Webツール。フリマやネットショップの出品画像を、ブラウザの中だけで一括処理します。"
 >
-  <h1 class="page-h1">ツール</h1>
-  <p class="lead">フリマ・ネットショップの出品作業を短くするための道具です。処理はすべてブラウザ内で行います。</p>
+  <div class="work">
+    <h1 class="page-h1">ツール</h1>
+    <p class="lead">フリマ・ネットショップの出品作業を短くするための道具です。処理はすべてブラウザ内で行います。</p>
 
-  <ul class="shelf">
-    {tools.map((tool) => (
-      <li class={tool.ready ? 'row' : 'row soon'}>
-        <div class="head">
-          {tool.ready
-            ? <a class="name" href={`/tools/${tool.slug}/`}>{tool.name}</a>
-            : <span class="name">{tool.name}</span>}
-          {!tool.ready && <span class="stamp">準備中</span>}
-        </div>
-        <p>{tool.note}</p>
-      </li>
-    ))}
-  </ul>
+    <ul class="shelf">
+      {tools.map((tool) => (
+        <li class={tool.ready ? 'row' : 'row soon'}>
+          <div class="head">
+            {tool.ready
+              ? <a class="name" href={`/tools/${tool.slug}/`}>{tool.name}</a>
+              : <span class="name">{tool.name}</span>}
+            {!tool.ready && <span class="stamp">準備中</span>}
+          </div>
+          <p>{tool.note}</p>
+        </li>
+      ))}
+    </ul>
+  </div>
 </Base>
 
 <style>

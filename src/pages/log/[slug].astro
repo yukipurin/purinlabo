@@ -16,23 +16,25 @@ const fmt = `${d.getFullYear()}年${d.getMonth() + 1}月${d.getDate()}日`;
 const iso = d.toISOString().slice(0, 10);
 ---
 <Base title={post.data.title} description={post.data.summary}>
-  <article>
-    <p class="meta">
-      <time datetime={iso}>{fmt}</time>
-      <span class={post.data.kind === 'news' ? 'kind news' : 'kind'}>
-        {post.data.kind === 'news' ? 'お知らせ' : '開発記録'}
-      </span>
-    </p>
-    <h1 class="page-h1">{post.data.title}</h1>
-    <div class="body"><Content /></div>
-  </article>
-  <p class="back"><a href="/log/">お知らせと開発記録の一覧へ</a></p>
+  <div class="work">
+    <article>
+      <p class="meta">
+        <time datetime={iso}>{fmt}</time>
+        <span class={post.data.kind === 'news' ? 'kind news' : 'kind'}>
+          {post.data.kind === 'news' ? 'お知らせ' : '開発記録'}
+        </span>
+      </p>
+      <h1 class="page-h1">{post.data.title}</h1>
+      <div class="body"><Content /></div>
+    </article>
+    <p class="back"><a href="/log/">お知らせと開発記録の一覧へ</a></p>
+  </div>
 </Base>
 
 <style>
   .meta { display: flex; align-items: center; gap: 12px; margin-top: 34px; font-size: 12px; color: var(--ink3); }
   .kind {
-    font-size: 11px; font-weight: 700; letter-spacing: .08em; color: var(--kraft-d);
+    font-size: 11px; font-weight: 700; letter-spacing: .08em; color: var(--kraft-deep);
     border: 1.5px solid var(--kraft); padding: 0 8px;
     border-radius: 5px 2px 6px 3px / 3px 6px 2px 5px;
   }
@@ -40,6 +42,6 @@ const iso = d.toISOString().slice(0, 10);
   .page-h1 { margin: 8px 0 20px; }
   .body :global(p) { margin-bottom: 14px; }
   .body :global(h2) { margin: 30px 0 10px; font-size: 17px; }
-  .body :global(ul), .body :global(ol) { font-size: 14.5px; color: var(--ink2); padding-left: 1.4em; }
+  .body :global(ul), .body :global(ol) { font-size: 14.5px; color: var(--muted); padding-left: 1.4em; }
   .back { margin-top: 40px; padding-top: 20px; border-top: 2px solid var(--rule); font-size: 14px; }
 </style>

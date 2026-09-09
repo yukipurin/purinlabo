@@ -60,7 +60,7 @@ const jsonLd = {
   <a class="skip" href="#main">本文へスキップ</a>
 
   <header class="site-head">
-    <div class="wrap hd">
+    <div class="hd">
       <a class="logo" href="/">ぷりんラボ</a>
       <nav aria-label="サイト内">
         {nav.map((n) => <a href={n.href}>{n.label}</a>)}
@@ -68,10 +68,10 @@ const jsonLd = {
     </div>
   </header>
 
-  <main id="main" class="wrap"><slot /></main>
+  <main id="main"><slot /></main>
 
   <footer class="site-foot">
-    <div class="wrap">
+    <div class="ft">
       <a href="/tools/">ツール</a>
       <a href="/log/">お知らせ・開発記録</a>
       <a href="/privacy/">プライバシー</a>
@@ -86,17 +86,29 @@ const jsonLd = {
   .skip { position: absolute; left: -9999px; top: 0; background: var(--tape); color: #fff; padding: 8px 16px; z-index: 10; }
   .skip:focus { left: 0; }
 
-  .site-head { border-bottom: 2px solid var(--kraft); }
-  .hd { display: flex; align-items: center; justify-content: space-between; min-height: 62px; gap: 16px; flex-wrap: wrap; }
-  .logo { font-family: var(--logo); font-size: 20px; color: var(--kraft-d); text-decoration: none; }
-  .site-head nav { display: flex; gap: 18px; }
-  .site-head nav a { color: var(--ink2); text-decoration: none; font-size: 13px; font-weight: 700; }
+  /* ヘッダーは限りなく引く。線は1本だけ、細く */
+  .site-head { border-bottom: 1px solid rgba(184, 125, 69, .28); }
+  .hd {
+    max-width: var(--read); margin-inline: auto; padding: 0 28px;
+    display: flex; align-items: center; justify-content: space-between;
+    min-height: 78px; gap: 20px; flex-wrap: wrap;
+  }
+  .logo { font-family: var(--logo); font-size: 21px; color: var(--kraft); text-decoration: none; letter-spacing: .02em; }
+  .site-head nav { display: flex; gap: 28px; }
+  .site-head nav a {
+    color: var(--muted); text-decoration: none;
+    font-size: 12px; font-weight: 700; letter-spacing: .12em;
+  }
   .site-head nav a:hover { color: var(--tape-d); }
 
-  .site-foot { margin-top: 64px; border-top: 2px solid var(--rule); }
-  .site-foot > div { display: flex; gap: 20px; flex-wrap: wrap; align-items: center; padding-block: 24px 48px; font-size: 13px; }
-  .site-foot a { color: var(--ink2); text-decoration: none; font-weight: 700; }
-  .site-foot a:hover { color: var(--tape-d); }
-  .c { color: var(--ink3); margin-left: auto; }
-  @media (max-width: 480px) { .c { margin-left: 0; } }
+  .site-foot { margin-top: 0; background: var(--ink); color: var(--muted-on-ink); }
+  .ft {
+    max-width: var(--read); margin-inline: auto; padding: 56px 28px 64px;
+    display: flex; gap: 28px; flex-wrap: wrap; align-items: center;
+    font-size: 12px; letter-spacing: .06em;
+  }
+  .site-foot a { color: var(--on-ink); text-decoration: none; font-weight: 700; }
+  .site-foot a:hover { color: #8fd0ae; }
+  .c { color: var(--muted-on-ink); margin-left: auto; }
+  @media (max-width: 560px) { .c { margin-left: 0; } .hd { min-height: 64px; } .site-head nav { gap: 18px; } }
 </style>

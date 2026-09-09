@@ -12,23 +12,25 @@ const fmt = (d: Date) =>
   title="お知らせと開発記録"
   description="ぷりんラボのお知らせと開発記録。ツールやゲームの公開、作っているときに考えたことを書いています。"
 >
-  <h1 class="page-h1">お知らせと開発記録</h1>
-  <p class="lead">公開のお知らせと、作っているときに考えたことを書いています。</p>
+  <div class="work">
+    <h1 class="page-h1">お知らせと開発記録</h1>
+    <p class="lead">公開のお知らせと、作っているときに考えたことを書いています。</p>
 
-  <ul class="posts">
-    {posts.map((post) => (
-      <li>
-        <div class="head">
-          <a class="t" href={`/log/${post.id}/`}>{post.data.title}</a>
-          <span class={post.data.kind === 'news' ? 'kind news' : 'kind'}>
-            {post.data.kind === 'news' ? 'お知らせ' : '開発記録'}
-          </span>
-        </div>
-        <p class="d">{fmt(post.data.date)}</p>
-        <p>{post.data.summary}</p>
-      </li>
-    ))}
-  </ul>
+    <ul class="posts">
+      {posts.map((post) => (
+        <li>
+          <div class="head">
+            <a class="t" href={`/log/${post.id}/`}>{post.data.title}</a>
+            <span class={post.data.kind === 'news' ? 'kind news' : 'kind'}>
+              {post.data.kind === 'news' ? 'お知らせ' : '開発記録'}
+            </span>
+          </div>
+          <p class="d">{fmt(post.data.date)}</p>
+          <p>{post.data.summary}</p>
+        </li>
+      ))}
+    </ul>
+  </div>
 </Base>
 
 <style>
@@ -40,7 +42,7 @@ const fmt = (d: Date) =>
   .t { font-family: var(--display); font-weight: 700; font-size: 17px; color: var(--ink); text-decoration: none; }
   .t:hover { color: var(--tape-d); text-decoration: underline; }
   .kind {
-    font-size: 11px; font-weight: 700; letter-spacing: .08em; color: var(--kraft-d);
+    font-size: 11px; font-weight: 700; letter-spacing: .08em; color: var(--kraft-deep);
     border: 1.5px solid var(--kraft); padding: 0 8px;
     border-radius: 5px 2px 6px 3px / 3px 6px 2px 5px;
   }

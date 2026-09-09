@@ -1,7 +1,11 @@
 /* =========================================================
-   Purin_Labo 共通デザイントークン
-   方向：クラフト紙の作業台。手で書いた線、紙のざらつき、演出しない文章。
-   AI臭さの原因（均一な角丸・完璧な整列・つるつるの面）を意図的に外している。
+   ぷりんラボ 共通デザイントークン
+   決まりごとは DESIGN.md を参照。
+
+   壮大さは大きな文字からは来ない。機構は
+   ①1帯＝1画面のフルブリード ②背景色の変化が節の区切り
+   ③装飾ゼロ ④余白は台座。
+   Home側は静かに、ツールページは作業台として鳴らす。
    ========================================================= */
 
 @font-face {
@@ -16,25 +20,31 @@
 }
 
 :root {
-  --paper: #faf4e8;      /* クラフト紙 */
+  --paper:      #faf4e8;
+  --paper-deep: #f2e8d6;
+  --ink:        #241d13;
+  --ink-2:      #2f2618;
+  --on-ink:     #f6f0e3;
+  --muted:      #6f6353;
+  --muted-on-ink: #a2957f;
+  --kraft:      #b87d45;
+  --kraft-deep: #8a5a2b;
+  --tape:       #3d8b64;   /* 唯一のアクセント。控えめに使う */
+  --tape-d:     #2c6b4b;
+
+  /* ツールページだけで使う（作業台モード） */
   --card: #fffdf7;
-  --ink: #2f2618;
-  --ink2: #6f6353;
-  --ink3: #a89b88;
   --rule: #ded0b8;
-  --kraft: #b87d45;      /* ダンボール */
-  --kraft-d: #8a5a2b;
-  --tape: #3d8b64;       /* 養生テープ */
-  --tape-d: #2c6b4b;
-  --stamp: #c8402f;      /* 朱肉 */
-  --marker: #ffe08a;
+  --ink3: #a89b88;
+  --stamp: #c8402f;
 
   --display: "ZenMaru", "Hiragino Sans", "Yu Gothic", system-ui, sans-serif;
   --logo: "KiwiMaru", "Hiragino Sans", "Yu Gothic", system-ui, sans-serif;
   --body: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic", YuGothic,
           "Noto Sans JP", system-ui, sans-serif;
 
-  --wrap: 880px;
+  --read: 940px;   /* 帯の中の読み幅 */
+  --band-y: 112px; /* 帯の上下 */
 }
 
 *, *::before, *::after { box-sizing: border-box; }
@@ -42,35 +52,68 @@ html { -webkit-text-size-adjust: 100%; }
 
 body {
   margin: 0;
-  color: var(--ink);
+  color: var(--ink-2);
   font-family: var(--body);
-  line-height: 1.9;
+  font-size: 16px;
+  line-height: 1.95;
   background-color: var(--paper);
-  /* 紙のざらつき。SVGノイズを data URI で敷く＝画像リクエストなし */
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.055'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
 }
 
-.wrap { max-width: var(--wrap); margin-inline: auto; padding-inline: 20px; }
-
-h1, h2, h3 { font-family: var(--display); font-weight: 700; margin: 0; line-height: 1.5; }
-h1 { font-size: 30px; }
-h2 { font-size: 18px; }
-p { margin: 0; font-size: 14.5px; color: var(--ink2); max-width: 34em; }
-p + p { margin-top: 10px; }
-a { color: var(--tape-d); text-underline-offset: .25em; }
-a:hover { color: var(--kraft-d); }
-:focus-visible { outline: 3px solid var(--tape); outline-offset: 2px; }
+h1, h2, h3 { font-family: var(--display); font-weight: 700; margin: 0; }
+p { margin: 0; }
 img, svg { max-width: 100%; height: auto; }
+a { color: var(--tape-d); text-underline-offset: .3em; }
+a:hover { color: var(--tape); }
+:focus-visible { outline: 3px solid var(--tape); outline-offset: 3px; }
 
-/* マーカー。真横に引かず、少し傾けて端をはみ出させる */
-.mark { position: relative; white-space: nowrap; }
-.mark::after {
-  content: ""; position: absolute; left: -4px; right: -7px; bottom: .12em; height: .44em;
-  background: var(--marker); z-index: -1; transform: rotate(-.7deg);
-  border-radius: 40% 60% 55% 45% / 60% 40% 60% 40%;
+/* ---- 帯：これが節。罫線で区切らず、背景色の変化で区切る ---- */
+.band { padding-block: var(--band-y); }
+.band > .read { max-width: var(--read); margin-inline: auto; padding-inline: 28px; }
+.band-deep { background: var(--paper-deep); }
+.band-ink  { background: var(--ink); color: var(--on-ink); }
+.band-ink h1, .band-ink h2, .band-ink h3 { color: var(--on-ink); }
+.band-ink .muted { color: var(--muted-on-ink); }
+.band-ink a { color: #8fd0ae; }
+
+/* ---- 文字の段 ---- */
+.display-xl { font-size: 60px; line-height: 1.15; letter-spacing: -.01em; }
+.display-lg { font-size: 38px; line-height: 1.25; letter-spacing: -.005em; }
+.display-md { font-size: 24px; line-height: 1.5; }
+.lead  { font-size: 18px; line-height: 1.95; }
+.muted { color: var(--muted); }
+
+/* ラベルは字間を大きく開ける。壮大側の署名 */
+.label {
+  font-family: var(--body); font-size: 12px; font-weight: 700;
+  letter-spacing: .24em; line-height: 1; color: var(--kraft);
+  text-transform: uppercase;
 }
 
-/* 手で描いた箱：4隅の丸みを全部変える＝定規で描いていない線に見せる */
+.btn {
+  display: inline-block; background: var(--tape); color: #fff;
+  font-family: var(--display); font-weight: 700; font-size: 16px;
+  padding: 14px 34px; border: 0; border-radius: 4px;
+  text-decoration: none; cursor: pointer; line-height: 1.3;
+}
+.btn:hover { background: var(--tape-d); color: #fff; }
+.btn:disabled { background: var(--ink3); cursor: not-allowed; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+}
+
+@media (max-width: 760px) {
+  :root { --band-y: 72px; }
+  .display-xl { font-size: 36px; }
+  .display-lg { font-size: 27px; }
+  .display-md { font-size: 20px; }
+  .lead { font-size: 16px; }
+}
+
+/* =========================================================
+   ここから下はツールページ専用（作業台モード）
+   ========================================================= */
 .hand-box {
   background: var(--card); border: 2.5px solid var(--kraft);
   border-radius: 18px 8px 22px 10px / 10px 20px 8px 18px;
@@ -79,33 +122,10 @@ img, svg { max-width: 100%; height: auto; }
   border: 3px dashed var(--kraft);
   border-radius: 9px 20px 7px 18px / 16px 8px 20px 9px;
 }
-
-.btn {
-  font-family: var(--display); font-weight: 700;
-  display: inline-block; background: var(--tape); color: #fff; border: 0;
-  font-size: 16px; padding: 13px 32px; cursor: pointer;
-  border-radius: 16px 7px 18px 8px / 8px 17px 7px 15px;
-}
-.btn:hover { background: var(--tape-d); }
-.btn:disabled { background: var(--ink3); cursor: not-allowed; }
-
-/* 判子。ピル型のバッジを使わない */
 .stamp {
   display: inline-block; font-family: var(--display); font-weight: 700; font-size: 12px;
   color: var(--stamp); border: 2px solid var(--stamp); padding: 2px 10px;
   border-radius: 46% 54% 50% 50% / 52% 46% 54% 48%;
   transform: rotate(-4deg); opacity: .82;
 }
-
-/* 手で引いた罫。直線でなく少し波打たせる */
-.rule-wave {
-  flex: 1; height: 6px;
-  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='6'%3E%3Cpath d='M0 4 Q 10 1.5 20 3.6 T 40 3.4 T 60 4' fill='none' stroke='%23ded0b8' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E") repeat-x center;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: .01ms !important; transition-duration: .01ms !important;
-  }
-}
-@media (max-width: 560px) { h1 { font-size: 24px; } }
+.work { max-width: 880px; margin-inline: auto; padding-inline: 20px; }

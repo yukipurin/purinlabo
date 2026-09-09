@@ -6,154 +6,167 @@ const posts = (await getCollection('log', (p) => !p.data.draft))
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
   .slice(0, 3);
 
-const fmt = (d: Date) => `${d.getMonth() + 1}月${d.getDate()}日`;
+const fmt = (d: Date) => `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`;
 
 const games = [
   { name: '創世のマナ', href: 'https://apps.apple.com/jp/app/id6780463661',
     note: 'マナを紡いで世界を創る、静かな放置ゲーム。' },
   { name: '誤変換大戦', href: 'https://apps.apple.com/jp/app/id6787645238',
-    note: '「魔王を倒した」が「魔王を倒産した」に。変換ミスで世界が暴走する言葉のバカゲー。' },
+    note: '変換ミスで世界が暴走する、言葉のバカゲー。' },
   { name: 'ことば仕分け帳', href: 'https://apps.apple.com/jp/app/id6781580333',
-    note: '「暑い」「熱い」「厚い」を仕分ける、日本語の語彙パズル。' },
+    note: '「暑い」「熱い」「厚い」を仕分ける語彙パズル。' },
   { name: '周期リマインダー', href: 'https://apps.apple.com/jp/app/id6780852897',
-    note: 'フィルター交換や水やりなど、◯日ごとのやることを憶えておく道具。' },
+    note: '◯日ごとのやることを憶えておく道具。' },
 ];
-
-const soon = ['のんびり異世界釣り', '忘れもの郵便局', '推し日和'];
 ---
 <Base
   title="ぷりんラボ｜ゲームと、アップロードしないWebツールを作っています"
   description="ひとりでゲームアプリとWebツールを作っている開発スタジオです。Webツールはブラウザ内で完結し、ファイルを外部に送信しません。異世界ケルト音楽の作業用BGMも公開しています。"
 >
-  <section class="hero">
-    <div class="hero-copy">
-      <h1>ひとりで、<span class="mark">ゲームと道具</span>を作っています。</h1>
-      <p class="lead">
-        ぷりんラボは、ゲームアプリとWebツールを作っている小さな作業場です。
-        ツールはブラウザの中だけで動くので、ファイルが外に出ることはありません。
+  <!-- 帯1：紙。名乗る -->
+  <section class="band hero">
+    <div class="read hero-in">
+      <div>
+        <p class="label">Purin Labo</p>
+        <h1 class="display-xl">ひとりで、<br />ゲームと道具を<br />作っています。</h1>
+        <p class="lead muted">
+          ぷりんラボは、ゲームアプリとWebツールを作っている小さな作業場です。
+          ツールはブラウザの中だけで動くので、ファイルが外に出ることはありません。
+        </p>
+      </div>
+      <figure class="riona">
+        <picture>
+          <source srcset="/img/riona.webp" type="image/webp" />
+          <img src="/img/riona.jpg" width="584" height="620" alt="ぷりんラボの案内役、ハーフエルフのリオナ" />
+        </picture>
+        <figcaption class="muted">リオナ ── ゲームと音楽に出てくる案内役</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- 帯2：濃いインク。やっていること -->
+  <section class="band band-ink">
+    <div class="read">
+      <p class="label">What we make</p>
+      <h2 class="display-lg">やっていること</h2>
+      <div class="three">
+        <div>
+          <h3 class="display-md">ゲーム</h3>
+          <p class="muted">放置ゲーム、言葉パズル、記録の道具。App Storeで公開しています。</p>
+          <p class="go"><a href="#games">一覧を見る</a></p>
+        </div>
+        <div>
+          <h3 class="display-md">Webツール</h3>
+          <p class="muted">自分の作業で必要になったものを整えて置いています。無料・登録不要。</p>
+          <p class="go"><a href="/tools/">一覧を見る</a></p>
+        </div>
+        <div>
+          <h3 class="display-md">音楽</h3>
+          <p class="muted">異世界ケルトの作業用BGMを、2日に1度お届けしています。</p>
+          <p class="go"><a href="https://www.youtube.com/@soundlibrarystudio" rel="noopener">音の図書館（YouTube）</a></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 帯3：紙。いま使えるもの -->
+  <section class="band">
+    <div class="read center">
+      <p class="label">Tool</p>
+      <h2 class="display-lg">出品写真を、<br class="sp" />まとめて正方形に。</h2>
+      <p class="lead muted">
+        メルカリ・ヤフオク・BASEのサイズにそろえます。何枚でも添付可能。<br />
+        写真はブラウザ内で処理するため、外部に送信されません。
       </p>
-      <p class="who-note">
-        となりにいるのが<strong>リオナ</strong>。ゲームと音楽に出てくる案内役です。
-      </p>
-    </div>
-    <figure class="riona">
-      <picture>
-        <source srcset="/img/riona.webp" type="image/webp" />
-        <img src="/img/riona.jpg" width="584" height="620" alt="ぷりんラボの案内役、ハーフエルフのリオナ" />
-      </picture>
-    </figure>
-  </section>
-
-  <section>
-    <h2>やっていること<span class="rule-wave"></span></h2>
-    <div class="three">
-      <div class="col">
-        <h3>ゲーム</h3>
-        <p>放置ゲーム、言葉パズル、記録の道具。App Storeで公開しています。</p>
-        <p class="go"><a href="#games">一覧を見る</a></p>
-      </div>
-      <div class="col">
-        <h3>Webツール</h3>
-        <p>出品写真の加工など、自分の作業で必要になったものを整えて置いています。無料・登録不要。</p>
-        <p class="go"><a href="/tools/">一覧を見る</a></p>
-      </div>
-      <div class="col">
-        <h3>音楽</h3>
-        <p>異世界ケルトの作業用BGMを、2日に1度お届けしています。</p>
-        <p class="go"><a href="https://www.youtube.com/@soundlibrarystudio" rel="noopener">音の図書館（YouTube）</a></p>
-      </div>
+      <p class="cta"><a class="btn" href="/tools/square/">使ってみる</a></p>
+      <p class="sub"><a href="/tools/">準備中のツールも見る</a></p>
     </div>
   </section>
 
-  <section>
-    <h2>お知らせ・開発記録<span class="rule-wave"></span></h2>
-    <ul class="posts">
-      {posts.map((post) => (
-        <li>
-          <a href={`/log/${post.id}/`}>{post.data.title}</a>
-          <span class="d">{fmt(post.data.date)}</span>
-        </li>
-      ))}
-    </ul>
-    <p class="go"><a href="/log/">これまでの記事を見る</a></p>
-  </section>
-
-  <section>
-    <h2>いま使えるツール<span class="rule-wave"></span></h2>
-    <div class="hand-box pick">
-      <p class="t">出品写真をまとめて正方形にする</p>
-      <p class="d2">メルカリ・ヤフオク・BASEのサイズに、まとめてそろえます。何枚でも添付可能。</p>
-      <p><a class="btn" href="/tools/square/">使ってみる</a></p>
+  <!-- 帯4：濃い紙。ゲーム -->
+  <section class="band band-deep" id="games">
+    <div class="read">
+      <p class="label">Games</p>
+      <h2 class="display-lg">ゲーム・アプリ</h2>
+      <ul class="list">
+        {games.map((g) => (
+          <li>
+            <a href={g.href} rel="noopener">{g.name}</a>
+            <p class="muted">{g.note}</p>
+          </li>
+        ))}
+      </ul>
+      <p class="soon muted">準備中：のんびり異世界釣り ／ 忘れもの郵便局 ／ 推し日和</p>
     </div>
-    <p class="go"><a href="/tools/">準備中のツールも見る</a></p>
   </section>
 
-  <section id="games">
-    <h2>ゲーム・アプリ<span class="rule-wave"></span></h2>
-    <ul class="shelf">
-      {games.map((g) => (
-        <li>
-          <a class="name" href={g.href} rel="noopener">{g.name}</a>
-          <span class="tag">iOS</span>
-          <p>{g.note}</p>
-        </li>
-      ))}
-    </ul>
-    <p class="soon">準備中：{soon.join(' ／ ')}</p>
+  <!-- 帯5：紙。お知らせ -->
+  <section class="band">
+    <div class="read">
+      <p class="label">Log</p>
+      <h2 class="display-lg">お知らせと開発記録</h2>
+      <ul class="list posts">
+        {posts.map((post) => (
+          <li>
+            <p class="date muted">{fmt(post.data.date)}</p>
+            <a href={`/log/${post.id}/`}>{post.data.title}</a>
+          </li>
+        ))}
+      </ul>
+      <p class="go"><a href="/log/">これまでの記事を見る</a></p>
+    </div>
   </section>
 </Base>
 
 <style>
-  .hero {
+  /* 帯どうしを罫線で区切らない。背景色の変化が区切り */
+
+  .hero { padding-block: 128px 112px; }
+  .hero-in {
     display: grid; grid-template-columns: 1fr minmax(0, 300px);
-    gap: 32px; align-items: center; padding-block: 36px 8px;
+    gap: 64px; align-items: center;
   }
-  .hero h1 { margin-bottom: 14px; }
-  .lead { font-size: 15px; }
-  .who-note { margin-top: 12px; font-size: 13px; color: var(--ink3); }
-  .who-note strong { color: var(--kraft-d); }
+  .hero .label { margin-bottom: 28px; }
+  .hero h1 { margin-bottom: 32px; }
+  .hero .lead { max-width: 30em; }
 
-  /* リオナは作業台にピンで留めた一枚絵として置く */
   .riona { margin: 0; }
-  .riona img {
-    display: block; width: 100%; height: auto; background: #fff;
-    border: 3px solid var(--kraft); padding: 6px;
-    border-radius: 14px 6px 16px 8px / 8px 15px 6px 14px;
-    transform: rotate(-1.2deg);
+  /* 白背景の一枚絵を紙に馴染ませる。枠を付けずに済ませるため乗算で抜く */
+  .riona img { display: block; width: 100%; height: auto; mix-blend-mode: multiply; }
+  .riona figcaption { margin-top: 14px; font-size: 12px; letter-spacing: .06em; }
+
+  .label + h2 { margin-top: 26px; }
+  h2 + .three, h2 + .list, h2 + .lead { margin-top: 48px; }
+
+  .three { display: grid; grid-template-columns: repeat(3, 1fr); gap: 56px; }
+  .three h3 { margin-bottom: 14px; }
+  .go { margin-top: 18px; font-size: 14px; }
+
+  .center { text-align: center; }
+  .center .lead { margin-inline: auto; }
+  .cta { margin-top: 44px; }
+  .sub { margin-top: 24px; font-size: 14px; }
+  .sp { display: none; }
+
+  /* 一覧はカードにせず、間隔だけで分ける */
+  .list { list-style: none; margin: 0; padding: 0; }
+  .list li { margin-bottom: 36px; }
+  .list li:last-child { margin-bottom: 0; }
+  .list a {
+    font-family: var(--display); font-weight: 700; font-size: 21px;
+    color: inherit; text-decoration: none;
   }
+  .list a:hover { color: var(--tape-d); text-decoration: underline; }
+  .list p { margin-top: 6px; font-size: 15px; }
+  .posts .date { font-size: 12px; letter-spacing: .12em; margin-bottom: 6px; }
+  .soon { margin-top: 48px; font-size: 14px; }
 
-  section { margin-top: 44px; }
-  h2 { display: flex; align-items: center; gap: 9px; margin-bottom: 14px; }
-  h3 { font-size: 16px; margin-bottom: 4px; }
-  .go { margin-top: 10px; font-size: 13.5px; }
-
-  .three { display: grid; grid-template-columns: repeat(3, 1fr); gap: 26px; }
-  .col { border-top: 3px solid var(--kraft); padding-top: 12px; }
-  .col:nth-child(2) { border-color: var(--tape); }
-  .col:nth-child(3) { border-color: var(--stamp); }
-  .col p { font-size: 13.5px; }
-
-  .posts { list-style: none; margin: 0; padding: 0; border-top: 2px solid var(--rule); }
-  .posts li { display: flex; align-items: baseline; gap: 14px; padding-block: 11px; border-bottom: 1px dashed var(--rule); flex-wrap: wrap; }
-  .posts a { font-size: 14.5px; font-weight: 700; text-decoration: none; color: var(--ink); }
-  .posts a:hover { color: var(--tape-d); text-decoration: underline; }
-  .posts .d { font-size: 12px; color: var(--ink3); margin-left: auto; }
-
-  .pick { padding: 20px 22px; }
-  .pick .t { font-family: var(--display); font-weight: 700; font-size: 17px; color: var(--ink); margin: 0; }
-  .pick .d2 { margin: 4px 0 14px; font-size: 13.5px; }
-
-  .shelf { list-style: none; margin: 0; padding: 0; border-top: 2px solid var(--rule); }
-  .shelf li { padding-block: 14px; border-bottom: 1px dashed var(--rule); }
-  .name { font-family: var(--display); font-weight: 700; font-size: 16px; color: var(--ink); text-decoration: none; }
-  .name:hover { color: var(--tape-d); text-decoration: underline; }
-  .tag { font-size: 11px; font-weight: 700; letter-spacing: .1em; color: var(--kraft-d); border: 1.5px solid var(--kraft); padding: 0 8px; margin-left: 10px; border-radius: 5px 2px 6px 3px / 3px 6px 2px 5px; }
-  .shelf p { margin-top: 2px; font-size: 13.5px; }
-  .soon { margin-top: 14px; font-size: 13px; color: var(--ink3); }
-
-  @media (max-width: 720px) {
-    .hero { grid-template-columns: 1fr; gap: 24px; }
-    .riona { max-width: 240px; }
-    .three { grid-template-columns: 1fr; gap: 20px; }
+  @media (max-width: 860px) {
+    .hero { padding-block: 80px 72px; }
+    .hero-in { grid-template-columns: 1fr; gap: 44px; }
+    .riona { max-width: 230px; }
+    .three { grid-template-columns: 1fr; gap: 40px; }
+    h2 + .three, h2 + .list, h2 + .lead { margin-top: 32px; }
+    .sp { display: inline; }
   }
 </style>

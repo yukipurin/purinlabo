@@ -6,80 +6,82 @@ import { square as t } from '../../content/square';
   title="出品写真をまとめて正方形にする"
   description="メルカリ・ヤフオク・BASEの出品写真を1080×1080の正方形に一括変換します。アップロード不要・登録不要。処理はすべてブラウザ内で行います。"
 >
-  <h1 class="page-h1" set:html={t.title.replace(t.titleMark, `<span class="mark">${t.titleMark}</span>`)} />
-  <p class="lead">{t.lead}</p>
+  <div class="work">
+    <h1 class="page-h1" set:html={t.title.replace(t.titleMark, `<span class="mark">${t.titleMark}</span>`)} />
+    <p class="lead">{t.lead}</p>
 
-  <div class="hand-box tool">
-    <div id="dropzone" class="hand-dash drop">
-      <div class="pics"><i></i><i></i><i></i></div>
-      <p class="big">{t.dropTitle}</p>
-      <p class="note">{t.dropNote}</p>
-      <button id="pick" class="btn" type="button">{t.button}</button>
-      <p class="under">{t.buttonNote}</p>
-      <input id="file" type="file" accept="image/*" multiple hidden />
+    <div class="hand-box tool">
+      <div id="dropzone" class="hand-dash drop">
+        <div class="pics"><i></i><i></i><i></i></div>
+        <p class="big">{t.dropTitle}</p>
+        <p class="note">{t.dropNote}</p>
+        <button id="pick" class="btn" type="button">{t.button}</button>
+        <p class="under">{t.buttonNote}</p>
+        <input id="file" type="file" accept="image/*" multiple hidden />
+      </div>
+
+      <div id="settings" class="form" hidden>
+        <div class="row">
+          <label for="size">{t.settingSize}</label>
+          <select id="size">
+            <option value="1080" selected>1080 × 1080</option>
+            <option value="1200">1200 × 1200</option>
+            <option value="800">800 × 800</option>
+          </select>
+        </div>
+        <div class="row">
+          <label for="fill">{t.settingFill}</label>
+          <select id="fill">
+            {t.fillOptions.map((o) => <option value={o.value}>{o.label}</option>)}
+          </select>
+        </div>
+        <div class="row">
+          <label for="prefix">{t.settingName}</label>
+          <input id="prefix" type="text" placeholder={t.settingNamePlaceholder} />
+        </div>
+        <div class="actions">
+          <button id="run" class="btn" type="button">{t.runButton}</button>
+          <button id="clear" class="link-btn" type="button">{t.clearButton}</button>
+          <span id="count" class="count"></span>
+        </div>
+      </div>
+
+      <p class="safe">
+        <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="M8 1.6l5.4 2v3.9c0 3.1-2.2 5.9-5.4 6.9-3.2-1-5.4-3.8-5.4-6.9V3.6l5.4-2z"
+                stroke="#2c6b4b" stroke-width="1.7" stroke-linejoin="round"/>
+        </svg>
+        <span>{t.privacy}</span>
+      </p>
     </div>
 
-    <div id="settings" class="form" hidden>
-      <div class="row">
-        <label for="size">{t.settingSize}</label>
-        <select id="size">
-          <option value="1080" selected>1080 × 1080</option>
-          <option value="1200">1200 × 1200</option>
-          <option value="800">800 × 800</option>
-        </select>
-      </div>
-      <div class="row">
-        <label for="fill">{t.settingFill}</label>
-        <select id="fill">
-          {t.fillOptions.map((o) => <option value={o.value}>{o.label}</option>)}
-        </select>
-      </div>
-      <div class="row">
-        <label for="prefix">{t.settingName}</label>
-        <input id="prefix" type="text" placeholder={t.settingNamePlaceholder} />
-      </div>
-      <div class="actions">
-        <button id="run" class="btn" type="button">{t.runButton}</button>
-        <button id="clear" class="link-btn" type="button">{t.clearButton}</button>
-        <span id="count" class="count"></span>
-      </div>
-    </div>
+    <section id="results" hidden>
+      <h2>{t.resultHeading}<span class="rule-wave"></span></h2>
+      <p class="actions"><button id="zip" class="btn" type="button">{t.downloadZip}</button></p>
+      <ul id="grid" class="grid"></ul>
+    </section>
 
-    <p class="safe">
-      <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-        <path d="M8 1.6l5.4 2v3.9c0 3.1-2.2 5.9-5.4 6.9-3.2-1-5.4-3.8-5.4-6.9V3.6l5.4-2z"
-              stroke="#2c6b4b" stroke-width="1.7" stroke-linejoin="round"/>
-      </svg>
-      <span>{t.privacy}</span>
-    </p>
+    <section>
+      <h2>{t.stepsTitle}<span class="rule-wave"></span></h2>
+      <ol class="steps">
+        {t.steps.map((step, i) => <li><span class="n">{i + 1}</span><span>{step}</span></li>)}
+      </ol>
+    </section>
+
+    <section>
+      <h2>{t.limitsTitle}<span class="rule-wave"></span></h2>
+      <ul class="cant">{t.limits.map((x) => <li>{x}</li>)}</ul>
+    </section>
+
+    <section class="who">
+      <h2>{t.aboutTitle}<span class="rule-wave"></span></h2>
+      {t.about.map((para) => <p>{para}</p>)}
+      <ul class="links">
+        {t.aboutLinks.map((l) => <li><a href={l.url} rel="noopener">{l.label}</a></li>)}
+      </ul>
+      <p class="stamp-wrap"><span class="stamp">{t.stamp}</span></p>
+    </section>
   </div>
-
-  <section id="results" hidden>
-    <h2>{t.resultHeading}<span class="rule-wave"></span></h2>
-    <p class="actions"><button id="zip" class="btn" type="button">{t.downloadZip}</button></p>
-    <ul id="grid" class="grid"></ul>
-  </section>
-
-  <section>
-    <h2>{t.stepsTitle}<span class="rule-wave"></span></h2>
-    <ol class="steps">
-      {t.steps.map((step, i) => <li><span class="n">{i + 1}</span><span>{step}</span></li>)}
-    </ol>
-  </section>
-
-  <section>
-    <h2>{t.limitsTitle}<span class="rule-wave"></span></h2>
-    <ul class="cant">{t.limits.map((x) => <li>{x}</li>)}</ul>
-  </section>
-
-  <section class="who">
-    <h2>{t.aboutTitle}<span class="rule-wave"></span></h2>
-    {t.about.map((para) => <p>{para}</p>)}
-    <ul class="links">
-      {t.aboutLinks.map((l) => <li><a href={l.url} rel="noopener">{l.label}</a></li>)}
-    </ul>
-    <p class="stamp-wrap"><span class="stamp">{t.stamp}</span></p>
-  </section>
 </Base>
 
 <script>
@@ -207,7 +209,7 @@ import { square as t } from '../../content/square';
   .drop { background: #fffef9; padding: 40px 16px; text-align: center; }
   .drop.over { border-color: var(--tape); background: #f4fbf7; }
   .pics { display: flex; gap: 9px; justify-content: center; margin-bottom: 16px; }
-  .pics i { width: 42px; height: 42px; display: block; border: 2px solid var(--kraft-d); border-radius: 3px; }
+  .pics i { width: 42px; height: 42px; display: block; border: 2px solid var(--kraft-deep); border-radius: 3px; }
   .pics i:nth-child(1) { background: #e9c9a0; transform: rotate(-4deg); }
   .pics i:nth-child(2) { background: #bcd8c4; transform: rotate(2.5deg); }
   .pics i:nth-child(3) { background: #d8c6de; transform: rotate(-1.5deg); }
@@ -218,7 +220,7 @@ import { square as t } from '../../content/square';
 
   .form { margin-top: 18px; border-top: 1px dashed var(--rule); }
   .row { display: flex; align-items: center; gap: 14px; padding: 10px 2px; border-bottom: 1px dashed var(--rule); flex-wrap: wrap; }
-  .row label { font-size: 13px; color: var(--ink2); min-width: 7.5em; }
+  .row label { font-size: 13px; color: var(--muted); min-width: 7.5em; }
   .row select, .row input {
     font-family: var(--body); font-size: 14px; color: var(--ink);
     padding: 7px 10px; background: #fff; border: 2px solid var(--rule);
@@ -226,7 +228,7 @@ import { square as t } from '../../content/square';
   }
   .row select:focus, .row input:focus { border-color: var(--tape); }
   .actions { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; padding-top: 16px; }
-  .link-btn { background: none; border: 0; color: var(--ink2); font-family: var(--body); font-size: 13px; cursor: pointer; text-decoration: underline; }
+  .link-btn { background: none; border: 0; color: var(--muted); font-family: var(--body); font-size: 13px; cursor: pointer; text-decoration: underline; }
   .count { font-size: 13px; color: var(--ink3); }
 
   .safe { margin-top: 16px; display: flex; gap: 9px; align-items: flex-start; font-size: 13.5px; color: var(--tape-d); max-width: none; }
@@ -238,14 +240,14 @@ import { square as t } from '../../content/square';
   .grid { list-style: none; margin: 16px 0 0; padding: 0; display: grid; gap: 14px; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); }
   .grid li { font-size: 11px; color: var(--ink3); display: flex; flex-direction: column; gap: 2px; }
   .grid img { width: 100%; height: auto; border: 2px solid var(--rule); border-radius: 4px; background: #fff; display: block; }
-  .grid .fn { color: var(--ink2); word-break: break-all; }
+  .grid .fn { color: var(--muted); word-break: break-all; }
   .grid li.ng .fn { color: var(--stamp); }
 
   ol.steps { list-style: none; margin: 0; padding: 0; }
-  ol.steps li { display: flex; gap: 12px; align-items: flex-start; padding: 7px 0; font-size: 14.5px; color: var(--ink2); }
+  ol.steps li { display: flex; gap: 12px; align-items: flex-start; padding: 7px 0; font-size: 14.5px; color: var(--muted); }
   ol.steps .n {
     flex: none; width: 27px; height: 27px; display: grid; place-items: center;
-    font-family: var(--display); font-weight: 700; font-size: 13px; color: var(--kraft-d);
+    font-family: var(--display); font-weight: 700; font-size: 13px; color: var(--kraft-deep);
     border: 2px solid var(--kraft); border-radius: 52% 48% 45% 55% / 48% 55% 45% 52%;
   }
   ol.steps li:nth-child(1) .n { transform: rotate(-3deg); }
@@ -253,7 +255,7 @@ import { square as t } from '../../content/square';
   ol.steps li:nth-child(3) .n { transform: rotate(-1deg); }
 
   ul.cant { margin: 0; padding: 0; list-style: none; max-width: 34em; }
-  ul.cant li { font-size: 14.5px; color: var(--ink2); padding: 5px 0 5px 18px; position: relative; }
+  ul.cant li { font-size: 14.5px; color: var(--muted); padding: 5px 0 5px 18px; position: relative; }
   ul.cant li::before { content: ""; position: absolute; left: 0; top: .95em; width: 9px; height: 2px; background: var(--ink3); }
 
   .who { border-top: 2px solid var(--rule); padding-top: 20px; }
