@@ -13,7 +13,9 @@ const { title, description, image = '/ogp.png', noindex = false } = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
 const ogImage = new URL(image, Astro.site).href;
 const siteName = 'ぷりんラボ';
-const fullTitle = Astro.url.pathname === '/' ? title : `${title}｜${siteName}`;
+// 既にサイト名を含むタイトルには足さない（「ぷりんラボとは｜ぷりんラボ」を防ぐ）
+const fullTitle =
+  Astro.url.pathname === '/' || title.includes(siteName) ? title : `${title}｜${siteName}`;
 
 const nav = [
   { href: '/tools/', label: 'ツール' },

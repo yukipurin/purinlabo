@@ -11,10 +11,7 @@ const posts = (await getCollection('log', (p) => !p.data.draft))
 const fmt = (d: Date) => `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`;
 
 ---
-<Base
-  title="ぷりんラボ｜ゲームと、アップロードしないWebツールを作っています"
-  description="ひとりでゲームアプリとWebツールを作っている開発スタジオです。Webツールはブラウザ内で完結し、ファイルを外部に送信しません。異世界ケルト音楽の作業用BGMも公開しています。"
->
+<Base title={t.seoTitle} description={t.seoDescription}>
   <!-- 帯1：紙。名乗る -->
   <section class="band hero">
     <div class="read hero-in">
