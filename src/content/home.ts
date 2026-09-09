@@ -11,11 +11,11 @@
 export const home = {
   // ---- 帯1：名乗る ----
   heroLabel: "Purin Labo",                                    // 1
-  heroTitle: "ひとりで、<br />ゲームと道具を<br />作っています。", // 2（<br /> は改行）
+  heroTitle: "ひとりで、<br />ゲームとツールを<br />作っています。", // 2（<br /> は改行）
   heroLead:                                                    // 3
     "ぷりんラボは、ゲームアプリとWebツールを作っている小さな作業場です。" +
-    "ツールはブラウザの中だけで動くので、ファイルが外に出ることはありません。",
-  rionaCaption: "リオナ ── ゲームと音楽に出てくる案内役",        // 4
+    "ぜひ、ぷりんラボをご活用ください。",
+  rionaCaption: "リオナ ── ゲームと音楽に出てくるキャラクター",        // 4
 
   // ---- 帯2：やっていること ----
   makeLabel: "What we make",                                  // 5
@@ -25,10 +25,10 @@ export const home = {
       body: "放置ゲーム、言葉パズル、記録の道具。App Storeで公開しています。", // 8
       linkLabel: "一覧を見る", href: "/games/" },               // 9
     { title: "Webツール",                                       // 10
-      body: "自分の作業で必要になったものを整えて置いています。無料・登録不要。", // 11
+      body: "便利だな、と思ったツールを公開していきます。登録不要。", // 11
       linkLabel: "一覧を見る", href: "/tools/" },               // 12
     { title: "音楽",                                            // 13
-      body: "異世界ケルトの作業用BGMを、2日に1度お届けしています。", // 14
+      body: "異世界ケルトの作業用BGMを、週に1度お届けしています。", // 14
       linkLabel: "音の図書館（YouTube）",                        // 15
       href: "https://www.youtube.com/@soundlibrarystudio" },
   ],
@@ -38,7 +38,7 @@ export const home = {
   toolTitle: "出品写真を、<br class=\"sp\" />まとめて正方形に。",  // 17
   toolLead:                                                    // 18
     "メルカリ・ヤフオク・BASEのサイズにそろえます。何枚でも添付可能。<br />" +
-    "写真はブラウザ内で処理するため、外部に送信されません。",
+    "写真はブラウザ内で処理します。",
   toolCta: "使ってみる",                                        // 19
   toolSub: "準備中のツールも見る",                               // 20
 
