@@ -2,6 +2,7 @@
 import Base from '../layouts/Base.astro';
 import { getCollection } from 'astro:content';
 import { games } from '../content/games';
+import { home as t } from '../content/home';
 
 const posts = (await getCollection('log', (p) => !p.data.draft))
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
@@ -18,19 +19,16 @@ const fmt = (d: Date) => `${d.getFullYear()}.${String(d.getMonth() + 1).padStart
   <section class="band hero">
     <div class="read hero-in">
       <div>
-        <p class="label">Purin Labo</p>
-        <h1 class="display-xl">ひとりで、<br />ゲームと道具を<br />作っています。</h1>
-        <p class="lead muted">
-          ぷりんラボは、ゲームアプリとWebツールを作っている小さな作業場です。
-          ツールはブラウザの中だけで動くので、ファイルが外に出ることはありません。
-        </p>
+        <p class="label">{t.heroLabel}</p>
+        <h1 class="display-xl" set:html={t.heroTitle} />
+        <p class="lead muted">{t.heroLead}</p>
       </div>
       <figure class="riona">
         <picture>
           <source srcset="/img/riona.webp" type="image/webp" />
           <img src="/img/riona.jpg" width="584" height="620" alt="ぷりんラボの案内役、ハーフエルフのリオナ" />
         </picture>
-        <figcaption class="muted">リオナ ── ゲームと音楽に出てくる案内役</figcaption>
+        <figcaption class="muted">{t.rionaCaption}</figcaption>
       </figure>
     </div>
   </section>
@@ -38,65 +36,52 @@ const fmt = (d: Date) => `${d.getFullYear()}.${String(d.getMonth() + 1).padStart
   <!-- 帯2：濃いインク。やっていること -->
   <section class="band band-ink">
     <div class="read">
-      <p class="label">What we make</p>
-      <h2 class="display-lg">やっていること</h2>
+      <p class="label">{t.makeLabel}</p>
+      <h2 class="display-lg">{t.makeTitle}</h2>
       <div class="three">
-        <div>
-          <h3 class="display-md">ゲーム</h3>
-          <p class="muted">放置ゲーム、言葉パズル、記録の道具。App Storeで公開しています。</p>
-          <p class="go"><a href="#games">一覧を見る</a></p>
-        </div>
-        <div>
-          <h3 class="display-md">Webツール</h3>
-          <p class="muted">自分の作業で必要になったものを整えて置いています。無料・登録不要。</p>
-          <p class="go"><a href="/tools/">一覧を見る</a></p>
-        </div>
-        <div>
-          <h3 class="display-md">音楽</h3>
-          <p class="muted">異世界ケルトの作業用BGMを、2日に1度お届けしています。</p>
-          <p class="go"><a href="https://www.youtube.com/@soundlibrarystudio" rel="noopener">音の図書館（YouTube）</a></p>
-        </div>
+        {t.columns.map((c) => (
+          <div>
+            <h3 class="display-md">{c.title}</h3>
+            <p class="muted">{c.body}</p>
+            <p class="go"><a href={c.href} rel="noopener">{c.linkLabel}</a></p>
+          </div>
+        ))}
       </div>
     </div>
   </section>
 
-  <!-- 帯3：紙。いま使えるもの -->
+  <!-- 帯3：紙。いま使えるツール -->
   <section class="band">
     <div class="read center">
-      <p class="label">Tool</p>
-      <h2 class="display-lg">出品写真を、<br class="sp" />まとめて正方形に。</h2>
-      <p class="lead muted">
-        メルカリ・ヤフオク・BASEのサイズにそろえます。何枚でも添付可能。<br />
-        写真はブラウザ内で処理するため、外部に送信されません。
-      </p>
-      <p class="cta"><a class="btn" href="/tools/square/">使ってみる</a></p>
-      <p class="sub"><a href="/tools/">準備中のツールも見る</a></p>
+      <p class="label">{t.toolLabel}</p>
+      <h2 class="display-lg" set:html={t.toolTitle} />
+      <p class="lead muted" set:html={t.toolLead} />
+      <p class="cta"><a class="btn" href="/tools/square/">{t.toolCta}</a></p>
+      <p class="sub"><a href="/tools/">{t.toolSub}</a></p>
     </div>
   </section>
 
   <!-- 帯4：濃い紙。ゲームは紹介ページへ送る -->
   <section class="band band-deep" id="games">
     <div class="read">
-      <p class="label">Games</p>
-      <h2 class="display-lg">ゲーム・アプリ</h2>
-      <p class="lead muted">
-        放置ゲーム、言葉パズル、釣り×図鑑、記録の道具。App Storeで5本公開しています。
-      </p>
+      <p class="label">{t.gamesLabel}</p>
+      <h2 class="display-lg">{t.gamesTitle}</h2>
+      <p class="lead muted">{t.gamesLead}</p>
       <ul class="icons">
         {games.map((g) => (
           <li><a href="/games/"><img src={`/img/games/${g.slug}-icon.webp`} width="72" height="72"
                  alt={g.name} loading="lazy" /></a></li>
         ))}
       </ul>
-      <p class="cta"><a class="btn" href="/games/">ゲーム・アプリを見る</a></p>
+      <p class="cta"><a class="btn" href="/games/">{t.gamesCta}</a></p>
     </div>
   </section>
 
   <!-- 帯5：紙。お知らせ -->
   <section class="band">
     <div class="read">
-      <p class="label">Log</p>
-      <h2 class="display-lg">お知らせと開発記録</h2>
+      <p class="label">{t.logLabel}</p>
+      <h2 class="display-lg">{t.logTitle}</h2>
       <ul class="list posts">
         {posts.map((post) => (
           <li>
@@ -105,7 +90,7 @@ const fmt = (d: Date) => `${d.getFullYear()}.${String(d.getMonth() + 1).padStart
           </li>
         ))}
       </ul>
-      <p class="go"><a href="/log/">これまでの記事を見る</a></p>
+      <p class="go"><a href="/log/">{t.logMore}</a></p>
     </div>
   </section>
 </Base>
