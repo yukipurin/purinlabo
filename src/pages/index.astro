@@ -1,85 +1,159 @@
 ---
 import Base from '../layouts/Base.astro';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('log', (p) => !p.data.draft))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+  .slice(0, 3);
+
+const fmt = (d: Date) => `${d.getMonth() + 1}月${d.getDate()}日`;
 
 const games = [
-  { name: '創世のマナ', tag: 'iOS', href: 'https://apps.apple.com/jp/app/id6780463661',
+  { name: '創世のマナ', href: 'https://apps.apple.com/jp/app/id6780463661',
     note: 'マナを紡いで世界を創る、静かな放置ゲーム。' },
-  { name: '誤変換大戦', tag: 'iOS', href: 'https://apps.apple.com/jp/app/id6787645238',
+  { name: '誤変換大戦', href: 'https://apps.apple.com/jp/app/id6787645238',
     note: '「魔王を倒した」が「魔王を倒産した」に。変換ミスで世界が暴走する言葉のバカゲー。' },
-  { name: 'ことば仕分け帳', tag: 'iOS', href: 'https://apps.apple.com/jp/app/id6781580333',
+  { name: 'ことば仕分け帳', href: 'https://apps.apple.com/jp/app/id6781580333',
     note: '「暑い」「熱い」「厚い」を仕分ける、日本語の語彙パズル。' },
-  { name: '周期リマインダー', tag: 'iOS', href: 'https://apps.apple.com/jp/app/id6780852897',
+  { name: '周期リマインダー', href: 'https://apps.apple.com/jp/app/id6780852897',
     note: 'フィルター交換や水やりなど、◯日ごとのやることを憶えておく道具。' },
-  { name: 'のんびり異世界釣り', tag: null, href: null,
-    note: '影の形と動きから幻の魚を見立てる、釣り×図鑑。' },
-  { name: '忘れもの郵便局', tag: null, href: null,
-    note: '五つの支局を育てる、2Dドット絵の箱庭放置経営ゲーム。' },
-  { name: '推し日和', tag: null, href: null,
-    note: '推しへの気持ちを毎日ひとことだけ記録する帳面。' },
 ];
+
+const soon = ['のんびり異世界釣り', '忘れもの郵便局', '推し日和'];
 ---
 <Base
-  title="ぷりんラボ｜アップロード不要の無料Webツールと、個人開発のゲーム"
-  description="写真やファイルをアップロードせずに使える無料Webツールと、個人で作っているゲーム・アプリを置いています。登録不要、インストール不要。"
+  title="ぷりんラボ｜ゲームと、アップロードしないWebツールを作っています"
+  description="ひとりでゲームアプリとWebツールを作っている開発スタジオです。Webツールはブラウザ内で完結し、ファイルを外部に送信しません。異世界ケルト音楽の作業用BGMも公開しています。"
 >
-  <h1 class="page-h1">ファイルを<span class="mark">どこにも送らない</span>道具と、ひとりで作るゲーム。</h1>
-  <p class="lead">ぷりんラボは、ひとりでゲームとWebツールを作っている小さな作業場です。ツールの処理はすべてブラウザ内で行います。</p>
+  <section class="hero">
+    <div class="hero-copy">
+      <h1>ひとりで、<span class="mark">ゲームと道具</span>を作っています。</h1>
+      <p class="lead">
+        ぷりんラボは、ゲームアプリとWebツールを作っている小さな作業場です。
+        ツールはブラウザの中だけで動くので、ファイルが外に出ることはありません。
+      </p>
+      <p class="who-note">
+        となりにいるのが<strong>リオナ</strong>。ゲームと音楽に出てくる案内役です。
+      </p>
+    </div>
+    <figure class="riona">
+      <picture>
+        <source srcset="/img/riona.webp" type="image/webp" />
+        <img src="/img/riona.jpg" width="584" height="620" alt="ぷりんラボの案内役、ハーフエルフのリオナ" />
+      </picture>
+    </figure>
+  </section>
 
   <section>
-    <h2>ツール<span class="rule-wave"></span></h2>
+    <h2>やっていること<span class="rule-wave"></span></h2>
+    <div class="three">
+      <div class="col">
+        <h3>ゲーム</h3>
+        <p>放置ゲーム、言葉パズル、記録の道具。App Storeで公開しています。</p>
+        <p class="go"><a href="#games">一覧を見る</a></p>
+      </div>
+      <div class="col">
+        <h3>Webツール</h3>
+        <p>出品写真の加工など、自分の作業で必要になったものを整えて置いています。無料・登録不要。</p>
+        <p class="go"><a href="/tools/">一覧を見る</a></p>
+      </div>
+      <div class="col">
+        <h3>音楽</h3>
+        <p>異世界ケルトの作業用BGMを、2日に1度お届けしています。</p>
+        <p class="go"><a href="https://www.youtube.com/@soundlibrarystudio" rel="noopener">音の図書館（YouTube）</a></p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>お知らせ・開発記録<span class="rule-wave"></span></h2>
+    <ul class="posts">
+      {posts.map((post) => (
+        <li>
+          <a href={`/log/${post.id}/`}>{post.data.title}</a>
+          <span class="d">{fmt(post.data.date)}</span>
+        </li>
+      ))}
+    </ul>
+    <p class="go"><a href="/log/">これまでの記事を見る</a></p>
+  </section>
+
+  <section>
+    <h2>いま使えるツール<span class="rule-wave"></span></h2>
     <div class="hand-box pick">
       <p class="t">出品写真をまとめて正方形にする</p>
-      <p class="d">複数枚まとめて1080×1080に。アップロード不要、登録不要。</p>
+      <p class="d2">メルカリ・ヤフオク・BASEのサイズに、まとめてそろえます。何枚でも添付可能。</p>
       <p><a class="btn" href="/tools/square/">使ってみる</a></p>
     </div>
-    <p class="more"><a href="/tools/">ほかのツールを見る</a></p>
+    <p class="go"><a href="/tools/">準備中のツールも見る</a></p>
   </section>
 
   <section id="games">
     <h2>ゲーム・アプリ<span class="rule-wave"></span></h2>
     <ul class="shelf">
       {games.map((g) => (
-        <li class="row">
-          <div class="head">
-            {g.href ? <a class="name" href={g.href} rel="noopener">{g.name}</a>
-                    : <span class="name">{g.name}</span>}
-            {g.tag ? <span class="tag">{g.tag}</span> : <span class="stamp">準備中</span>}
-          </div>
+        <li>
+          <a class="name" href={g.href} rel="noopener">{g.name}</a>
+          <span class="tag">iOS</span>
           <p>{g.note}</p>
         </li>
       ))}
     </ul>
-  </section>
-
-  <section class="who">
-    <h2>ぷりんラボについて<span class="rule-wave"></span></h2>
-    <p>ひとりでゲームアプリとWebツールを作っています。YouTubeでは異世界ケルト音楽の作業用BGMを公開しています。</p>
-    <ul class="links">
-      <li><a href="https://www.youtube.com/@soundlibrarystudio" rel="noopener">音の図書館（YouTube）</a></li>
-      <li><a href="https://x.com/Purin_Labo" rel="noopener">X</a></li>
-    </ul>
+    <p class="soon">準備中：{soon.join(' ／ ')}</p>
   </section>
 </Base>
 
 <style>
-  .page-h1 { margin: 40px 0 10px; }
-  .lead { margin-bottom: 8px; font-size: 15px; }
+  .hero {
+    display: grid; grid-template-columns: 1fr minmax(0, 300px);
+    gap: 32px; align-items: center; padding-block: 36px 8px;
+  }
+  .hero h1 { margin-bottom: 14px; }
+  .lead { font-size: 15px; }
+  .who-note { margin-top: 12px; font-size: 13px; color: var(--ink3); }
+  .who-note strong { color: var(--kraft-d); }
+
+  /* リオナは作業台にピンで留めた一枚絵として置く */
+  .riona { margin: 0; }
+  .riona img {
+    display: block; width: 100%; height: auto; background: #fff;
+    border: 3px solid var(--kraft); padding: 6px;
+    border-radius: 14px 6px 16px 8px / 8px 15px 6px 14px;
+    transform: rotate(-1.2deg);
+  }
+
   section { margin-top: 44px; }
   h2 { display: flex; align-items: center; gap: 9px; margin-bottom: 14px; }
+  h3 { font-size: 16px; margin-bottom: 4px; }
+  .go { margin-top: 10px; font-size: 13.5px; }
+
+  .three { display: grid; grid-template-columns: repeat(3, 1fr); gap: 26px; }
+  .col { border-top: 3px solid var(--kraft); padding-top: 12px; }
+  .col:nth-child(2) { border-color: var(--tape); }
+  .col:nth-child(3) { border-color: var(--stamp); }
+  .col p { font-size: 13.5px; }
+
+  .posts { list-style: none; margin: 0; padding: 0; border-top: 2px solid var(--rule); }
+  .posts li { display: flex; align-items: baseline; gap: 14px; padding-block: 11px; border-bottom: 1px dashed var(--rule); flex-wrap: wrap; }
+  .posts a { font-size: 14.5px; font-weight: 700; text-decoration: none; color: var(--ink); }
+  .posts a:hover { color: var(--tape-d); text-decoration: underline; }
+  .posts .d { font-size: 12px; color: var(--ink3); margin-left: auto; }
 
   .pick { padding: 20px 22px; }
   .pick .t { font-family: var(--display); font-weight: 700; font-size: 17px; color: var(--ink); margin: 0; }
-  .pick .d { margin: 4px 0 14px; font-size: 13.5px; }
-  .more { margin-top: 14px; font-size: 13.5px; }
+  .pick .d2 { margin: 4px 0 14px; font-size: 13.5px; }
 
   .shelf { list-style: none; margin: 0; padding: 0; border-top: 2px solid var(--rule); }
-  .row { padding-block: 16px; border-bottom: 1px dashed var(--rule); }
-  .head { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .shelf li { padding-block: 14px; border-bottom: 1px dashed var(--rule); }
   .name { font-family: var(--display); font-weight: 700; font-size: 16px; color: var(--ink); text-decoration: none; }
-  a.name:hover { color: var(--tape-d); text-decoration: underline; }
-  .tag { font-size: 11px; font-weight: 700; letter-spacing: .1em; color: var(--kraft-d); border: 1.5px solid var(--kraft); padding: 0 8px; border-radius: 5px 2px 6px 3px / 3px 6px 2px 5px; }
-  .row p { margin-top: 2px; font-size: 13.5px; }
+  .name:hover { color: var(--tape-d); text-decoration: underline; }
+  .tag { font-size: 11px; font-weight: 700; letter-spacing: .1em; color: var(--kraft-d); border: 1.5px solid var(--kraft); padding: 0 8px; margin-left: 10px; border-radius: 5px 2px 6px 3px / 3px 6px 2px 5px; }
+  .shelf p { margin-top: 2px; font-size: 13.5px; }
+  .soon { margin-top: 14px; font-size: 13px; color: var(--ink3); }
 
-  .who { border-top: 2px solid var(--rule); padding-top: 22px; }
-  ul.links { display: flex; flex-wrap: wrap; gap: 8px 20px; list-style: none; margin: 12px 0 0; padding: 0; font-size: 14px; }
+  @media (max-width: 720px) {
+    .hero { grid-template-columns: 1fr; gap: 24px; }
+    .riona { max-width: 240px; }
+    .three { grid-template-columns: 1fr; gap: 20px; }
+  }
 </style>

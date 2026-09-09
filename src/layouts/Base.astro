@@ -18,6 +18,7 @@ const fullTitle = Astro.url.pathname === '/' ? title : `${title}｜${siteName}`;
 const nav = [
   { href: '/tools/', label: 'ツール' },
   { href: '/#games', label: 'ゲーム' },
+  { href: '/log/', label: 'お知らせ' },
   { href: '/about/', label: 'ぷりんラボとは' },
 ];
 
@@ -72,6 +73,7 @@ const jsonLd = {
   <footer class="site-foot">
     <div class="wrap">
       <a href="/tools/">ツール</a>
+      <a href="/log/">お知らせ・開発記録</a>
       <a href="/privacy/">プライバシー</a>
       <a href="https://x.com/Purin_Labo" rel="noopener">X</a>
       <span class="c">© Purin_Labo</span>
