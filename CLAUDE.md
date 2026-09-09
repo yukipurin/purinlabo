@@ -48,7 +48,12 @@
 src/
 ├ layouts/Base.astro      … SEO head・ヘッダー・フッター。全ページがこれを使う
 ├ styles/global.css       … デザイントークン。色・書体・角丸はここにしかない
-├ content/<slug>.ts       … 各ページの文言。ページ側に文字列を直書きしない
+├ content/home.ts         … Home の文言
+├ content/about.ts        … ぷりんラボとは の文言
+├ content/tools.ts        … ツール一覧の文言＋ツールの一覧データ
+├ content/games.ts        … ゲームの紹介データ（ストアリンク含む）
+├ content/<slug>.ts       … 各ツールページの文言。ページ側に文字列を直書きしない
+│                           （例外：SEO用の title / description はページ側でよい）
 ├ lib/<slug>.ts           … 処理ロジック（DOM非依存の純粋関数）
 ├ lib/<slug>.test.ts      … そのテスト
 └ pages/
@@ -120,6 +125,21 @@ curl "https://itunes.apple.com/lookup?id=6780463663&country=jp&entity=software&l
 - 色・サイズ・余白の直値をコンポーネントに書かない。**必ず `global.css` のトークンを使う**
 
 ## 6. 文章
+
+### 表記の統一（本人の選択。揺らさない）
+
+| 使う | 使わない |
+|---|---|
+| ツール | 道具 |
+| キャラクター | 案内役 |
+| 週に1度（BGMの頻度） | 2日に1度 |
+
+同じ内容を2箇所で言わない。文言を直したら次で全ページを検査する：
+
+```bash
+npx astro build && grep -ro "道具\|案内役" dist --include="*.html" | wc -l   # 0 ならOK
+```
+
 
 **`../文言プロンプト.md` の規則に従う。** 要点：
 

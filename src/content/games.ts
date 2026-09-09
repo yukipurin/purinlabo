@@ -34,7 +34,7 @@ export const games: Game[] = [
     slug: 'sousei',
     name: '創世のマナ',
     lead: '虚無に呑まれた世界に、ひとつだけ灯をともす。',
-    body: 'タップと放置でマナを集め、滅びた世界を創り直す放置ゲームです。無から森が生まれ、海が満ち、文明が育ちます。見習い魔導士のリオナが案内役です。',
+    body: 'タップと放置でマナを集め、滅びた世界を創り直す放置ゲームです。無から森が生まれ、海が満ち、文明が育ちます。見習い魔導士のリオナが物語を進めます。',
     shots: 2,
     appStore: 'https://apps.apple.com/jp/app/id6780463661',
     googlePlay: 'https://play.google.com/store/apps/details?id=com.purinlabo.souseinomana',
@@ -50,7 +50,7 @@ export const games: Game[] = [
   {
     slug: 'shuuki',
     name: '周期リマインダー',
-    lead: '「◯日ごとのやること」を憶えておく道具。',
+    lead: '「◯日ごとのやること」を憶えておくツール。',
     body: 'フィルター交換、植物の水やり、消耗品の買い替え。やった日を記録すると、その日から次の周期が始まります。日付を決めるのではなく、間隔で管理します。',
     shots: 3,
     appStore: 'https://apps.apple.com/jp/app/id6780852897',

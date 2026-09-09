@@ -1,30 +1,42 @@
 ---
 import Base from '../layouts/Base.astro';
+import { about as t } from '../content/about';
 ---
 <Base
-  title="ぷりんラボとは"
+  title={t.title}
   description="ぷりんラボは、ひとりでゲームアプリとWebツールを作っている個人の開発スタジオです。"
 >
-  <div class="work">
-    <h1 class="page-h1">ぷりんラボとは</h1>
-    <p>ひとりでゲームアプリとWebツールを作っています。YouTubeでは異世界ケルト音楽の作業用BGMを公開しています。</p>
-    <p>Webツールは、自分の作業で必要になったものを整えて置いています。処理はすべてブラウザ内で行うので、ファイルが外部に送信されることはありません。</p>
+  <section class="band head">
+    <div class="read">
+      <p class="label">{t.label}</p>
+      <h1 class="display-lg">{t.title}</h1>
+      {t.body.map((para) => <p class="lead muted">{para}</p>)}
+    </div>
+  </section>
 
-    <h2>置いているもの<span class="rule-wave"></span></h2>
-    <ul class="links">
-      <li><a href="/tools/">Webツール</a></li>
-      <li><a href="/#games">ゲーム・アプリ</a></li>
-      <li><a href="https://www.youtube.com/@soundlibrarystudio" rel="noopener">音の図書館（YouTube）</a></li>
-      <li><a href="https://x.com/Purin_Labo" rel="noopener">X</a></li>
-    </ul>
+  <section class="band band-deep">
+    <div class="read">
+      <h2 class="display-md">{t.linksTitle}</h2>
+      <ul class="links">
+        {t.links.map((l) => <li><a href={l.href} rel="noopener">{l.label}</a></li>)}
+      </ul>
+    </div>
+  </section>
 
-    <h2>連絡先<span class="rule-wave"></span></h2>
-    <p>ご連絡は <a href="https://x.com/Purin_Labo" rel="noopener">@Purin_Labo</a> までお願いします。</p>
-  </div>
+  <section class="band">
+    <div class="read">
+      <h2 class="display-md">{t.contactTitle}</h2>
+      <p class="muted"><a href={t.contactHref} rel="noopener">{t.contactBody}</a></p>
+    </div>
+  </section>
 </Base>
 
 <style>
-  .page-h1 { margin: 34px 0 14px; }
-  h2 { display: flex; align-items: center; gap: 9px; margin: 36px 0 12px; }
-  ul.links { display: flex; flex-direction: column; gap: 6px; list-style: none; margin: 0; padding: 0; font-size: 14.5px; }
+  .head { padding-block: 96px 72px; }
+  .head .label { margin-bottom: 24px; }
+  .head h1 { margin-bottom: 24px; }
+  .head .lead + .lead { margin-top: 18px; }
+  .links { list-style: none; display: flex; flex-direction: column; gap: 12px; margin: 28px 0 0; padding: 0; font-size: 16px; }
+  h2 + p { margin-top: 20px; }
+  @media (max-width: 700px) { .head { padding-block: 64px 48px; } }
 </style>

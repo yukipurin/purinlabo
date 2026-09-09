@@ -72,5 +72,5 @@ export const square = {
     { label: "音の図書館（YouTube）", url: "https://www.youtube.com/@soundlibrarystudio" },
     { label: "X", url: "https://x.com/Purin_Labo" },
   ],
-  stamp: "ほかの道具は準備中",
+  stamp: "ほかのツールは準備中",
 } as const;
