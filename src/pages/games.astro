@@ -1,0 +1,102 @@
+---
+import Base from '../layouts/Base.astro';
+import { games, soonGames } from '../content/games';
+---
+<Base
+  title="ゲーム・アプリ"
+  description="ぷりんラボが作っているゲームとアプリの一覧です。放置ゲーム、言葉パズル、釣り×図鑑、記録の道具。App Storeで公開しています。"
+>
+  <section class="band head">
+    <div class="read">
+      <p class="label">Games</p>
+      <h1 class="display-lg">ゲーム・アプリ</h1>
+      <p class="lead muted">ひとりで作っています。App Storeで公開中のものを並べています。</p>
+    </div>
+  </section>
+
+  {games.map((g, i) => (
+    <section class={i % 2 === 1 ? 'band band-deep' : 'band'}>
+      <div class="read">
+        <div class="head-row">
+          <img class="icon" src={`/img/games/${g.slug}-icon.webp`} width="90" height="90"
+               alt="" loading="lazy" />
+          <div>
+            <h2 class="display-md">{g.name}</h2>
+            <p class="lead2">{g.lead}</p>
+          </div>
+        </div>
+
+        <p class="body muted">{g.body}</p>
+
+        <ul class="shots">
+          {Array.from({ length: g.shots }).map((_, n) => (
+            <li>
+              <img src={`/img/games/${g.slug}-${n + 1}.webp`} width="288" height="640"
+                   alt={`${g.name}の画面`} loading="lazy" />
+            </li>
+          ))}
+        </ul>
+
+        <p class="stores">
+          {g.appStore && <a class="btn" href={g.appStore} rel="noopener">App Storeで見る</a>}
+          {g.googlePlay && <a class="btn ghost" href={g.googlePlay} rel="noopener">Google Playで見る</a>}
+        </p>
+      </div>
+    </section>
+  ))}
+
+  <section class="band band-ink">
+    <div class="read">
+      <p class="label">Coming</p>
+      <h2 class="display-lg">準備中</h2>
+      <ul class="soon">
+        {soonGames.map((s) => (
+          <li><strong>{s.name}</strong><p class="muted">{s.note}</p></li>
+        ))}
+      </ul>
+      <p class="go"><a href="/log/">進み具合は開発記録に書いています</a></p>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .head { padding-block: 96px 72px; }
+  .head .label { margin-bottom: 24px; }
+  .head h1 { margin-bottom: 20px; }
+
+  .head-row { display: flex; gap: 24px; align-items: center; }
+  .icon { border-radius: 20px; flex: none; }
+  .lead2 { margin-top: 8px; font-size: 17px; }
+
+  .body { margin-top: 28px; max-width: 34em; font-size: 15px; }
+
+  /* スクショは横に並べ、狭い画面では横スクロールさせる */
+  .shots {
+    list-style: none; margin: 36px 0 0; padding: 0 0 8px;
+    display: flex; gap: 20px; overflow-x: auto;
+  }
+  .shots li { flex: none; }
+  .shots img {
+    display: block; width: auto; height: 400px;
+    border-radius: 10px; border: 1px solid rgba(184,125,69,.3);
+  }
+
+  .stores { margin-top: 36px; display: flex; gap: 14px; flex-wrap: wrap; }
+  .btn.ghost { background: transparent; color: var(--tape-d); border: 2px solid var(--tape); padding: 12px 32px; }
+  .btn.ghost:hover { background: var(--tape); color: #fff; }
+  .band-ink .btn.ghost { color: #8fd0ae; border-color: #8fd0ae; }
+  .band-ink .btn.ghost:hover { background: #8fd0ae; color: var(--ink); }
+
+  .soon { list-style: none; margin: 40px 0 0; padding: 0; }
+  .soon li { margin-bottom: 28px; }
+  .soon strong { font-family: var(--display); font-size: 19px; }
+  .soon p { margin-top: 4px; font-size: 15px; }
+  .go { margin-top: 12px; font-size: 14px; }
+
+  @media (max-width: 700px) {
+    .head { padding-block: 64px 48px; }
+    .head-row { gap: 16px; }
+    .icon { width: 68px; height: 68px; }
+    .shots img { height: 320px; }
+  }
+</style>

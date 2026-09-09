@@ -91,6 +91,19 @@ draft: false      # true にすると公開されない
 
 Home には最新3件が自動で並ぶ。**文章は §6 の規則に従う。**
 
+## 4-c. ゲームを1本足す／ストア情報を直す
+
+`src/content/games.ts` の配列に足す。画像は App Store の掲載画像を取ってきて置く。
+
+```bash
+# 公開中の全アプリを確認（開発者ID 6780463663）
+curl "https://itunes.apple.com/lookup?id=6780463663&country=jp&entity=software&limit=50"
+```
+
+**ストアのIDやリンクを推測で書かない。** 上のAPIで確認したものだけを載せる。
+画像は `public/img/games/<slug>-icon.webp` と `<slug>-1..3.webp`
+（Apple のCDNは URL 末尾を `500x0w.webp` などに差し替えるとサイズを指定できる）。
+
 ## 5. UIルール
 
 アートディレクション＝**クラフト紙の作業台**。地はクラフト紙、面は白、色は作業場から取る

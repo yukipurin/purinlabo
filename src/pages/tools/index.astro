@@ -3,50 +3,89 @@ import Base from '../../layouts/Base.astro';
 
 // ツールを1本足す＝この配列に1行足して、同名のページを作る。
 const tools = [
-  { slug: 'square', name: '出品写真をまとめて正方形にする', ready: true,
-    note: '複数枚まとめて1080×1080に。余白は白で埋めるか、切り抜くかを選べます。' },
+  {
+    slug: 'square',
+    name: '出品写真をまとめて正方形にする',
+    lead: 'メルカリ・ヤフオク・BASEのサイズにそろえます。',
+    body: '複数枚をまとめて1080×1080にそろえます。余白は白で埋めるか、正方形に切り抜くかを選べます。連番でのリネームとZIPでの書き出しに対応しています。処理はすべてブラウザ内で行うため、写真が外部に送信されることはありません。',
+    image: '/img/tools/square-before-after.webp',
+    ready: true,
+  },
   { slug: 'resize', name: '画像を一括リサイズ', ready: false,
-    note: '長辺を指定して、比率を保ったまままとめて縮小します。' },
+    lead: '長辺を指定して、比率を保ったまままとめて縮小します。' },
   { slug: 'compress', name: '画像を軽くする', ready: false,
-    note: '目標のファイルサイズを指定すると、画質を自動で調整します。' },
+    lead: '目標のファイルサイズを指定すると、画質を自動で調整します。' },
   { slug: 'heic', name: 'HEICをJPGに変換', ready: false,
-    note: 'iPhoneで撮った写真を、Windowsでも開ける形式にまとめて変換します。' },
+    lead: 'iPhoneで撮った写真を、Windowsでも開ける形式にまとめて変換します。' },
   { slug: 'rename', name: '連番でリネームしてZIP', ready: false,
-    note: '商品ごとに01、02と番号を振り直して、まとめて書き出します。' },
+    lead: '商品ごとに01、02と番号を振り直して、まとめて書き出します。' },
 ];
+
+const ready = tools.filter((t) => t.ready);
+const soon = tools.filter((t) => !t.ready);
 ---
 <Base
   title="無料Webツール"
   description="アップロード不要・登録不要の無料Webツール。フリマやネットショップの出品画像を、ブラウザの中だけで一括処理します。"
 >
-  <div class="work">
-    <h1 class="page-h1">ツール</h1>
-    <p class="lead">フリマ・ネットショップの出品作業を短くするための道具です。処理はすべてブラウザ内で行います。</p>
+  <section class="band head">
+    <div class="read">
+      <p class="label">Tools</p>
+      <h1 class="display-lg">Webツール</h1>
+      <p class="lead muted">
+        出品作業を短くするための道具です。登録もインストールも要りません。
+        処理はすべてブラウザ内で行うため、ファイルが外部に送信されることはありません。
+      </p>
+    </div>
+  </section>
 
-    <ul class="shelf">
-      {tools.map((tool) => (
-        <li class={tool.ready ? 'row' : 'row soon'}>
-          <div class="head">
-            {tool.ready
-              ? <a class="name" href={`/tools/${tool.slug}/`}>{tool.name}</a>
-              : <span class="name">{tool.name}</span>}
-            {!tool.ready && <span class="stamp">準備中</span>}
-          </div>
-          <p>{tool.note}</p>
-        </li>
-      ))}
-    </ul>
-  </div>
+  {ready.map((t) => (
+    <section class="band band-deep">
+      <div class="read">
+        <h2 class="display-md">{t.name}</h2>
+        <p class="lead2">{t.lead}</p>
+        {t.image && (
+          <figure class="fig">
+            <img src={t.image} width="940" height="360"
+                 alt="縦横比のばらばらな写真が、すべて同じ正方形にそろう様子" loading="lazy" />
+            <figcaption class="muted">もとの写真（左）を、1080×1080にそろえる（右）</figcaption>
+          </figure>
+        )}
+        <p class="body muted">{t.body}</p>
+        <p class="cta"><a class="btn" href={`/tools/${t.slug}/`}>使ってみる</a></p>
+      </div>
+    </section>
+  ))}
+
+  <section class="band">
+    <div class="read">
+      <p class="label">Coming</p>
+      <h2 class="display-lg">準備中</h2>
+      <ul class="soon">
+        {soon.map((t) => (
+          <li><strong>{t.name}</strong><p class="muted">{t.lead}</p></li>
+        ))}
+      </ul>
+    </div>
+  </section>
 </Base>
 
 <style>
-  .page-h1 { margin: 34px 0 6px; }
-  .lead { margin-bottom: 26px; font-size: 15px; }
-  .shelf { list-style: none; margin: 0; padding: 0; border-top: 2px solid var(--rule); }
-  .row { padding-block: 18px; border-bottom: 1px dashed var(--rule); }
-  .head { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
-  .name { font-family: var(--display); font-weight: 700; font-size: 17px; color: var(--ink); text-decoration: none; }
-  a.name:hover { color: var(--tape-d); text-decoration: underline; }
-  .row.soon .name { color: var(--ink3); }
-  .row p { margin-top: 2px; font-size: 13.5px; }
+  .head { padding-block: 96px 72px; }
+  .head .label { margin-bottom: 24px; }
+  .head h1 { margin-bottom: 20px; }
+
+  .lead2 { margin-top: 10px; font-size: 17px; }
+  .fig { margin: 36px 0 0; }
+  .fig img { display: block; width: 100%; height: auto; border-radius: 8px; }
+  .fig figcaption { margin-top: 12px; font-size: 13px; }
+  .body { margin-top: 28px; max-width: 34em; font-size: 15px; }
+  .cta { margin-top: 32px; }
+
+  .soon { list-style: none; margin: 40px 0 0; padding: 0; }
+  .soon li { margin-bottom: 28px; }
+  .soon strong { font-family: var(--display); font-size: 19px; }
+  .soon p { margin-top: 4px; font-size: 15px; }
+
+  @media (max-width: 700px) { .head { padding-block: 64px 48px; } }
 </style>

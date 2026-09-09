@@ -1,6 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import { getCollection } from 'astro:content';
+import { games } from '../content/games';
 
 const posts = (await getCollection('log', (p) => !p.data.draft))
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
@@ -8,18 +9,6 @@ const posts = (await getCollection('log', (p) => !p.data.draft))
 
 const fmt = (d: Date) => `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`;
 
-const games = [
-  { name: '創世のマナ', href: 'https://apps.apple.com/jp/app/id6780463661',
-    note: 'マナを紡いで世界を創る、静かな放置ゲーム。' },
-  { name: '誤変換大戦', href: 'https://apps.apple.com/jp/app/id6787645238',
-    note: '変換ミスで世界が暴走する、言葉のバカゲー。' },
-  { name: 'ことば仕分け帳', href: 'https://apps.apple.com/jp/app/id6781580333',
-    note: '「暑い」「熱い」「厚い」を仕分ける語彙パズル。' },
-  { name: '周期リマインダー', href: 'https://apps.apple.com/jp/app/id6780852897',
-    note: '◯日ごとのやることを憶えておく道具。' },
-  { name: 'のんびり異世界釣りゲーム 〜幻の魚図鑑〜', href: 'https://apps.apple.com/jp/app/id6796961427',
-    note: '影の形と動きから幻の魚を見立てる、釣り×図鑑。' },
-];
 ---
 <Base
   title="ぷりんラボ｜ゲームと、アップロードしないWebツールを作っています"
@@ -85,20 +74,21 @@ const games = [
     </div>
   </section>
 
-  <!-- 帯4：濃い紙。ゲーム -->
+  <!-- 帯4：濃い紙。ゲームは紹介ページへ送る -->
   <section class="band band-deep" id="games">
     <div class="read">
       <p class="label">Games</p>
       <h2 class="display-lg">ゲーム・アプリ</h2>
-      <ul class="list">
+      <p class="lead muted">
+        放置ゲーム、言葉パズル、釣り×図鑑、記録の道具。App Storeで5本公開しています。
+      </p>
+      <ul class="icons">
         {games.map((g) => (
-          <li>
-            <a href={g.href} rel="noopener">{g.name}</a>
-            <p class="muted">{g.note}</p>
-          </li>
+          <li><a href="/games/"><img src={`/img/games/${g.slug}-icon.webp`} width="72" height="72"
+                 alt={g.name} loading="lazy" /></a></li>
         ))}
       </ul>
-      <p class="soon muted">準備中：忘れもの郵便局 ／ 推し日和</p>
+      <p class="cta"><a class="btn" href="/games/">ゲーム・アプリを見る</a></p>
     </div>
   </section>
 
@@ -161,7 +151,9 @@ const games = [
   .list a:hover { color: var(--tape-d); text-decoration: underline; }
   .list p { margin-top: 6px; font-size: 15px; }
   .posts .date { font-size: 12px; letter-spacing: .12em; margin-bottom: 6px; }
-  .soon { margin-top: 48px; font-size: 14px; }
+  .icons { list-style: none; display: flex; gap: 16px; flex-wrap: wrap; margin: 36px 0 0; padding: 0; }
+  .icons img { display: block; border-radius: 16px; }
+  .cta { margin-top: 40px; }
 
   @media (max-width: 860px) {
     .hero { padding-block: 80px 72px; }
