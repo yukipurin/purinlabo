@@ -2,11 +2,13 @@
 import Base from '../../layouts/Base.astro';
 import ToolShell from '../../components/ToolShell.astro';
 import ToolFooter from '../../components/ToolFooter.astro';
+import { tools } from '../../content/tools';
 import { compress as t } from '../../content/imageTools';
 ---
 <Base title={t.seoTitle} description={t.seoDescription}>
   <div class="work">
-    <ToolShell {...t} accept="image/*,.heic,.heif">
+    <ToolShell {...t} figure="/img/tools/compress.webp"
+                figureAlt={tools.find((x) => x.slug === 'compress')?.imageAlt} accept="image/*,.heic,.heif">
       <Fragment slot="settings">
         <div class="row">
           <label for="target">目標のファイルサイズ</label>

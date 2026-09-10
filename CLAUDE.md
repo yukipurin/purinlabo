@@ -78,11 +78,18 @@ tools/subset_fonts.py     … 文言を足したら実行する
 手順：
 
 1. **文言を `src/content/imageTools.ts` に足す**（`common` を展開して差分だけ書く）
+1-b. **説明図を `tools/gen_tool_figures.py` に足して生成する。**
+   一覧では図がツールの識別そのものになるので、図の無いツールを並べない。
+   図の中の文字は英数字だけにする（日本語はHTML側の説明文に置く）
+
+   ```bash
+   python3 tools/gen_tool_figures.py
+   ```
 2. `src/pages/tools/<slug>.astro` を作る。既存の `resize.astro` を写すのが速い
    - `<Fragment slot="settings">` に設定欄を置く
    - `<script>` で `setupTool({ zipName, convert })` を呼ぶ。`convert` は1枚をどう変換するか
 3. **計算が要るなら `src/lib/image.ts` に純粋関数として足し、テストも書く**
-4. `src/content/tools.ts` の配列に1行足す（`ready: true` で一覧に出る）
+4. `src/content/tools.ts` の配列に足す（`short` / `image` / `imageAlt` / `group` が要る）
 5. 文言を足したら `python3 tools/subset_fonts.py`
 6. `npx vitest run` と `npx astro build` を通す
 7. **実際に画像を流して動作を確認する。** ビルドが通っただけでは動く証拠にならない

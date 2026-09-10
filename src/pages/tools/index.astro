@@ -1,65 +1,93 @@
 ---
 import Base from '../../layouts/Base.astro';
-import { toolsPage as t, tools } from '../../content/tools';
+import { toolsPage as t, tools, GROUPS } from '../../content/tools';
 
 const ready = tools.filter((x) => x.ready);
-const soon = tools.filter((x) => !x.ready);
 ---
 <Base
   title="無料Webツール"
-  description="アップロード不要・登録不要の無料Webツール。フリマやネットショップの出品画像を、ブラウザの中だけで一括処理します。"
+  description="アップロード不要・登録不要の無料Webツール。画像のリサイズ、圧縮、形式変換、EXIF削除、ファビコン生成など。処理はすべてブラウザ内で完結します。"
 >
   <section class="band head">
     <div class="read">
       <p class="label">{t.label}</p>
       <h1 class="display-lg">{t.title}</h1>
       <p class="lead muted">{t.lead}</p>
+      <p class="count muted">いま {ready.length} 本</p>
     </div>
   </section>
 
-  {ready.map((x) => (
-    <section class="band band-deep">
-      <div class="read">
-        <h2 class="display-md">{x.name}</h2>
-        <p class="lead2">{x.lead}</p>
-        {x.image && (
-          <figure class="fig">
-            <img src={x.image} width="940" height="360" alt={x.imageAlt} loading="lazy" />
-            {x.imageCaption && <figcaption class="muted">{x.imageCaption}</figcaption>}
-          </figure>
-        )}
-        {x.body && <p class="body muted">{x.body}</p>}
-        <p class="cta"><a class="btn" href={`/tools/${x.slug}/`}>{t.cta}</a></p>
-      </div>
-    </section>
-  ))}
+  <section class="band band-deep">
+    <div class="read">
+      {GROUPS.map((group) => {
+        const items = ready.filter((x) => x.group === group);
+        return items.length === 0 ? null : (
+          <div class="group">
+            <h2 class="gname">{group}<span class="rule-wave"></span></h2>
+            <ul class="grid">
+              {items.map((x) => (
+                <li>
+                  <a href={`/tools/${x.slug}/`}>
+                    <img src={x.image} width="940" height="360" alt={x.imageAlt} loading="lazy" />
+                    <span class="n">{x.short}</span>
+                    <span class="d">{x.lead}</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        );
+      })}
+    </div>
+  </section>
 
   <section class="band">
     <div class="read">
-      <p class="label">{t.soonLabel}</p>
-      <h2 class="display-lg">{t.soonTitle}</h2>
-      <ul class="soon">
-        {soon.map((x) => (
-          <li><strong>{x.name}</strong><p class="muted">{x.lead}</p></li>
-        ))}
+      <h2 class="display-md">共通していること</h2>
+      <ul class="notes">
+        <li>登録もインストールも要りません</li>
+        <li>処理はすべてブラウザ内で行うため、ファイルが外部に送信されることはありません</li>
+        <li>まとめて処理して、ZIPで受け取れます</li>
       </ul>
     </div>
   </section>
 </Base>
 
 <style>
-  .head { padding-block: 96px 72px; }
+  .head { padding-block: 96px 64px; }
   .head .label { margin-bottom: 24px; }
   .head h1 { margin-bottom: 20px; }
-  .lead2 { margin-top: 10px; font-size: 17px; }
-  .fig { margin: 36px 0 0; }
-  .fig img { display: block; width: 100%; height: auto; border-radius: 8px; }
-  .fig figcaption { margin-top: 12px; font-size: 13px; }
-  .body { margin-top: 28px; max-width: 34em; font-size: 15px; }
-  .cta { margin-top: 32px; }
-  .soon { list-style: none; margin: 40px 0 0; padding: 0; }
-  .soon li { margin-bottom: 28px; }
-  .soon strong { font-family: var(--display); font-size: 19px; }
-  .soon p { margin-top: 4px; font-size: 15px; }
-  @media (max-width: 700px) { .head { padding-block: 64px 48px; } }
+  .count { margin-top: 14px; font-size: 13px; letter-spacing: .12em; }
+
+  .group + .group { margin-top: 56px; }
+  .gname {
+    display: flex; align-items: center; gap: 12px;
+    font-size: 15px; letter-spacing: .1em; color: var(--kraft); margin-bottom: 20px;
+  }
+
+  /* カードを敷き詰めず、図そのものを見せる。図がツールごとに違うので識別が効く */
+  .grid { list-style: none; margin: 0; padding: 0; display: grid; gap: 28px 26px;
+          grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
+  .grid a { display: block; text-decoration: none; color: inherit; }
+  .grid img {
+    display: block; width: 100%; height: auto; background: var(--paper);
+    border: 2px solid rgba(184, 125, 69, .35);
+    border-radius: 12px 5px 14px 6px / 6px 13px 5px 12px;
+  }
+  .grid a:hover img { border-color: var(--kraft); }
+  .grid .n {
+    display: block; margin-top: 12px;
+    font-family: var(--display); font-weight: 700; font-size: 17px;
+  }
+  .grid a:hover .n { color: #8fd0ae; }
+  .grid .d { display: block; margin-top: 4px; font-size: 13px; color: var(--muted-on-ink); line-height: 1.7; }
+
+  .notes { list-style: none; margin: 24px 0 0; padding: 0; }
+  .notes li { font-size: 15px; color: var(--muted); padding: 5px 0 5px 20px; position: relative; }
+  .notes li::before { content: ""; position: absolute; left: 0; top: 1em; width: 10px; height: 2px; background: var(--kraft); }
+
+  @media (max-width: 700px) {
+    .head { padding-block: 64px 44px; }
+    .grid { grid-template-columns: 1fr; gap: 24px; }
+  }
 </style>

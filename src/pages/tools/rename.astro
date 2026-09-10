@@ -2,11 +2,13 @@
 import Base from '../../layouts/Base.astro';
 import ToolShell from '../../components/ToolShell.astro';
 import ToolFooter from '../../components/ToolFooter.astro';
+import { tools } from '../../content/tools';
 import { rename as t } from '../../content/imageTools';
 ---
 <Base title={t.seoTitle} description={t.seoDescription}>
   <div class="work">
-    <ToolShell {...t}>
+    <ToolShell {...t} figure="/img/tools/rename.webp"
+                figureAlt={tools.find((x) => x.slug === 'rename')?.imageAlt}>
       <Fragment slot="settings">
         <div class="row">
           <label for="prefix">接頭辞</label>

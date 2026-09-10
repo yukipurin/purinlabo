@@ -2,11 +2,13 @@
 import Base from '../../layouts/Base.astro';
 import ToolShell from '../../components/ToolShell.astro';
 import ToolFooter from '../../components/ToolFooter.astro';
+import { tools } from '../../content/tools';
 import { exif as t } from '../../content/imageTools';
 ---
 <Base title={t.seoTitle} description={t.seoDescription}>
   <div class="work">
-    <ToolShell {...t} accept="image/jpeg,image/png">
+    <ToolShell {...t} figure="/img/tools/exif.webp"
+                figureAlt={tools.find((x) => x.slug === 'exif')?.imageAlt} accept="image/jpeg,image/png">
       <Fragment slot="settings">
         <div class="row">
           <label>やること</label>

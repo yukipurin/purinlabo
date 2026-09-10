@@ -17,11 +17,13 @@ export interface Props {
   downloadZip: string;
   clearButton: string;
   accept?: string;      // input の accept
+  figure?: string;      // 何をするツールかを示す図
+  figureAlt?: string;
 }
 const {
   title, titleMark, lead, dropTitle, dropNote, button, buttonNote,
   runButton, privacy, resultHeading, downloadZip, clearButton,
-  accept = 'image/*',
+  accept = 'image/*', figure, figureAlt,
 } = Astro.props;
 
 const heading = titleMark
@@ -30,6 +32,12 @@ const heading = titleMark
 ---
 <h1 class="page-h1" set:html={heading} />
 <p class="lead">{lead}</p>
+
+{figure && (
+  <figure class="fig">
+    <img src={figure} width="940" height="360" alt={figureAlt} />
+  </figure>
+)}
 
 <div class="hand-box tool">
   <div id="dropzone" class="hand-dash drop">
@@ -68,6 +76,13 @@ const heading = titleMark
 <style>
   .page-h1 { margin: 34px 0 6px; font-size: 30px; }
   .lead { margin-bottom: 22px; font-size: 15px; color: var(--muted); }
+
+  .fig { margin: 0 0 22px; }
+  .fig img {
+    display: block; width: 100%; height: auto; background: var(--paper);
+    border: 2px solid rgba(184, 125, 69, .3);
+    border-radius: 12px 5px 14px 6px / 6px 13px 5px 12px;
+  }
 
   .tool { padding: 20px; }
   .drop { background: #fffef9; padding: 40px 16px; text-align: center; }
