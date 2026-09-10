@@ -169,4 +169,65 @@ for i, n in enumerate(outs):
     label(d, 696, y + 36, n, 21, KRAFT, True, "lm")
 save(im, "rename")
 
+
+# ================================================================ 字幕
+def cue_box(d, x, y, w, h, time_text, bars, bar_color=(200, 190, 172), border=FRAME):
+    d.rounded_rectangle([x, y, x + w, y + h], 8, fill=CARD, outline=border, width=3)
+    label(d, x + 14, y + 16, time_text, 15, MUTED, True, "la")
+    for i, bw in enumerate(bars):
+        by = y + 44 + i * 20
+        d.rounded_rectangle([x + 14, by, x + 14 + bw, by + 11], 5, fill=bar_color)
+
+
+# ---- subtitle-check：長すぎる行と速すぎる字幕を指摘する
+im, d = canvas()
+cue_box(d, 60, 50, 380, 118, "00:00:01,000", [330, 300], (214, 168, 158), STAMP)
+label(d, 452, 96, "!", 30, STAMP, True, "mm")
+cue_box(d, 60, 196, 380, 118, "00:00:04,000", [180, 120])
+arrow(d, 500, 180)
+d.rounded_rectangle([650, 62, 900, 108], 8, fill=(246, 228, 224), outline=STAMP, width=2)
+label(d, 668, 85, "line too long", 17, STAMP, True, "lm")
+d.rounded_rectangle([650, 124, 900, 170], 8, fill=(246, 228, 224), outline=STAMP, width=2)
+label(d, 668, 147, "too fast", 17, STAMP, True, "lm")
+d.rounded_rectangle([650, 214, 900, 260], 8, fill=(226, 240, 232), outline=TAPE, width=2)
+label(d, 668, 237, "OK", 17, TAPE, True, "lm")
+save(im, "subtitle-check")
+
+# ---- subtitle-convert：SRTとVTTの行き来
+im, d = canvas()
+for text, x in [("SRT", 130), ("VTT", 610)]:
+    d.rounded_rectangle([x, 120, x + 200, 240], 10, fill=CARD, outline=KRAFT, width=3)
+    label(d, x + 100, 180, text, 34, KRAFT, True, "mm")
+d.line([360, 158, 590, 158], fill=MUTED, width=5)
+d.polygon([(586, 146), (618, 158), (586, 170)], fill=MUTED)
+d.line([360, 202, 590, 202], fill=MUTED, width=5)
+d.polygon([(364, 190), (332, 202), (364, 214)], fill=MUTED)
+save(im, "subtitle-convert")
+
+# ---- subtitle-shift：時刻がまとめて後ろへ動く
+im, d = canvas()
+for i, (t0, t1) in enumerate([("00:01", "00:04"), ("00:06", "00:09")]):
+    y = 70 + i * 130
+    cue_box(d, 60, y, 300, 108, t0, [250, 190])
+    cue_box(d, 580, y, 300, 108, t1, [250, 190], (200, 190, 172), KRAFT)
+    d.line([390, y + 54, 530, y + 54], fill=KRAFT, width=6)
+    d.polygon([(526, y + 40), (562, y + 54), (526, y + 68)], fill=KRAFT)
+label(d, 470, 316, "+3.0s", 22, KRAFT, True, "ma")
+save(im, "subtitle-shift")
+
+# ---- subtitle-text：番号と時刻が落ちて本文だけ残る
+im, d = canvas()
+d.rounded_rectangle([60, 60, 400, 300], 8, fill=CARD, outline=FRAME, width=3)
+for i in range(3):
+    y = 82 + i * 76
+    label(d, 78, y, str(i + 1), 14, MUTED, True, "la")
+    label(d, 78, y + 20, "00:00:0%d --> 00:00:0%d" % (i + 1, i + 3), 13, (196, 186, 168), False, "la")
+    d.rounded_rectangle([78, y + 42, 320, y + 53], 5, fill=(206, 196, 178))
+    d.line([70, y - 2, 340, y + 30], fill=STAMP, width=3)
+arrow(d, 440, 180)
+d.rounded_rectangle([600, 60, 900, 300], 8, fill=CARD, outline=TAPE, width=3)
+for i in range(3):
+    d.rounded_rectangle([620, 92 + i * 66, 862, 103 + i * 66], 5, fill=(150, 180, 158))
+save(im, "subtitle-text")
+
 print("\n完了")

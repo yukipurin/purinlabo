@@ -1,0 +1,46 @@
+---
+import Base from '../../layouts/Base.astro';
+import TextToolShell from '../../components/TextToolShell.astro';
+import ToolFooter from '../../components/ToolFooter.astro';
+import { subText as t } from '../../content/subtitleTools';
+---
+<Base title={t.seoTitle} description={t.seoDescription}>
+  <div class="work">
+    <TextToolShell {...t} acceptFile=".srt,.vtt,text/plain"
+                   category={{ slug: 'subtitle', name: '字幕' }}>
+      <Fragment slot="settings">
+        <div class="row">
+          <label for="join">字幕の中の改行</label>
+          <select id="join">
+            <option value="space" selected>つなげる（1行にする）</option>
+            <option value="keep">そのまま残す</option>
+          </select>
+        </div>
+      </Fragment>
+    </TextToolShell>
+    <ToolFooter {...t} />
+  </div>
+</Base>
+
+<script>
+  import { setupTextTool, withExtension } from '../../lib/textRunner';
+  import { parseSubtitle, toPlainText, summarize } from '../../lib/subtitle';
+
+  const runner = setupTextTool({
+    defaultFileName: 'subtitle.txt',
+    run: (input) => {
+      const cues = parseSubtitle(input);
+      if (cues.length === 0) throw new Error('字幕として読めませんでした。SRTかVTTを貼り付けてください。');
+      const join = (document.getElementById('join') as HTMLSelectElement).value === 'space';
+      const s = summarize(cues);
+      return {
+        text: toPlainText(cues, join),
+        reportHtml: `<div class="sum">
+          <span><b>${s.count}</b>個の字幕から</span>
+          <span><b>${s.chars.toLocaleString()}</b>文字を取り出しました</span>
+        </div>`,
+        fileName: withExtension(runner.getSourceName(), 'txt', 'subtitle.txt'),
+      };
+    },
+  });
+</script>

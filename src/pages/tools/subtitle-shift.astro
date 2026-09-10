@@ -1,0 +1,63 @@
+---
+import Base from '../../layouts/Base.astro';
+import TextToolShell from '../../components/TextToolShell.astro';
+import ToolFooter from '../../components/ToolFooter.astro';
+import { subShift as t } from '../../content/subtitleTools';
+---
+<Base title={t.seoTitle} description={t.seoDescription}>
+  <div class="work">
+    <TextToolShell {...t} acceptFile=".srt,.vtt,text/plain"
+                   category={{ slug: 'subtitle', name: '字幕' }}>
+      <Fragment slot="settings">
+        <div class="row">
+          <label for="sec">ずらす秒数</label>
+          <input id="sec" type="number" value="0" step="0.1" min="-3600" max="3600" />
+        </div>
+        <div class="row">
+          <label for="rate">再生速度の倍率</label>
+          <input id="rate" type="number" value="1" step="0.05" min="0.1" max="4" />
+        </div>
+        <div class="row">
+          <label for="fmt">書き出す形式</label>
+          <select id="fmt">
+            <option value="srt" selected>SRT（.srt）</option>
+            <option value="vtt">WebVTT（.vtt）</option>
+          </select>
+        </div>
+      </Fragment>
+    </TextToolShell>
+    <ToolFooter {...t} />
+  </div>
+</Base>
+
+<script>
+  import { setupTextTool, withExtension } from '../../lib/textRunner';
+  import { parseSubtitle, shiftCues, scaleCues, toSrt, toVtt, formatTimestamp } from '../../lib/subtitle';
+
+  const $ = (id: string) => document.getElementById(id) as HTMLInputElement & HTMLSelectElement;
+
+  const runner = setupTextTool({
+    defaultFileName: 'subtitle.srt',
+    run: (input) => {
+      const cues = parseSubtitle(input);
+      if (cues.length === 0) throw new Error('字幕として読めませんでした。SRTかVTTを貼り付けてください。');
+
+      const rate = Number($('rate').value) || 1;
+      const sec = Number($('sec').value) || 0;
+      // 倍率を先に当ててから、ずらす
+      const moved = shiftCues(rate === 1 ? cues : scaleCues(cues, rate), Math.round(sec * 1000));
+      const fmt = $('fmt').value;
+
+      const before = formatTimestamp(cues[0].startMs, 'srt');
+      const after = formatTimestamp(moved[0].startMs, 'srt');
+      return {
+        text: fmt === 'vtt' ? toVtt(moved) : toSrt(moved),
+        reportHtml: `<div class="sum">
+          <span><b>${moved.length}</b>個の字幕をずらしました</span>
+          <span>最初の字幕 ${before} → ${after}</span>
+        </div>`,
+        fileName: withExtension(runner.getSourceName(), fmt, `subtitle.${fmt}`),
+      };
+    },
+  });
+</script>

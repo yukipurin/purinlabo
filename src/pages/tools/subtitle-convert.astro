@@ -1,0 +1,43 @@
+---
+import Base from '../../layouts/Base.astro';
+import TextToolShell from '../../components/TextToolShell.astro';
+import ToolFooter from '../../components/ToolFooter.astro';
+import { subConvert as t } from '../../content/subtitleTools';
+---
+<Base title={t.seoTitle} description={t.seoDescription}>
+  <div class="work">
+    <TextToolShell {...t} acceptFile=".srt,.vtt,text/plain"
+                   category={{ slug: 'subtitle', name: '字幕' }}>
+      <Fragment slot="settings">
+        <div class="row">
+          <label for="fmt">書き出す形式</label>
+          <select id="fmt">
+            <option value="srt" selected>SRT（.srt）</option>
+            <option value="vtt">WebVTT（.vtt）</option>
+          </select>
+        </div>
+      </Fragment>
+    </TextToolShell>
+    <ToolFooter {...t} />
+  </div>
+</Base>
+
+<script>
+  import { setupTextTool, withExtension } from '../../lib/textRunner';
+  import { parseSubtitle, toSrt, toVtt, summarize } from '../../lib/subtitle';
+
+  const runner = setupTextTool({
+    defaultFileName: 'subtitle.srt',
+    run: (input) => {
+      const cues = parseSubtitle(input);
+      if (cues.length === 0) throw new Error('字幕として読めませんでした。SRTかVTTを貼り付けてください。');
+      const fmt = (document.getElementById('fmt') as HTMLSelectElement).value;
+      const s = summarize(cues);
+      return {
+        text: fmt === 'vtt' ? toVtt(cues) : toSrt(cues),
+        reportHtml: `<div class="sum"><span><b>${s.count}</b>個の字幕を ${fmt.toUpperCase()} にしました</span></div>`,
+        fileName: withExtension(runner.getSourceName(), fmt, `subtitle.${fmt}`),
+      };
+    },
+  });
+</script>

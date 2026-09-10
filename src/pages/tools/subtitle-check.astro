@@ -1,0 +1,89 @@
+---
+import Base from '../../layouts/Base.astro';
+import TextToolShell from '../../components/TextToolShell.astro';
+import ToolFooter from '../../components/ToolFooter.astro';
+import { subCheck as t } from '../../content/subtitleTools';
+---
+<Base title={t.seoTitle} description={t.seoDescription}>
+  <div class="work">
+    <TextToolShell {...t} acceptFile=".srt,.vtt,text/plain"
+                   category={{ slug: 'subtitle', name: '字幕' }}>
+      <Fragment slot="settings">
+        <div class="row">
+          <label for="chars">1行の文字数</label>
+          <input id="chars" type="number" value="20" min="1" max="100" />
+        </div>
+        <div class="row">
+          <label for="lines">行数</label>
+          <input id="lines" type="number" value="2" min="1" max="6" />
+        </div>
+        <div class="row">
+          <label for="cps">1秒に読める文字数</label>
+          <input id="cps" type="number" value="8" min="1" max="30" />
+        </div>
+        <div class="row">
+          <label for="mind">表示時間の下限（秒）</label>
+          <input id="mind" type="number" value="1" min="0" max="10" step="0.1" />
+        </div>
+      </Fragment>
+    </TextToolShell>
+    <ToolFooter {...t} />
+  </div>
+</Base>
+
+<script>
+  import { setupTextTool, escapeHtml, withExtension } from '../../lib/textRunner';
+  import { parseSubtitle, checkCues, summarize, JA_RULES } from '../../lib/subtitle';
+
+  const $ = (id: string) => document.getElementById(id) as HTMLInputElement;
+
+  const LABEL: Record<string, string> = {
+    lineTooLong: '1行が長い', tooManyLines: '行数が多い', tooShort: '表示が短い',
+    tooLong: '表示が長い', tooFast: '読む速さが速い', overlap: '前と重なる',
+    reversed: '時刻が逆', empty: '本文が空',
+  };
+
+  const runner = setupTextTool({
+    defaultFileName: 'check.txt',
+    run: (input) => {
+      const cues = parseSubtitle(input);
+      if (cues.length === 0) throw new Error('字幕として読めませんでした。SRTかVTTを貼り付けてください。');
+
+      const rules = {
+        ...JA_RULES,
+        maxCharsPerLine: Number($('chars').value) || JA_RULES.maxCharsPerLine,
+        maxLines: Number($('lines').value) || JA_RULES.maxLines,
+        maxCharsPerSecond: Number($('cps').value) || JA_RULES.maxCharsPerSecond,
+        minDurationMs: (Number($('mind').value) || 1) * 1000,
+      };
+      const issues = checkCues(cues, rules);
+      const s = summarize(cues);
+      const mins = Math.floor(s.durationMs / 60000);
+      const secs = Math.round((s.durationMs % 60000) / 1000);
+
+      const head = `<div class="sum">
+        <span><b>${s.count}</b>個の字幕</span>
+        <span><b>${s.chars.toLocaleString()}</b>文字</span>
+        <span><b>${mins}:${String(secs).padStart(2, '0')}</b>まで</span>
+        <span><b>${issues.length}</b>件の指摘</span>
+      </div>`;
+
+      const body = issues.length === 0
+        ? '<p class="ok">目安の範囲に収まっています。</p>'
+        : `<ul>${issues.map((i) =>
+            `<li><span class="at">${i.cueIndex}番目</span>
+             <span><strong>${LABEL[i.kind]}</strong>　<span class="what">${escapeHtml(i.detail)}</span></span></li>`
+          ).join('')}</ul>`;
+
+      const textReport = issues.length === 0
+        ? '指摘はありません。'
+        : issues.map((i) => `${i.cueIndex}番目\t${LABEL[i.kind]}\t${i.detail}`).join('\n');
+
+      return {
+        reportHtml: head + body,
+        text: `字幕 ${s.count}個 / ${s.chars}文字 / 指摘 ${issues.length}件\n\n${textReport}\n`,
+        fileName: withExtension(runner.getSourceName(), 'txt', 'check.txt'),
+      };
+    },
+  });
+</script>

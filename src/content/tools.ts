@@ -31,11 +31,12 @@ export type Tool = {
   /** 大分類。/tools/<category>/ のページに並ぶ */
   category: string;
   /** カテゴリページ内での小見出し */
-  group: '出品の写真' | 'サイズと形式' | 'アイコンを作る';
+  group: (typeof GROUPS)[number];
   ready: boolean;
 };
 
-export const GROUPS = ['出品の写真', 'サイズと形式', 'アイコンを作る'] as const;
+export const GROUPS = ['出品の写真', 'サイズと形式', 'アイコンを作る',
+  '字幕を整える', '字幕を変換する'] as const;
 
 /**
  * ツールの大分類。ジャンルが増えたらここに1行足して、/tools/<slug>/ のページを作る。
@@ -59,6 +60,17 @@ export const categories: Category[] = [
       '/img/tools/square-before-after.webp',
       '/img/tools/compress.webp',
       '/img/tools/favicon.webp',
+    ],
+    ready: true,
+  },
+  {
+    slug: 'subtitle',
+    name: '字幕',
+    lead: 'SRTとVTTの変換、タイミングのずらし、本文の取り出し。それと、読みきれるかどうかの検査。動画に字幕をつける作業のための道具です。',
+    thumbs: [
+      '/img/tools/subtitle-check.webp',
+      '/img/tools/subtitle-shift.webp',
+      '/img/tools/subtitle-text.webp',
     ],
     ready: true,
   },
@@ -145,5 +157,41 @@ export const tools: Tool[] = [
     image: '/img/tools/appicon.webp',
     imageAlt: '1枚の画像から、App StoreとGoogle Playに必要なサイズが書き出される様子',
     category: 'image', group: 'アイコンを作る', ready: true,
+  },
+  {
+    slug: 'subtitle-check', short: '文字数チェック',
+    name: '字幕の文字数・表示速度をチェック',
+    lead: '読みきれない字幕を洗い出します。',
+    body: '1行の文字数、行数、表示時間、読む速さ、前後の重なりを一度に検査します。目安の値は変えられます。',
+    image: '/img/tools/subtitle-check.webp',
+    imageAlt: '長すぎる行や速すぎる字幕が指摘される様子',
+    category: 'subtitle', group: '字幕を整える', ready: true,
+  },
+  {
+    slug: 'subtitle-shift', short: 'タイミングをずらす',
+    name: '字幕のタイミングをずらす',
+    lead: '全体の時刻をまとめて前後にずらします。',
+    body: '再生速度を変えた動画に合わせて、倍率でのばすこともできます。',
+    image: '/img/tools/subtitle-shift.webp',
+    imageAlt: '字幕全体の時刻がまとめて後ろにずれる様子',
+    category: 'subtitle', group: '字幕を整える', ready: true,
+  },
+  {
+    slug: 'subtitle-convert', short: 'SRT⇄VTT',
+    name: 'SRTとVTTを相互変換',
+    lead: '字幕ファイルの形式を変換します。',
+    body: '時刻と本文を移します。位置や色の指定は引き継がれません。',
+    image: '/img/tools/subtitle-convert.webp',
+    imageAlt: 'SRTとVTTが相互に変換できることを示す図',
+    category: 'subtitle', group: '字幕を変換する', ready: true,
+  },
+  {
+    slug: 'subtitle-text', short: '本文だけ取り出す',
+    name: '字幕から本文だけを取り出す',
+    lead: '番号と時刻を外して、中身だけにします。',
+    body: '台本や動画の説明欄の下書きに使えます。字幕の中の改行をつなげるかどうかも選べます。',
+    image: '/img/tools/subtitle-text.webp',
+    imageAlt: '番号と時刻が落ちて、本文だけが残る様子',
+    category: 'subtitle', group: '字幕を変換する', ready: true,
   },
 ];

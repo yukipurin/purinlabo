@@ -1,0 +1,136 @@
+---
+/**
+ * 文字を扱うツールの共通の枠。
+ * 画像ツールと違い、入力も結果もその場で見える必要があるので別の枠にしている。
+ */
+export interface Props {
+  title: string;
+  titleMark?: string;
+  lead: string;
+  inputLabel: string;
+  placeholder: string;
+  runButton: string;
+  privacy: string;
+  resultLabel: string;
+  downloadButton: string;
+  copyButton: string;
+  clearButton: string;
+  acceptFile?: string;
+  fileHint?: string;
+  category?: { slug: string; name: string };
+}
+const {
+  title, titleMark, lead, inputLabel, placeholder, runButton, privacy,
+  resultLabel, downloadButton, copyButton, clearButton,
+  acceptFile, fileHint, category,
+} = Astro.props;
+
+const heading = titleMark ? title.replace(titleMark, `<span class="mark">${titleMark}</span>`) : title;
+---
+{category && (
+  <p class="crumb">
+    <a href="/tools/">ツール</a> ／ <a href={`/tools/${category.slug}/`}>{category.name}</a>
+  </p>
+)}
+<h1 class="page-h1" set:html={heading} />
+<p class="lead">{lead}</p>
+
+<div class="hand-box tool">
+  <div class="head">
+    <label for="input">{inputLabel}</label>
+    {acceptFile && (
+      <span class="pickwrap">
+        <button id="pick" class="link-btn" type="button">ファイルから読み込む</button>
+        <input id="file" type="file" accept={acceptFile} hidden />
+      </span>
+    )}
+  </div>
+  <textarea id="input" placeholder={placeholder} spellcheck="false"></textarea>
+  {fileHint && <p class="hint">{fileHint}</p>}
+
+  <div id="settings" class="form"><slot name="settings" /></div>
+
+  <div class="actions">
+    <button id="run" class="btn" type="button">{runButton}</button>
+    <button id="clear" class="link-btn" type="button">{clearButton}</button>
+    <span id="count" class="count"></span>
+  </div>
+
+  <p class="safe">
+    <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+      <path d="M8 1.6l5.4 2v3.9c0 3.1-2.2 5.9-5.4 6.9-3.2-1-5.4-3.8-5.4-6.9V3.6l5.4-2z"
+            stroke="#2c6b4b" stroke-width="1.7" stroke-linejoin="round"/>
+    </svg>
+    <span>{privacy}</span>
+  </p>
+</div>
+
+<section id="results" hidden>
+  <h2>{resultLabel}<span class="rule-wave"></span></h2>
+  <div id="report" class="report"></div>
+  <textarea id="output" readonly spellcheck="false"></textarea>
+  <p class="actions">
+    <button id="download" class="btn" type="button">{downloadButton}</button>
+    <button id="copy" class="link-btn" type="button">{copyButton}</button>
+    <span id="copied" class="copied" hidden>コピーしました</span>
+  </p>
+</section>
+
+<style>
+  .crumb { margin: 34px 0 10px; font-size: 13px; letter-spacing: .08em; color: var(--muted); }
+  .crumb a { color: var(--kraft-deep); text-decoration: none; }
+  .crumb a:hover { text-decoration: underline; }
+  .crumb + .page-h1 { margin-top: 0; }
+  .page-h1 { margin: 34px 0 6px; font-size: 30px; }
+  .lead { margin-bottom: 22px; font-size: 15px; color: var(--muted); }
+
+  .tool { padding: 20px; }
+  .head { display: flex; align-items: baseline; justify-content: space-between; gap: 14px; flex-wrap: wrap; margin-bottom: 8px; }
+  .head label { font-size: 13px; font-weight: 700; color: var(--muted); }
+
+  textarea {
+    width: 100%; min-height: 180px; resize: vertical;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 13px; line-height: 1.85; color: var(--ink-2);
+    padding: 14px; background: #fffef9; border: 2px solid var(--rule);
+    border-radius: 9px 4px 10px 5px / 5px 9px 4px 10px;
+  }
+  textarea:focus { border-color: var(--tape); outline: none; }
+  #output { background: #f7f9f6; margin-top: 14px; }
+
+  .hint { margin: 8px 0 0; font-size: 12px; color: var(--ink3); }
+  .form:empty { display: none; }
+  .form { margin-top: 16px; border-top: 1px dashed var(--rule); }
+  .actions { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; padding-top: 16px; }
+  .link-btn { background: none; border: 0; color: var(--muted); font-family: var(--body); font-size: 13px; cursor: pointer; text-decoration: underline; }
+  .count { font-size: 13px; color: var(--ink3); }
+  .copied { font-size: 13px; color: var(--tape-d); font-weight: 700; }
+
+  .safe { margin-top: 16px; display: flex; gap: 9px; align-items: flex-start; font-size: 13.5px; color: var(--tape-d); }
+  .safe svg { flex: none; margin-top: 5px; }
+
+  #results { margin-top: 40px; }
+  #results h2 { display: flex; align-items: center; gap: 9px; margin-bottom: 12px; font-size: 18px; }
+  .report:empty { display: none; }
+</style>
+
+<style is:global>
+  .tool .row { display: flex; align-items: center; gap: 14px; padding: 10px 2px; border-bottom: 1px dashed var(--rule); flex-wrap: wrap; }
+  .tool .row label { font-size: 13px; color: var(--muted); min-width: 8em; }
+  .tool .row select, .tool .row input[type="text"], .tool .row input[type="number"] {
+    font-family: var(--body); font-size: 14px; color: var(--ink-2);
+    padding: 7px 10px; background: #fff; border: 2px solid var(--rule);
+    border-radius: 7px 3px 8px 4px / 4px 7px 3px 8px; flex: 1; min-width: 160px;
+  }
+  .tool .row input[type="number"] { max-width: 150px; flex: none; }
+  .tool .row select:focus, .tool .row input:focus { border-color: var(--tape); }
+
+  /* 検査の結果表示 */
+  .report .sum { display: flex; gap: 24px; flex-wrap: wrap; padding: 14px 0; border-bottom: 1px dashed var(--rule); font-size: 14px; }
+  .report .sum b { font-family: var(--display); font-size: 20px; color: var(--kraft-deep); margin-right: 6px; }
+  .report .ok { padding: 16px 0; color: var(--tape-d); font-weight: 700; }
+  .report ul { list-style: none; margin: 0; padding: 0; }
+  .report li { display: flex; gap: 12px; padding: 9px 0; border-bottom: 1px dashed var(--rule); font-size: 14px; align-items: baseline; }
+  .report .at { flex: none; font-family: var(--display); font-weight: 700; color: var(--stamp); min-width: 4.5em; }
+  .report .what { color: var(--muted); }
+</style>
