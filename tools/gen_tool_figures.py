@@ -336,4 +336,51 @@ for i in range(4):
     label(d, 546 + i * 108, 266, str(i + 1), 16, MUTED, True, "ma")
 save(im, "pdf-extract")
 
+
+# ================================================================ カラー
+# ---- color-contrast：読める組み合わせと読めない組み合わせ
+im, d = canvas()
+pairs = [((250, 244, 232), (47, 38, 24), "12.4", TAPE, "PASS"),
+         ((250, 244, 232), (214, 206, 190), "1.3", STAMP, "FAIL")]
+for i, (bg, fg, ratio, mark, verdict) in enumerate(pairs):
+    x = 70 + i * 440
+    d.rounded_rectangle([x, 70, x + 340, 230], 10, fill=bg, outline=FRAME, width=3)
+    d.rounded_rectangle([x + 30, 118, x + 280, 136], 6, fill=fg)
+    d.rounded_rectangle([x + 30, 152, x + 210, 166], 5, fill=fg)
+    label(d, x + 170, 268, ratio + " : 1", 26, mark, True, "ma")
+    d.rounded_rectangle([x + 108, 288, x + 232, 326], 8,
+                        fill=(226, 240, 232) if verdict == "PASS" else (246, 228, 224),
+                        outline=mark, width=2)
+    label(d, x + 170, 307, verdict, 17, mark, True, "mm")
+save(im, "color-contrast")
+
+# ---- color-convert：1色が3つの表記と段階に
+im, d = canvas()
+d.rounded_rectangle([70, 70, 250, 250], 10, fill=(61, 139, 100), outline=FRAME, width=3)
+for i, t in enumerate(["HEX", "RGB", "HSL"]):
+    y = 78 + i * 62
+    d.rounded_rectangle([300, y, 560, y + 46], 8, fill=CARD, outline=FRAME, width=2)
+    label(d, 318, y + 23, t, 16, KRAFT, True, "lm")
+    d.rounded_rectangle([374, y + 17, 542, y + 29], 5, fill=(214, 204, 186))
+for i in range(7):
+    l = 0.92 - i * 0.12
+    col = tuple(int(255 - (255 - c) * (1 - (l - 0.2))) for c in (61, 139, 100))
+    d.rounded_rectangle([620 + i * 42, 130, 654 + i * 42, 230], 5, fill=col)
+label(d, 745, 262, "shades", 17, MUTED, True, "ma")
+save(im, "color-convert")
+
+# ---- color-picker：画像から代表色
+im, d = canvas()
+d.rounded_rectangle([70, 70, 400, 290], 8, fill=CARD, outline=FRAME, width=3)
+blocks = [((206, 150, 110), 84, 84, 180, 120), ((150, 180, 158), 84, 212, 120, 66),
+          ((190, 170, 200), 214, 212, 172, 66), ((120, 140, 170), 274, 84, 116, 120)]
+for col, x, y, w, h in blocks:
+    d.rounded_rectangle([x, y, x + w, y + h], 4, fill=col)
+arrow(d, 450, 180)
+for i, (col, _, _, _, _) in enumerate(blocks):
+    x = 610 + i * 76
+    d.rounded_rectangle([x, 130, x + 62, 192], 6, fill=col, outline=FRAME, width=2)
+    label(d, x + 31, 208, ["38%", "26%", "22%", "14%"][i], 14, MUTED, True, "ma")
+save(im, "color-picker")
+
 print("\n完了")

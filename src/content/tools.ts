@@ -38,7 +38,8 @@ export type Tool = {
 export const GROUPS = ['出品の写真', 'サイズと形式', 'アイコンを作る',
   '字幕を整える', '字幕を変換する',
   '数える', '表記を揃える',
-  'まとめる・分ける', 'ページを直す'] as const;
+  'まとめる・分ける', 'ページを直す',
+  '読みやすさ', '色をあつかう'] as const;
 
 /**
  * ツールの大分類。ジャンルが増えたらここに1行足して、/tools/<slug>/ のページを作る。
@@ -95,6 +96,17 @@ export const categories: Category[] = [
       '/img/tools/pdf-merge.webp',
       '/img/tools/pdf-split.webp',
       '/img/tools/pdf-rotate.webp',
+    ],
+    ready: true,
+  },
+  {
+    slug: 'color',
+    name: 'カラー',
+    lead: '文字色と背景色が読めるかどうかの判定、HEX・RGB・HSLの変換、画像からの色の取り出し。配色を決めるための道具です。',
+    thumbs: [
+      '/img/tools/color-contrast.webp',
+      '/img/tools/color-convert.webp',
+      '/img/tools/color-picker.webp',
     ],
     ready: true,
   },
@@ -289,5 +301,32 @@ export const tools: Tool[] = [
     image: '/img/tools/pdf-rotate.webp',
     imageAlt: '横向きのページが回り、不要なページが外れる様子',
     category: 'pdf', group: 'ページを直す', ready: true,
+  },
+  {
+    slug: 'color-contrast', short: 'コントラスト比',
+    name: '文字色と背景色のコントラスト比をチェック',
+    lead: 'その配色で文字が読めるかを判定します。',
+    body: 'WCAGの基準（本文4.5・大きな文字3.0・厳しい基準7.0）に照らして判定し、実際の見え方も並べて出します。',
+    image: '/img/tools/color-contrast.webp',
+    imageAlt: '読める配色と読めない配色が並んで判定される様子',
+    category: 'color', group: '読みやすさ', ready: true,
+  },
+  {
+    slug: 'color-convert', short: 'コード変換',
+    name: 'カラーコードを変換（HEX・RGB・HSL）',
+    lead: 'HEX・RGB・HSLを行き来します。',
+    body: '明るさを段階的に変えた色と、補色や三色配色も出します。',
+    image: '/img/tools/color-convert.webp',
+    imageAlt: '1つの色がHEX・RGB・HSLの表記になり、明るさの段階に展開される様子',
+    category: 'color', group: '色をあつかう', ready: true,
+  },
+  {
+    slug: 'color-picker', short: '画像から色を抜く',
+    name: '画像から色を抜き出す',
+    lead: 'よく使われている色をカラーコードで取り出します。',
+    body: '画像をクリックすると、その場所の色も拾えます。画像はブラウザ内で処理します。',
+    image: '/img/tools/color-picker.webp',
+    imageAlt: '画像から代表的な色が取り出される様子',
+    category: 'color', group: '色をあつかう', ready: true,
   },
 ];

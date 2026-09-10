@@ -1,0 +1,134 @@
+---
+import Base from '../../layouts/Base.astro';
+import ToolFooter from '../../components/ToolFooter.astro';
+import { colorContrast as t } from '../../content/colorTools';
+---
+<Base title={t.seoTitle} description={t.seoDescription}>
+  <div class="work">
+    <p class="crumb"><a href="/tools/">ツール</a> ／ <a href="/tools/color/">カラー</a></p>
+    <h1 class="page-h1">その配色、<span class="mark">読めますか</span>。</h1>
+    <p class="lead">{t.lead}</p>
+
+    <figure class="fig"><img src="/img/tools/color-contrast.webp" width="940" height="360"
+      alt="文字色と背景色の組み合わせが、読めるかどうか判定される様子" /></figure>
+
+    <div class="hand-box tool">
+      <div class="row">
+        <label for="fg">文字の色</label>
+        <input id="fg" type="text" value="#6f6353" />
+        <input id="fgp" type="color" value="#6f6353" aria-label="文字の色を選ぶ" />
+      </div>
+      <div class="row">
+        <label for="bg">背景の色</label>
+        <input id="bg" type="text" value="#faf4e8" />
+        <input id="bgp" type="color" value="#faf4e8" aria-label="背景の色を選ぶ" />
+      </div>
+      <div class="row">
+        <button id="swap" class="link-btn" type="button">入れ替える</button>
+      </div>
+
+      <div id="preview" class="preview">
+        <p class="big">本文の見え方はこうなります</p>
+        <p class="small">小さい文字だと、こう見えます。読みにくければ明るさを変えてください。</p>
+      </div>
+
+      <p id="ratio" class="ratio"></p>
+      <ul id="judge" class="judge"></ul>
+
+      <p class="safe">
+        <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="M8 1.6l5.4 2v3.9c0 3.1-2.2 5.9-5.4 6.9-3.2-1-5.4-3.8-5.4-6.9V3.6l5.4-2z"
+                stroke="#2c6b4b" stroke-width="1.7" stroke-linejoin="round"/>
+        </svg>
+        <span>{t.privacy}</span>
+      </p>
+    </div>
+
+    <ToolFooter {...t} />
+  </div>
+</Base>
+
+<script>
+  import { parseColor, toHex, judgeContrast } from '../../lib/color';
+
+  const $ = (id: string) => document.getElementById(id) as HTMLInputElement;
+  const preview = document.getElementById('preview')!;
+  const ratioEl = document.getElementById('ratio')!;
+  const judgeEl = document.getElementById('judge')!;
+
+  const ROWS: [keyof ReturnType<typeof judgeContrast>, string, string][] = [
+    ['normalAA', '本文（4.5以上）', '14px前後のふつうの文字'],
+    ['largeAA', '大きな文字（3.0以上）', '18.66px太字 または 24px以上'],
+    ['uiAA', 'ボタンの枠など（3.0以上）', '文字でない部分'],
+    ['normalAAA', 'より厳しい基準（7.0以上）', '本文をもっと読みやすくしたい場合'],
+  ];
+
+  function update() {
+    let fg, bg;
+    try { fg = parseColor($('fg').value); bg = parseColor($('bg').value); }
+    catch { ratioEl.textContent = '色として読めません'; judgeEl.innerHTML = ''; return; }
+
+    $('fgp').value = toHex(fg);
+    $('bgp').value = toHex(bg);
+    preview.style.background = toHex(bg);
+    preview.style.color = toHex(fg);
+
+    const j = judgeContrast(fg, bg);
+    ratioEl.innerHTML = `コントラスト比 <b>${j.ratio.toFixed(2)}</b> : 1`;
+    judgeEl.innerHTML = ROWS.map(([key, name, note]) => {
+      const ok = j[key] as boolean;
+      return `<li class="${ok ? 'ok' : 'ng'}">
+        <span class="mk">${ok ? '通る' : '落ちる'}</span>
+        <span><strong>${name}</strong><span class="note">${note}</span></span>
+      </li>`;
+    }).join('');
+  }
+
+  for (const id of ['fg', 'bg']) $(id).addEventListener('input', update);
+  $('fgp').addEventListener('input', () => { $('fg').value = $('fgp').value; update(); });
+  $('bgp').addEventListener('input', () => { $('bg').value = $('bgp').value; update(); });
+  document.getElementById('swap')!.addEventListener('click', () => {
+    const a = $('fg').value; $('fg').value = $('bg').value; $('bg').value = a; update();
+  });
+  update();
+</script>
+
+<style>
+  .crumb { margin: 34px 0 10px; font-size: 13px; letter-spacing: .08em; color: var(--muted); }
+  .crumb a { color: var(--kraft-deep); text-decoration: none; }
+  .page-h1 { margin: 0 0 6px; font-size: 30px; }
+  .lead { margin-bottom: 22px; font-size: 15px; color: var(--muted); }
+  .fig { margin: 0 0 22px; }
+  .fig img { display: block; width: 100%; height: auto; background: var(--paper);
+             border: 2px solid rgba(184,125,69,.3); border-radius: 12px 5px 14px 6px / 6px 13px 5px 12px; }
+  .tool { padding: 20px; }
+
+  .preview { margin-top: 20px; padding: 28px 24px; border-radius: 10px 4px 12px 5px / 5px 11px 4px 10px;
+             border: 2px solid var(--rule); }
+  .preview .big { font-family: var(--display); font-weight: 700; font-size: 21px; margin: 0 0 10px; color: inherit; }
+  .preview .small { font-size: 13px; margin: 0; color: inherit; }
+
+  .ratio { margin-top: 20px; font-size: 15px; color: var(--muted); }
+  .ratio b { font-family: var(--display); font-size: 30px; color: var(--ink-2); margin: 0 6px; }
+
+  .judge { list-style: none; margin: 14px 0 0; padding: 0; }
+  .judge li { display: flex; gap: 14px; align-items: baseline; padding: 10px 0; border-bottom: 1px dashed var(--rule); font-size: 14.5px; }
+  .judge .mk { flex: none; min-width: 3.5em; font-family: var(--display); font-weight: 700; }
+  .judge .ok .mk { color: var(--tape-d); }
+  .judge .ng .mk { color: var(--stamp); }
+  .judge .note { display: block; font-size: 12.5px; color: var(--ink3); margin-top: 2px; }
+  .safe { margin-top: 20px; display: flex; gap: 9px; align-items: flex-start; font-size: 13.5px; color: var(--tape-d); }
+  .safe svg { flex: none; margin-top: 5px; }
+</style>
+
+<style is:global>
+  .tool .row { display: flex; align-items: center; gap: 14px; padding: 10px 2px; border-bottom: 1px dashed var(--rule); flex-wrap: wrap; }
+  .tool .row label { font-size: 13px; color: var(--muted); min-width: 6em; }
+  .tool .row input[type="text"] {
+    font-family: ui-monospace, Menlo, monospace; font-size: 15px; color: var(--ink-2);
+    padding: 8px 12px; background: #fff; border: 2px solid var(--rule);
+    border-radius: 7px 3px 8px 4px / 4px 7px 3px 8px; flex: 1; min-width: 160px;
+  }
+  .tool .row input[type="color"] { width: 52px; height: 40px; border: 2px solid var(--rule); border-radius: 6px; background: #fff; cursor: pointer; padding: 3px; }
+  .tool .link-btn { background: none; border: 0; color: var(--muted); font-family: var(--body); font-size: 13px; cursor: pointer; text-decoration: underline; }
+</style>

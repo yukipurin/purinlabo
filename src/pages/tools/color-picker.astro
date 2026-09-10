@@ -1,0 +1,140 @@
+---
+import Base from '../../layouts/Base.astro';
+import ToolFooter from '../../components/ToolFooter.astro';
+import { colorPicker as t } from '../../content/colorTools';
+---
+<Base title={t.seoTitle} description={t.seoDescription}>
+  <div class="work">
+    <p class="crumb"><a href="/tools/">ツール</a> ／ <a href="/tools/color/">カラー</a></p>
+    <h1 class="page-h1">画像から、<span class="mark">色を抜き出す</span>。</h1>
+    <p class="lead">{t.lead}</p>
+
+    <figure class="fig"><img src="/img/tools/color-picker.webp" width="940" height="360"
+      alt="画像から代表的な色が取り出される様子" /></figure>
+
+    <div class="hand-box tool">
+      <div id="dropzone" class="hand-dash drop">
+        <p class="big">ここに画像をドラッグ＆ドロップ</p>
+        <p class="note">JPG / PNG / WebP に対応</p>
+        <button id="pick" class="btn" type="button">画像を選ぶ</button>
+        <p class="under">選択したファイルは送信されません</p>
+        <input id="file" type="file" accept="image/*" hidden />
+      </div>
+
+      <div id="stage" hidden>
+        <canvas id="canvas" class="canvas"></canvas>
+        <p class="hint">画像をクリックすると、その場所の色が取れます。</p>
+        <h3 class="sub">よく使われている色</h3>
+        <ul id="palette" class="chips"></ul>
+        <p id="picked" class="picked"></p>
+      </div>
+
+      <p class="safe">
+        <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="M8 1.6l5.4 2v3.9c0 3.1-2.2 5.9-5.4 6.9-3.2-1-5.4-3.8-5.4-6.9V3.6l5.4-2z"
+                stroke="#2c6b4b" stroke-width="1.7" stroke-linejoin="round"/>
+        </svg>
+        <span>{t.privacy}</span>
+      </p>
+    </div>
+
+    <ToolFooter {...t} />
+  </div>
+</Base>
+
+<script>
+  import { dominantColors, toHex, bestTextOn } from '../../lib/color';
+
+  const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
+  const canvas = $<HTMLCanvasElement>('canvas');
+  const dropzone = $<HTMLDivElement>('dropzone');
+  const fileInput = $<HTMLInputElement>('file');
+
+  async function load(file: File) {
+    let bitmap: ImageBitmap;
+    try { bitmap = await createImageBitmap(file); }
+    catch { $('palette').innerHTML = '<li class="ng">この形式は開けません</li>'; return; }
+
+    // 大きい画像は縮めてから数える。速さのため
+    const max = 600;
+    const scale = Math.min(1, max / Math.max(bitmap.width, bitmap.height));
+    canvas.width = Math.round(bitmap.width * scale);
+    canvas.height = Math.round(bitmap.height * scale);
+    const ctx = canvas.getContext('2d', { willReadFrequently: true })!;
+    ctx.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+    bitmap.close();
+
+    const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+    const found = dominantColors(data, 8);
+    $('palette').innerHTML = found.map(({ color, ratio }) => {
+      const hex = toHex(color);
+      return `<li><button type="button" class="sw" data-hex="${hex}" style="background:${hex};color:${
+        bestTextOn(color) === 'white' ? '#fff' : '#000'}">${hex}<span class="pc">${
+        Math.round(ratio * 100)}%</span></button></li>`;
+    }).join('');
+    $('stage').hidden = false;
+  }
+
+  $('pick').addEventListener('click', () => fileInput.click());
+  fileInput.addEventListener('change', () => { const f = fileInput.files?.[0]; if (f) load(f); });
+  ['dragenter', 'dragover'].forEach((ev) =>
+    dropzone.addEventListener(ev, (e) => { e.preventDefault(); dropzone.classList.add('over'); }));
+  ['dragleave', 'drop'].forEach((ev) =>
+    dropzone.addEventListener(ev, (e) => { e.preventDefault(); dropzone.classList.remove('over'); }));
+  dropzone.addEventListener('drop', (e) => {
+    const f = (e as DragEvent).dataTransfer?.files?.[0]; if (f) load(f);
+  });
+
+  canvas.addEventListener('click', (e) => {
+    const rect = canvas.getBoundingClientRect();
+    const x = Math.floor((e.clientX - rect.left) * (canvas.width / rect.width));
+    const y = Math.floor((e.clientY - rect.top) * (canvas.height / rect.height));
+    const [r, g, b] = canvas.getContext('2d')!.getImageData(x, y, 1, 1).data;
+    const hex = toHex({ r, g, b });
+    $('picked').innerHTML = `クリックした色　<button type="button" class="sw wide" data-hex="${hex}" style="background:${hex};color:${
+      bestTextOn({ r, g, b }) === 'white' ? '#fff' : '#000'}">${hex}</button>`;
+  });
+
+  document.addEventListener('click', async (e) => {
+    const el = (e.target as HTMLElement).closest('[data-hex]') as HTMLElement | null;
+    if (!el) return;
+    await navigator.clipboard.writeText(el.dataset.hex!);
+    const before = el.innerHTML;
+    el.textContent = 'コピーしました';
+    setTimeout(() => { el.innerHTML = before; }, 1200);
+  });
+</script>
+
+<style>
+  .crumb { margin: 34px 0 10px; font-size: 13px; letter-spacing: .08em; color: var(--muted); }
+  .crumb a { color: var(--kraft-deep); text-decoration: none; }
+  .page-h1 { margin: 0 0 6px; font-size: 30px; }
+  .lead { margin-bottom: 22px; font-size: 15px; color: var(--muted); }
+  .fig { margin: 0 0 22px; }
+  .fig img { display: block; width: 100%; height: auto; background: var(--paper);
+             border: 2px solid rgba(184,125,69,.3); border-radius: 12px 5px 14px 6px / 6px 13px 5px 12px; }
+  .tool { padding: 20px; }
+  .drop { background: #fffef9; padding: 36px 16px; text-align: center; }
+  .drop.over { border-color: var(--tape); background: #f4fbf7; }
+  .drop .big { font-family: var(--display); font-weight: 700; font-size: 19px; color: var(--ink-2); margin: 0 0 3px; }
+  .drop .note { margin: 0; font-size: 13px; color: var(--muted); }
+  .drop .under { margin: 9px 0 0; font-size: 12px; color: var(--ink3); }
+  .drop .btn { margin-top: 14px; }
+  .canvas { display: block; max-width: 100%; height: auto; margin-top: 20px; cursor: crosshair;
+            border: 2px solid var(--rule); border-radius: 8px; }
+  .hint { margin: 10px 0 0; font-size: 12.5px; color: var(--ink3); }
+  .sub { font-family: var(--display); font-weight: 700; font-size: 15px; margin: 24px 0 10px; color: var(--kraft-deep); }
+  .picked { margin-top: 18px; font-size: 14px; color: var(--muted); }
+  .safe { margin-top: 22px; display: flex; gap: 9px; align-items: flex-start; font-size: 13.5px; color: var(--tape-d); }
+  .safe svg { flex: none; margin-top: 5px; }
+</style>
+
+<style is:global>
+  .tool .chips { list-style: none; display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 0; }
+  .tool .chips .ng { color: var(--stamp); font-size: 14px; }
+  .tool .sw { font-family: ui-monospace, Menlo, monospace; border: 2px solid rgba(0,0,0,.12);
+              font-size: 12px; font-weight: 700; padding: 14px 10px; min-width: 96px; cursor: pointer;
+              border-radius: 7px 3px 8px 4px / 4px 7px 3px 8px; }
+  .tool .sw .pc { display: block; font-size: 10px; opacity: .8; margin-top: 3px; }
+  .tool .sw.wide { min-width: 120px; }
+</style>

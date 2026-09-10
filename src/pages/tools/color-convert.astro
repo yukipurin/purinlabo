@@ -1,0 +1,130 @@
+---
+import Base from '../../layouts/Base.astro';
+import ToolFooter from '../../components/ToolFooter.astro';
+import { colorConvert as t } from '../../content/colorTools';
+---
+<Base title={t.seoTitle} description={t.seoDescription}>
+  <div class="work">
+    <p class="crumb"><a href="/tools/">ツール</a> ／ <a href="/tools/color/">カラー</a></p>
+    <h1 class="page-h1">色を、<span class="mark">使える形</span>に。</h1>
+    <p class="lead">{t.lead}</p>
+
+    <figure class="fig"><img src="/img/tools/color-convert.webp" width="940" height="360"
+      alt="1つの色がHEX・RGB・HSLの表記になり、明るさの段階に展開される様子" /></figure>
+
+    <div class="hand-box tool">
+      <div class="row">
+        <label for="src">色</label>
+        <input id="src" type="text" value="#3d8b64" />
+        <input id="pick" type="color" value="#3d8b64" aria-label="色を選ぶ" />
+      </div>
+      <div id="swatch" class="swatch"></div>
+      <ul id="codes" class="codes"></ul>
+
+      <h3 class="sub">明るさの段階</h3>
+      <ul id="shades" class="chips"></ul>
+
+      <h3 class="sub">色相をずらした色</h3>
+      <div class="row">
+        <label for="kind">配色</label>
+        <select id="kind">
+          <option value="complement" selected>補色（2色）</option>
+          <option value="triad">三色配色</option>
+          <option value="analogous">となりの色（3色）</option>
+        </select>
+      </div>
+      <ul id="harmony" class="chips"></ul>
+
+      <p class="safe">
+        <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="M8 1.6l5.4 2v3.9c0 3.1-2.2 5.9-5.4 6.9-3.2-1-5.4-3.8-5.4-6.9V3.6l5.4-2z"
+                stroke="#2c6b4b" stroke-width="1.7" stroke-linejoin="round"/>
+        </svg>
+        <span>{t.privacy}</span>
+      </p>
+    </div>
+
+    <ToolFooter {...t} />
+  </div>
+</Base>
+
+<script>
+  import { parseColor, toHex, rgbToHsl, shades, harmony, bestTextOn } from '../../lib/color';
+
+  const $ = (id: string) => document.getElementById(id) as HTMLInputElement & HTMLSelectElement;
+
+  const chip = (rgb: { r: number; g: number; b: number }, label?: string) => {
+    const hex = toHex(rgb);
+    return `<li><button type="button" class="sw" data-hex="${hex}" style="background:${hex};color:${
+      bestTextOn(rgb) === 'white' ? '#fff' : '#000'}">${label ?? hex}</button></li>`;
+  };
+
+  function update() {
+    let rgb;
+    try { rgb = parseColor($('src').value); }
+    catch { document.getElementById('codes')!.innerHTML = '<li class="ng">色として読めません</li>'; return; }
+
+    const hex = toHex(rgb);
+    const hsl = rgbToHsl(rgb);
+    $('pick').value = hex;
+    document.getElementById('swatch')!.setAttribute('style', `background:${hex}`);
+
+    document.getElementById('codes')!.innerHTML = [
+      ['HEX', hex],
+      ['RGB', `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`],
+      ['HSL', `hsl(${hsl.h}, ${hsl.s}%, ${hsl.l}%)`],
+    ].map(([k, v]) =>
+      `<li><span class="k">${k}</span><code>${v}</code><button class="cp" type="button" data-copy="${v}">コピー</button></li>`
+    ).join('');
+
+    document.getElementById('shades')!.innerHTML = shades(rgb, 9).map((c) => chip(c)).join('');
+    document.getElementById('harmony')!.innerHTML =
+      harmony(rgb, $('kind').value as 'complement' | 'triad' | 'analogous').map((c) => chip(c)).join('');
+  }
+
+  $('src').addEventListener('input', update);
+  $('pick').addEventListener('input', () => { $('src').value = $('pick').value; update(); });
+  $('kind').addEventListener('change', update);
+
+  document.addEventListener('click', async (e) => {
+    const el = (e.target as HTMLElement).closest('[data-copy],[data-hex]') as HTMLElement | null;
+    if (!el) return;
+    const value = el.dataset.copy ?? el.dataset.hex!;
+    await navigator.clipboard.writeText(value);
+    const before = el.textContent;
+    el.textContent = 'コピーしました';
+    setTimeout(() => { el.textContent = before; }, 1200);
+  });
+
+  update();
+</script>
+
+<style>
+  .crumb { margin: 34px 0 10px; font-size: 13px; letter-spacing: .08em; color: var(--muted); }
+  .crumb a { color: var(--kraft-deep); text-decoration: none; }
+  .page-h1 { margin: 0 0 6px; font-size: 30px; }
+  .lead { margin-bottom: 22px; font-size: 15px; color: var(--muted); }
+  .fig { margin: 0 0 22px; }
+  .fig img { display: block; width: 100%; height: auto; background: var(--paper);
+             border: 2px solid rgba(184,125,69,.3); border-radius: 12px 5px 14px 6px / 6px 13px 5px 12px; }
+  .tool { padding: 20px; }
+  .swatch { height: 96px; margin-top: 18px; border-radius: 10px 4px 12px 5px / 5px 11px 4px 10px; border: 2px solid var(--rule); }
+  .sub { font-family: var(--display); font-weight: 700; font-size: 15px; margin: 26px 0 10px; color: var(--kraft-deep); }
+  .safe { margin-top: 22px; display: flex; gap: 9px; align-items: flex-start; font-size: 13.5px; color: var(--tape-d); }
+  .safe svg { flex: none; margin-top: 5px; }
+</style>
+
+<style is:global>
+  .tool .codes { list-style: none; margin: 16px 0 0; padding: 0; }
+  .tool .codes li { display: flex; align-items: center; gap: 14px; padding: 9px 0; border-bottom: 1px dashed var(--rule); }
+  .tool .codes .k { font-family: var(--display); font-weight: 700; font-size: 13px; color: var(--kraft-deep); min-width: 3.5em; }
+  .tool .codes code { flex: 1; font-family: ui-monospace, Menlo, monospace; font-size: 14px; color: var(--ink-2); }
+  .tool .codes .ng { color: var(--stamp); }
+  .tool .cp, .tool .sw { font-family: var(--body); cursor: pointer; }
+  .tool .cp { background: none; border: 2px solid var(--rule); color: var(--muted); font-size: 12px;
+              padding: 5px 12px; border-radius: 6px 3px 7px 4px / 4px 6px 3px 7px; }
+  .tool .cp:hover { border-color: var(--tape); color: var(--tape-d); }
+  .tool .chips { list-style: none; display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 0; }
+  .tool .sw { border: 2px solid rgba(0,0,0,.12); font-size: 12px; font-weight: 700;
+              padding: 14px 10px; min-width: 84px; border-radius: 7px 3px 8px 4px / 4px 7px 3px 8px; }
+</style>
