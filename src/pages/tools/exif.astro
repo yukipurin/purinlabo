@@ -1,0 +1,48 @@
+---
+import Base from '../../layouts/Base.astro';
+import ToolShell from '../../components/ToolShell.astro';
+import ToolFooter from '../../components/ToolFooter.astro';
+import { exif as t } from '../../content/imageTools';
+---
+<Base title={t.seoTitle} description={t.seoDescription}>
+  <div class="work">
+    <ToolShell {...t} accept="image/jpeg,image/png">
+      <Fragment slot="settings">
+        <div class="row">
+          <label>やること</label>
+          <span class="check-note">
+            撮影日時・カメラの機種・位置情報・編集ソフトの記録を取り除きます。
+            画素には触れないので、画質は変わりません。
+          </span>
+        </div>
+      </Fragment>
+    </ToolShell>
+    <ToolFooter {...t} />
+  </div>
+</Base>
+
+<script>
+  import { setupTool, readBytes } from '../../lib/toolRunner';
+  import { stripMetadata } from '../../lib/metadata';
+  import { stripExtension } from '../../lib/image';
+
+  setupTool({
+    zipName: 'cleaned.zip',
+    showReduction: true,
+    accept: (f) => /^image\/(jpeg|png)$/.test(f.type) || /\.(jpe?g|png)$/i.test(f.name),
+    convert: async (file) => {
+      const src = await readBytes(file);
+      const { bytes, removed, savedBytes } = stripMetadata(src);
+      const ext = /\.png$/i.test(file.name) ? 'png' : 'jpg';
+      const blob = new Blob([bytes as BlobPart], { type: file.type || `image/${ext === 'jpg' ? 'jpeg' : 'png'}` });
+      const note = removed.length > 0
+        ? `${removed.join('、')} を削除`
+        : savedBytes === 0 ? '消す情報はありませんでした' : undefined;
+      return { blob, name: `${stripExtension(file.name)}.${ext}`, note };
+    },
+  });
+</script>
+
+<style is:global>
+  .tool .row .check-note { font-size: 13.5px; color: var(--muted); line-height: 1.8; flex: 1; min-width: 200px; }
+</style>

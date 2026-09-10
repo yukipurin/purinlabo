@@ -9,8 +9,11 @@ import { formatBytes, reductionPercent } from './image';
 
 export type Made = { name: string; blob: Blob; url: string; before: number };
 
+export type Output = { blob: Blob; name: string; note?: string };
+
+/** 1枚から複数を書き出すツール（ファビコン等）は配列を返す */
 export type Convert = (file: File, index: number, total: number)
-  => Promise<{ blob: Blob; name: string; note?: string }>;
+  => Promise<Output | Output[]>;
 
 export type RunnerOptions = {
   /** 1枚を変換する。ツールごとの中身 */
@@ -83,27 +86,30 @@ export function setupTool(opts: RunnerOptions) {
     for (let i = 0; i < picked.length; i++) {
       const file = picked[i];
       runBtn.textContent = `処理しています… ${i + 1} / ${picked.length}`;
-      const li = document.createElement('li');
       try {
-        const { blob, name, note } = await opts.convert(file, i, picked.length);
-        const url = URL.createObjectURL(blob);
-        made.push({ name, blob, url, before: file.size });
+        const res = await opts.convert(file, i, picked.length);
+        for (const { blob, name, note } of Array.isArray(res) ? res : [res]) {
+          const url = URL.createObjectURL(blob);
+          made.push({ name, blob, url, before: file.size });
 
-        const isImage = blob.type.startsWith('image/');
-        const thumb = isImage
-          ? `<a href="${url}" download="${name}"><img src="${url}" alt="" width="120" height="120" loading="lazy"></a>`
-          : '';
-        const size = opts.showReduction
-          ? `${formatBytes(file.size)} → ${formatBytes(blob.size)}（${reductionPercent(file.size, blob.size)}%減）`
-          : formatBytes(blob.size);
-        const extra = note ? `<span class="note">${note}</span>` : '';
-        li.innerHTML = `${thumb}<span class="fn">${name}</span><span class="sz">${size}</span>${extra}`;
+          const li = document.createElement('li');
+          const thumb = blob.type.startsWith('image/')
+            ? `<a href="${url}" download="${name}"><img src="${url}" alt="" width="120" height="120" loading="lazy"></a>`
+            : '';
+          const size = opts.showReduction
+            ? `${formatBytes(file.size)} → ${formatBytes(blob.size)}（${reductionPercent(file.size, blob.size)}%減）`
+            : formatBytes(blob.size);
+          const extra = note ? `<span class="note">${note}</span>` : '';
+          li.innerHTML = `${thumb}<span class="fn">${name}</span><span class="sz">${size}</span>${extra}`;
+          grid.appendChild(li);
+        }
       } catch (err) {
+        const li = document.createElement('li');
         li.className = 'ng';
         const why = err instanceof Error && err.message ? err.message : 'この形式はこのブラウザで開けません';
         li.innerHTML = `<span class="fn">${file.name}</span><span class="sz">${why}</span>`;
+        grid.appendChild(li);
       }
-      grid.appendChild(li);
     }
 
     runBtn.textContent = label;
@@ -148,6 +154,11 @@ export async function drawTo(
 
   return await new Promise<Blob>((resolve, reject) =>
     canvas.toBlob((b) => (b ? resolve(b) : reject(new Error('書き出しに失敗しました'))), mime, quality));
+}
+
+/** 再エンコードせずバイト列を扱いたいとき */
+export async function readBytes(file: File): Promise<Uint8Array> {
+  return new Uint8Array(await file.arrayBuffer());
 }
 
 /** 画像の寸法だけ知りたいとき */

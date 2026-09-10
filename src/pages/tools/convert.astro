@@ -1,0 +1,62 @@
+---
+import Base from '../../layouts/Base.astro';
+import ToolShell from '../../components/ToolShell.astro';
+import ToolFooter from '../../components/ToolFooter.astro';
+import { convert as t } from '../../content/imageTools';
+---
+<Base title={t.seoTitle} description={t.seoDescription}>
+  <div class="work">
+    <ToolShell {...t} accept="image/*,.heic,.heif">
+      <Fragment slot="settings">
+        <div class="row">
+          <label for="fmt">書き出す形式</label>
+          <select id="fmt">
+            <option value="webp" selected>WebP（いちばん軽い）</option>
+            <option value="jpg">JPG（どこでも開ける）</option>
+            <option value="png">PNG（透過を保てる）</option>
+          </select>
+        </div>
+        <div class="row">
+          <label for="q">画質</label>
+          <select id="q">
+            <option value="0.95">高い</option>
+            <option value="0.88" selected>ふつう</option>
+            <option value="0.75">低い（より軽い）</option>
+          </select>
+        </div>
+        <div class="row">
+          <label for="bg">透過の扱い</label>
+          <select id="bg">
+            <option value="keep" selected>そのまま残す（JPGでは白で埋めます）</option>
+            <option value="white">白で埋める</option>
+          </select>
+        </div>
+      </Fragment>
+    </ToolShell>
+    <ToolFooter {...t} />
+  </div>
+</Base>
+
+<script>
+  import { setupTool, drawTo, readSize } from '../../lib/toolRunner';
+  import { outputName, MIME } from '../../lib/image';
+
+  const $ = (id: string) => document.getElementById(id) as HTMLInputElement & HTMLSelectElement;
+
+  setupTool({
+    zipName: 'converted.zip',
+    showReduction: true,
+    convert: async (file, i, total) => {
+      const fmt = $('fmt').value;
+      const fill = $('bg').value === 'white' || fmt === 'jpg';   // JPGは透過を持てない
+      const { width, height } = await readSize(file);
+      const blob = await drawTo(file, width, height, MIME[fmt],
+        fmt === 'png' ? 1 : Number($('q').value),
+        (ctx, bitmap, w, h) => {
+          if (fill) { ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, w, h); }
+          ctx.drawImage(bitmap, 0, 0, w, h);
+        });
+      return { blob, name: outputName(file.name, i, total, fmt, { noSequence: true }) };
+    },
+  });
+</script>
