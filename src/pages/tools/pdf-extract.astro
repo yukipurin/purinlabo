@@ -1,0 +1,50 @@
+---
+import Base from '../../layouts/Base.astro';
+import FileToolShell from '../../components/FileToolShell.astro';
+import ToolFooter from '../../components/ToolFooter.astro';
+import { pdfExtract as t } from '../../content/pdfTools';
+---
+<Base title={t.seoTitle} description={t.seoDescription}>
+  <div class="work">
+    <FileToolShell {...t} multiple={false} category={{ slug: 'pdf', name: 'PDF' }}
+                   figure="/img/tools/pdf-extract.webp"
+                   figureAlt="1つのPDFが1ページずつのファイルに分かれる様子">
+      <Fragment slot="settings">
+        <div class="row">
+          <label for="pages">取り出すページ</label>
+          <input id="pages" type="text" placeholder="例：1-5　空欄なら全ページ" />
+        </div>
+      </Fragment>
+    </FileToolShell>
+    <ToolFooter {...t} />
+  </div>
+</Base>
+
+<script>
+  import { PDFDocument } from 'pdf-lib';
+  import { setupFileTool } from '../../lib/fileRunner';
+  import { parsePageRange, outputPdfName } from '../../lib/pdf';
+
+  setupFileTool({
+    inspect: async (f) => (await PDFDocument.load(await f.arrayBuffer())).getPageCount(),
+    run: async (files) => {
+      const file = files[0].file;
+      const src = await PDFDocument.load(await file.arrayBuffer());
+      const pages = parsePageRange(
+        (document.getElementById('pages') as HTMLInputElement).value, src.getPageCount());
+
+      const made = [];
+      for (const n of pages) {
+        const out = await PDFDocument.create();
+        const [page] = await out.copyPages(src, [n - 1]);
+        out.addPage(page);
+        made.push({
+          name: outputPdfName(file.name, 'p', n - 1),
+          blob: new Blob([(await out.save()) as BlobPart], { type: 'application/pdf' }),
+          note: `${n} ページ目`,
+        });
+      }
+      return made;
+    },
+  });
+</script>

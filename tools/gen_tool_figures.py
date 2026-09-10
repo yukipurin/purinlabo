@@ -286,4 +286,54 @@ d.polygon([(384, 190), (352, 202), (384, 214)], fill=MUTED)
 label(d, 470, 300, "Windows / Mac", 17, MUTED, False, "ma")
 save(im, "text-newline")
 
+
+# ================================================================ PDF
+def doc(d, x, y, w, h, lines=3, col=FRAME, fill=CARD, bw=3):
+    d.rounded_rectangle([x, y, x + w, y + h], 6, fill=fill, outline=col, width=bw)
+    for i in range(lines):
+        yy = y + 20 + i * 18
+        if yy + 9 < y + h - 10:
+            d.rounded_rectangle([x + 14, yy, x + w - 14, yy + 9], 4, fill=(222, 212, 194))
+
+
+# ---- pdf-merge：3つが1つに
+im, d = canvas()
+for i in range(3):
+    doc(d, 70 + i * 26, 70 + i * 24, 170, 210, 5)
+arrow(d, 400, 180)
+doc(d, 610, 60, 230, 250, 8, KRAFT)
+label(d, 725, 322, "1 PDF", 18, KRAFT, True, "ma")
+save(im, "pdf-merge")
+
+# ---- pdf-split：1つが指定ページで切れる
+im, d = canvas()
+doc(d, 70, 70, 200, 220, 6)
+label(d, 170, 306, "1-3, 7", 18, MUTED, True, "ma")
+arrow(d, 330, 180)
+for i, x in enumerate([500, 700]):
+    doc(d, x, 90, 160, 180, 4, KRAFT)
+    label(d, x + 80, 286, ["1-3", "7"][i], 16, KRAFT, True, "ma")
+save(im, "pdf-split")
+
+# ---- pdf-rotate：横向きが立ち、1枚外れる
+im, d = canvas()
+doc(d, 60, 120, 210, 150, 3)          # 横向き
+doc(d, 60, 40, 0, 0, 0)
+d.rounded_rectangle([300, 96, 420, 250], 6, fill=CARD, outline=STAMP, width=3)
+d.line([300, 96, 420, 250], fill=STAMP, width=4)
+d.line([420, 96, 300, 250], fill=STAMP, width=4)
+arrow(d, 470, 175)
+doc(d, 650, 70, 170, 220, 6, TAPE)
+label(d, 735, 306, "90 deg", 17, TAPE, True, "ma")
+save(im, "pdf-rotate")
+
+# ---- pdf-extract：1つが1ページずつに
+im, d = canvas()
+doc(d, 70, 70, 200, 220, 6)
+arrow(d, 330, 180)
+for i in range(4):
+    doc(d, 500 + i * 108, 110, 92, 140, 3, KRAFT)
+    label(d, 546 + i * 108, 266, str(i + 1), 16, MUTED, True, "ma")
+save(im, "pdf-extract")
+
 print("\n完了")

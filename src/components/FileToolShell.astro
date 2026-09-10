@@ -1,0 +1,131 @@
+---
+/** PDFのように、複数ファイルを並べて順番を決めるツールの枠。 */
+export interface Props {
+  title: string; titleMark?: string; lead: string;
+  dropTitle: string; dropNote: string; button: string; buttonNote: string;
+  runButton: string; privacy: string; resultLabel: string; clearButton: string;
+  accept?: string;
+  figure?: string; figureAlt?: string;
+  category?: { slug: string; name: string };
+  multiple?: boolean;
+}
+const {
+  title, titleMark, lead, dropTitle, dropNote, button, buttonNote,
+  runButton, privacy, resultLabel, clearButton,
+  accept = 'application/pdf', figure, figureAlt, category, multiple = true,
+} = Astro.props;
+const heading = titleMark ? title.replace(titleMark, `<span class="mark">${titleMark}</span>`) : title;
+---
+{category && (
+  <p class="crumb"><a href="/tools/">ツール</a> ／ <a href={`/tools/${category.slug}/`}>{category.name}</a></p>
+)}
+<h1 class="page-h1" set:html={heading} />
+<p class="lead">{lead}</p>
+
+{figure && <figure class="fig"><img src={figure} width="940" height="360" alt={figureAlt} /></figure>}
+
+<div class="hand-box tool">
+  <div id="dropzone" class="hand-dash drop">
+    <div class="docs"><i></i><i></i><i></i></div>
+    <p class="big">{dropTitle}</p>
+    <p class="note">{dropNote}</p>
+    <button id="pick" class="btn" type="button">{button}</button>
+    <p class="under">{buttonNote}</p>
+    <input id="file" type="file" accept={accept} multiple={multiple} hidden />
+  </div>
+
+  <ul id="filelist" class="filelist"></ul>
+
+  <div id="settings" class="form" hidden>
+    <slot name="settings" />
+    <div class="actions">
+      <button id="run" class="btn" type="button">{runButton}</button>
+      <button id="clear" class="link-btn" type="button">{clearButton}</button>
+      <span id="count" class="count"></span>
+    </div>
+  </div>
+
+  <p class="safe">
+    <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+      <path d="M8 1.6l5.4 2v3.9c0 3.1-2.2 5.9-5.4 6.9-3.2-1-5.4-3.8-5.4-6.9V3.6l5.4-2z"
+            stroke="#2c6b4b" stroke-width="1.7" stroke-linejoin="round"/>
+    </svg>
+    <span>{privacy}</span>
+  </p>
+</div>
+
+<section id="results" hidden>
+  <h2>{resultLabel}<span class="rule-wave"></span></h2>
+  <ul id="grid" class="outlist"></ul>
+</section>
+
+<style>
+  .crumb { margin: 34px 0 10px; font-size: 13px; letter-spacing: .08em; color: var(--muted); }
+  .crumb a { color: var(--kraft-deep); text-decoration: none; }
+  .crumb a:hover { text-decoration: underline; }
+  .crumb + .page-h1 { margin-top: 0; }
+  .page-h1 { margin: 34px 0 6px; font-size: 30px; }
+  .lead { margin-bottom: 22px; font-size: 15px; color: var(--muted); }
+  .fig { margin: 0 0 22px; }
+  .fig img { display: block; width: 100%; height: auto; background: var(--paper);
+             border: 2px solid rgba(184,125,69,.3); border-radius: 12px 5px 14px 6px / 6px 13px 5px 12px; }
+
+  .tool { padding: 20px; }
+  .drop { background: #fffef9; padding: 40px 16px; text-align: center; }
+  .drop.over { border-color: var(--tape); background: #f4fbf7; }
+  .docs { display: flex; gap: 9px; justify-content: center; margin-bottom: 16px; }
+  .docs i { width: 34px; height: 44px; display: block; background: #fff;
+            border: 2px solid var(--kraft-deep); border-radius: 3px; }
+  .docs i:nth-child(1) { transform: rotate(-5deg); }
+  .docs i:nth-child(2) { transform: rotate(2deg); }
+  .docs i:nth-child(3) { transform: rotate(4deg); }
+  .drop .big { font-family: var(--display); font-weight: 700; font-size: 19px; color: var(--ink-2); margin: 0 0 3px; }
+  .drop .note { margin: 0; font-size: 13px; color: var(--muted); }
+  .drop .under { margin: 9px 0 0; font-size: 12px; color: var(--ink3); }
+  .drop .btn { margin-top: 16px; }
+
+  .filelist:empty { display: none; }
+  .filelist { list-style: none; margin: 18px 0 0; padding: 0; }
+
+  .form { margin-top: 18px; border-top: 1px dashed var(--rule); }
+  .actions { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; padding-top: 16px; }
+  .link-btn { background: none; border: 0; color: var(--muted); font-family: var(--body); font-size: 13px; cursor: pointer; text-decoration: underline; }
+  .count { font-size: 13px; color: var(--ink3); }
+  .safe { margin-top: 16px; display: flex; gap: 9px; align-items: flex-start; font-size: 13.5px; color: var(--tape-d); }
+  .safe svg { flex: none; margin-top: 5px; }
+
+  #results { margin-top: 40px; }
+  #results h2 { display: flex; align-items: center; gap: 9px; margin-bottom: 12px; font-size: 18px; }
+  .outlist { list-style: none; margin: 0; padding: 0; }
+</style>
+
+<style is:global>
+  .tool .row { display: flex; align-items: center; gap: 14px; padding: 10px 2px; border-bottom: 1px dashed var(--rule); flex-wrap: wrap; }
+  .tool .row label { font-size: 13px; color: var(--muted); min-width: 8em; }
+  .tool .row select, .tool .row input[type="text"], .tool .row input[type="number"] {
+    font-family: var(--body); font-size: 14px; color: var(--ink-2);
+    padding: 7px 10px; background: #fff; border: 2px solid var(--rule);
+    border-radius: 7px 3px 8px 4px / 4px 7px 3px 8px; flex: 1; min-width: 160px;
+  }
+  .tool .row input[type="number"] { max-width: 150px; flex: none; }
+  .tool .row select:focus, .tool .row input:focus { border-color: var(--tape); }
+  .tool .row .hint { font-size: 12.5px; color: var(--ink3); flex: 1; min-width: 200px; }
+
+  /* 読み込んだファイルの一覧。順番を入れ替えられる */
+  .filelist li { display: flex; align-items: center; gap: 12px; padding: 10px 2px;
+                 border-bottom: 1px dashed var(--rule); font-size: 14px; }
+  .filelist .nm { flex: 1; min-width: 0; word-break: break-all; color: var(--ink-2); }
+  .filelist .pg { color: var(--kraft-deep); font-weight: 700; white-space: nowrap; }
+  .filelist .mv { background: none; border: 2px solid var(--rule); color: var(--muted);
+                  width: 30px; height: 30px; border-radius: 6px 3px 7px 4px / 4px 6px 3px 7px;
+                  cursor: pointer; font-size: 14px; line-height: 1; }
+  .filelist .mv:hover { border-color: var(--tape); color: var(--tape-d); }
+  .filelist .mv:disabled { opacity: .35; cursor: not-allowed; }
+  .filelist li.ng .nm { color: var(--stamp); }
+
+  .outlist li { display: flex; align-items: center; gap: 14px; padding: 12px 2px;
+                border-bottom: 1px dashed var(--rule); font-size: 14px; flex-wrap: wrap; }
+  .outlist .nm { flex: 1; min-width: 0; word-break: break-all; font-weight: 700; }
+  .outlist .sz { color: var(--ink3); font-size: 13px; }
+  .outlist a.dl { color: var(--tape-d); font-weight: 700; text-decoration: none; border-bottom: 2px solid var(--tape); }
+</style>

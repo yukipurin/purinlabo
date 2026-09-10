@@ -37,7 +37,8 @@ export type Tool = {
 
 export const GROUPS = ['出品の写真', 'サイズと形式', 'アイコンを作る',
   '字幕を整える', '字幕を変換する',
-  '数える', '表記を揃える'] as const;
+  '数える', '表記を揃える',
+  'まとめる・分ける', 'ページを直す'] as const;
 
 /**
  * ツールの大分類。ジャンルが増えたらここに1行足して、/tools/<slug>/ のページを作る。
@@ -83,6 +84,17 @@ export const categories: Category[] = [
       '/img/tools/text-count.webp',
       '/img/tools/text-lines.webp',
       '/img/tools/text-convert.webp',
+    ],
+    ready: true,
+  },
+  {
+    slug: 'pdf',
+    name: 'PDF',
+    lead: '結合、分割、ページの回転と削除、1ページずつの書き出し。大手のサービスはファイルを一度サーバーへ送りますが、ここでは送りません。',
+    thumbs: [
+      '/img/tools/pdf-merge.webp',
+      '/img/tools/pdf-split.webp',
+      '/img/tools/pdf-rotate.webp',
     ],
     ready: true,
   },
@@ -241,5 +253,41 @@ export const tools: Tool[] = [
     image: '/img/tools/text-newline.webp',
     imageAlt: 'CRLFとLFが相互に変換できることを示す図',
     category: 'text', group: '表記を揃える', ready: true,
+  },
+  {
+    slug: 'pdf-merge', short: 'PDFを結合',
+    name: 'PDFを結合する',
+    lead: '複数のPDFを1つにまとめます。',
+    body: '並べ替えてから結合できます。中身は再圧縮しないので画質は変わりません。ファイルはこの端末から出ません。',
+    image: '/img/tools/pdf-merge.webp',
+    imageAlt: '複数のPDFが1つにまとまる様子',
+    category: 'pdf', group: 'まとめる・分ける', ready: true,
+  },
+  {
+    slug: 'pdf-split', short: 'PDFを分割',
+    name: 'PDFを分割する',
+    lead: '「1-3,7」のように指定して切り出します。',
+    body: '決まったページ数ごとに分けることもできます。',
+    image: '/img/tools/pdf-split.webp',
+    imageAlt: '1つのPDFが指定したページで切り分けられる様子',
+    category: 'pdf', group: 'まとめる・分ける', ready: true,
+  },
+  {
+    slug: 'pdf-extract', short: '1ページずつ',
+    name: 'PDFから1ページずつ取り出す',
+    lead: '全ページを1枚ずつのPDFにします。',
+    body: '必要なページだけを選ぶこともできます。',
+    image: '/img/tools/pdf-extract.webp',
+    imageAlt: '1つのPDFが1ページずつのファイルに分かれる様子',
+    category: 'pdf', group: 'まとめる・分ける', ready: true,
+  },
+  {
+    slug: 'pdf-rotate', short: '回転・削除',
+    name: 'PDFのページを回転・削除する',
+    lead: '横向きのページを回し、いらないページを外します。',
+    body: '回すページと外すページは別々に指定できます。',
+    image: '/img/tools/pdf-rotate.webp',
+    imageAlt: '横向きのページが回り、不要なページが外れる様子',
+    category: 'pdf', group: 'ページを直す', ready: true,
   },
 ];

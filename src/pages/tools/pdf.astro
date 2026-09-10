@@ -1,0 +1,90 @@
+---
+import Base from '../../layouts/Base.astro';
+import { tools, categories, GROUPS } from '../../content/tools';
+
+const cat = categories.find((c) => c.slug === 'pdf')!;
+const ready = tools.filter((x) => x.category === 'pdf' && x.ready);
+---
+<Base
+  title="PDFツール"
+  description="PDFの結合、分割、ページの回転と削除、1ページずつの書き出し。アップロード不要・登録不要で、処理はすべてブラウザ内で完結します。"
+>
+  <section class="band head">
+    <div class="read">
+      <p class="crumb"><a href="/tools/">ツール</a> ／ PDF</p>
+      <h1 class="display-lg">PDFツール</h1>
+      <p class="lead muted">{cat.lead}</p>
+      <p class="count muted">{ready.length} 本</p>
+    </div>
+  </section>
+
+  <section class="band band-deep">
+    <div class="read">
+      {GROUPS.map((group) => {
+        const items = ready.filter((x) => x.group === group);
+        return items.length === 0 ? null : (
+          <div class="group">
+            <h2 class="gname">{group}<span class="rule-wave"></span></h2>
+            <ul class="grid">
+              {items.map((x) => (
+                <li>
+                  <a href={`/tools/${x.slug}/`}>
+                    <img src={x.image} width="940" height="360" alt={x.imageAlt} loading="lazy" />
+                    <span class="n">{x.short}</span>
+                    <span class="d">{x.lead}</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        );
+      })}
+    </div>
+  </section>
+
+  <section class="band">
+    <div class="read">
+      <h2 class="display-md">共通していること</h2>
+      <ul class="notes">
+        <li>登録もインストールも要りません</li>
+        <li>処理はすべてブラウザ内で行うため、ファイルが外部に送信されることはありません</li>
+        <li>まとめて処理して、ZIPで受け取れます</li>
+      </ul>
+      <p class="back"><a href="/tools/">ほかのジャンルを見る</a></p>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .head { padding-block: 88px 60px; }
+  .crumb { font-size: 13px; letter-spacing: .1em; color: var(--muted); margin-bottom: 22px; }
+  .crumb a { color: var(--kraft); text-decoration: none; }
+  .crumb a:hover { text-decoration: underline; }
+  .head h1 { margin-bottom: 20px; }
+  .count { margin-top: 14px; font-size: 13px; letter-spacing: .12em; }
+
+  .group + .group { margin-top: 56px; }
+  .gname { display: flex; align-items: center; gap: 12px;
+           font-size: 15px; letter-spacing: .1em; color: var(--kraft); margin-bottom: 20px; }
+
+  .grid { list-style: none; margin: 0; padding: 0; display: grid; gap: 28px 26px;
+          grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
+  .grid a { display: block; text-decoration: none; color: inherit; }
+  .grid img { display: block; width: 100%; height: auto; background: var(--paper);
+              border: 2px solid rgba(184, 125, 69, .35);
+              border-radius: 12px 5px 14px 6px / 6px 13px 5px 12px; }
+  .grid a:hover img { border-color: var(--kraft); }
+  .grid .n { display: block; margin-top: 12px; font-family: var(--display); font-weight: 700; font-size: 17px; }
+  .grid a:hover .n { color: #8fd0ae; }
+  .grid .d { display: block; margin-top: 4px; font-size: 13px; color: var(--muted-on-ink); line-height: 1.7; }
+
+  .notes { list-style: none; margin: 24px 0 0; padding: 0; }
+  .notes li { font-size: 15px; color: var(--muted); padding: 5px 0 5px 20px; position: relative; }
+  .notes li::before { content: ""; position: absolute; left: 0; top: 1em; width: 10px; height: 2px; background: var(--kraft); }
+  .back { margin-top: 32px; font-size: 14px; }
+
+  @media (max-width: 700px) {
+    .head { padding-block: 64px 44px; }
+    .grid { grid-template-columns: 1fr; gap: 24px; }
+  }
+</style>

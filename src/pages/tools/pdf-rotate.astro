@@ -1,0 +1,85 @@
+---
+import Base from '../../layouts/Base.astro';
+import FileToolShell from '../../components/FileToolShell.astro';
+import ToolFooter from '../../components/ToolFooter.astro';
+import { pdfRotate as t } from '../../content/pdfTools';
+---
+<Base title={t.seoTitle} description={t.seoDescription}>
+  <div class="work">
+    <FileToolShell {...t} multiple={false} category={{ slug: 'pdf', name: 'PDF' }}
+                   figure="/img/tools/pdf-rotate.webp"
+                   figureAlt="横向きのページが回り、不要なページが外れる様子">
+      <Fragment slot="settings">
+        <div class="row">
+          <label for="deg">回す角度</label>
+          <select id="deg">
+            <option value="0" selected>回さない</option>
+            <option value="90">右に90度</option>
+            <option value="180">180度</option>
+            <option value="270">左に90度</option>
+          </select>
+        </div>
+        <div class="row">
+          <label for="target">回すページ</label>
+          <input id="target" type="text" placeholder="例：2-5　空欄なら全ページ" />
+        </div>
+        <div class="row">
+          <label for="remove">外すページ</label>
+          <input id="remove" type="text" placeholder="例：1,8　空欄なら外さない" />
+        </div>
+      </Fragment>
+    </FileToolShell>
+    <ToolFooter {...t} />
+  </div>
+</Base>
+
+<script>
+  import { PDFDocument, degrees } from 'pdf-lib';
+  import { setupFileTool } from '../../lib/fileRunner';
+  import { parsePageRange, invertPages, formatPageRange, normalizeRotation, outputPdfName } from '../../lib/pdf';
+
+  const $ = (id: string) => document.getElementById(id) as HTMLInputElement & HTMLSelectElement;
+
+  setupFileTool({
+    inspect: async (f) => (await PDFDocument.load(await f.arrayBuffer())).getPageCount(),
+    run: async (files) => {
+      const file = files[0].file;
+      const src = await PDFDocument.load(await file.arrayBuffer());
+      const total = src.getPageCount();
+
+      const removeText = $('remove').value.trim();
+      const dropped = removeText === '' ? [] : parsePageRange(removeText, total);
+      const keep = dropped.length === 0
+        ? Array.from({ length: total }, (_, i) => i + 1)
+        : invertPages(dropped, total);
+      if (keep.length === 0) throw new Error('すべてのページを外すことはできません');
+
+      const out = await PDFDocument.create();
+      const copied = await out.copyPages(src, keep.map((n) => n - 1));
+      copied.forEach((p) => out.addPage(p));
+
+      const deg = normalizeRotation(Number($('deg').value));
+      if (deg !== 0) {
+        const targetText = $('target').value.trim();
+        const targets = new Set(targetText === '' ? keep : parsePageRange(targetText, total));
+        keep.forEach((original, i) => {
+          if (!targets.has(original)) return;
+          const page = out.getPage(i);
+          page.setRotation(degrees((page.getRotation().angle + deg) % 360));
+        });
+      }
+
+      const notes = [
+        deg !== 0 ? `${deg}度 回転` : '',
+        dropped.length > 0 ? `${formatPageRange(dropped)} ページを外した` : '',
+        `${keep.length}ページ`,
+      ].filter(Boolean).join(' ／ ');
+
+      return [{
+        name: outputPdfName(file.name, 'fixed'),
+        blob: new Blob([(await out.save()) as BlobPart], { type: 'application/pdf' }),
+        note: notes,
+      }];
+    },
+  });
+</script>

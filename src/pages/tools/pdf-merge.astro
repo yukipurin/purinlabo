@@ -1,0 +1,48 @@
+---
+import Base from '../../layouts/Base.astro';
+import FileToolShell from '../../components/FileToolShell.astro';
+import ToolFooter from '../../components/ToolFooter.astro';
+import { pdfMerge as t } from '../../content/pdfTools';
+---
+<Base title={t.seoTitle} description={t.seoDescription}>
+  <div class="work">
+    <FileToolShell {...t} category={{ slug: 'pdf', name: 'PDF' }}
+                   figure="/img/tools/pdf-merge.webp"
+                   figureAlt="複数のPDFが1つにまとまる様子">
+      <Fragment slot="settings">
+        <div class="row">
+          <label>順番</label>
+          <span class="hint">↑↓ で並べ替えられます。上から順につながります。</span>
+        </div>
+      </Fragment>
+    </FileToolShell>
+    <ToolFooter {...t} />
+  </div>
+</Base>
+
+<script>
+  import { PDFDocument } from 'pdf-lib';
+  import { setupFileTool } from '../../lib/fileRunner';
+  import { outputPdfName } from '../../lib/pdf';
+
+  setupFileTool({
+    reorderable: true,
+    inspect: async (f) => (await PDFDocument.load(await f.arrayBuffer(), { ignoreEncryption: false })).getPageCount(),
+    run: async (files) => {
+      const out = await PDFDocument.create();
+      let total = 0;
+      for (const { file } of files) {
+        const src = await PDFDocument.load(await file.arrayBuffer());
+        const pages = await out.copyPages(src, src.getPageIndices());
+        pages.forEach((p) => out.addPage(p));
+        total += pages.length;
+      }
+      const bytes = await out.save();
+      return [{
+        name: outputPdfName(files[0].file.name, 'merged'),
+        blob: new Blob([bytes as BlobPart], { type: 'application/pdf' }),
+        note: `${files.length}個 → ${total}ページ`,
+      }];
+    },
+  });
+</script>
