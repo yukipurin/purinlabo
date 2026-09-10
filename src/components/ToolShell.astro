@@ -1,0 +1,117 @@
+---
+/**
+ * 画像ツールの共通の枠。
+ * ツール側は settings スロットに設定欄を入れ、<script> で setupTool を呼ぶだけ。
+ */
+export interface Props {
+  title: string;        // 見出し（<br /> 可）
+  titleMark?: string;   // 見出しのうちマーカーを引く部分
+  lead: string;
+  dropTitle: string;
+  dropNote: string;
+  button: string;
+  buttonNote: string;
+  runButton: string;
+  privacy: string;
+  resultHeading: string;
+  downloadZip: string;
+  clearButton: string;
+  accept?: string;      // input の accept
+}
+const {
+  title, titleMark, lead, dropTitle, dropNote, button, buttonNote,
+  runButton, privacy, resultHeading, downloadZip, clearButton,
+  accept = 'image/*',
+} = Astro.props;
+
+const heading = titleMark
+  ? title.replace(titleMark, `<span class="mark">${titleMark}</span>`)
+  : title;
+---
+<h1 class="page-h1" set:html={heading} />
+<p class="lead">{lead}</p>
+
+<div class="hand-box tool">
+  <div id="dropzone" class="hand-dash drop">
+    <div class="pics"><i></i><i></i><i></i></div>
+    <p class="big">{dropTitle}</p>
+    <p class="note">{dropNote}</p>
+    <button id="pick" class="btn" type="button">{button}</button>
+    <p class="under">{buttonNote}</p>
+    <input id="file" type="file" accept={accept} multiple hidden />
+  </div>
+
+  <div id="settings" class="form" hidden>
+    <slot name="settings" />
+    <div class="actions">
+      <button id="run" class="btn" type="button">{runButton}</button>
+      <button id="clear" class="link-btn" type="button">{clearButton}</button>
+      <span id="count" class="count"></span>
+    </div>
+  </div>
+
+  <p class="safe">
+    <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+      <path d="M8 1.6l5.4 2v3.9c0 3.1-2.2 5.9-5.4 6.9-3.2-1-5.4-3.8-5.4-6.9V3.6l5.4-2z"
+            stroke="#2c6b4b" stroke-width="1.7" stroke-linejoin="round"/>
+    </svg>
+    <span>{privacy}</span>
+  </p>
+</div>
+
+<section id="results" hidden>
+  <h2>{resultHeading}<span class="rule-wave"></span></h2>
+  <p class="actions"><button id="zip" class="btn" type="button" hidden>{downloadZip}</button></p>
+  <ul id="grid" class="grid"></ul>
+</section>
+
+<style>
+  .page-h1 { margin: 34px 0 6px; font-size: 30px; }
+  .lead { margin-bottom: 22px; font-size: 15px; color: var(--muted); }
+
+  .tool { padding: 20px; }
+  .drop { background: #fffef9; padding: 40px 16px; text-align: center; }
+  .drop.over { border-color: var(--tape); background: #f4fbf7; }
+  .pics { display: flex; gap: 9px; justify-content: center; margin-bottom: 16px; }
+  .pics i { width: 42px; height: 42px; display: block; border: 2px solid var(--kraft-deep); border-radius: 3px; }
+  .pics i:nth-child(1) { background: #e9c9a0; transform: rotate(-4deg); }
+  .pics i:nth-child(2) { background: #bcd8c4; transform: rotate(2.5deg); }
+  .pics i:nth-child(3) { background: #d8c6de; transform: rotate(-1.5deg); }
+  .drop .big { font-family: var(--display); font-weight: 700; font-size: 19px; color: var(--ink-2); margin: 0 0 3px; }
+  .drop .note { margin: 0; font-size: 13px; color: var(--muted); }
+  .drop .under { margin: 9px 0 0; font-size: 12px; color: var(--ink3); }
+  .drop .btn { margin-top: 16px; }
+
+  .form { margin-top: 18px; border-top: 1px dashed var(--rule); }
+  .actions { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; padding-top: 16px; }
+  .link-btn { background: none; border: 0; color: var(--muted); font-family: var(--body); font-size: 13px; cursor: pointer; text-decoration: underline; }
+  .count { font-size: 13px; color: var(--ink3); }
+
+  .safe { margin-top: 16px; display: flex; gap: 9px; align-items: flex-start; font-size: 13.5px; color: var(--tape-d); }
+  .safe svg { flex: none; margin-top: 5px; }
+
+  #results { margin-top: 40px; }
+  #results h2 { display: flex; align-items: center; gap: 9px; margin-bottom: 12px; font-size: 18px; }
+
+  .grid { list-style: none; margin: 16px 0 0; padding: 0; display: grid; gap: 14px; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); }
+  .grid li { font-size: 11px; color: var(--ink3); display: flex; flex-direction: column; gap: 2px; }
+  .grid img { width: 100%; height: auto; border: 2px solid var(--rule); border-radius: 4px; background: #fff; display: block; }
+  .grid .fn { color: var(--muted); word-break: break-all; }
+  .grid li.ng .fn { color: var(--stamp); }
+  .grid .note { color: var(--kraft-deep); }
+</style>
+
+<style is:global>
+  /* 設定欄はツール側から差し込むので、グローバルに置く */
+  .tool .row { display: flex; align-items: center; gap: 14px; padding: 10px 2px; border-bottom: 1px dashed var(--rule); flex-wrap: wrap; }
+  .tool .row label { font-size: 13px; color: var(--muted); min-width: 8em; }
+  .tool .row select, .tool .row input[type="text"], .tool .row input[type="number"] {
+    font-family: var(--body); font-size: 14px; color: var(--ink-2);
+    padding: 7px 10px; background: #fff; border: 2px solid var(--rule);
+    border-radius: 7px 3px 8px 4px / 4px 7px 3px 8px; flex: 1; min-width: 180px;
+  }
+  .tool .row input[type="number"] { max-width: 140px; flex: none; }
+  .tool .row select:focus, .tool .row input:focus { border-color: var(--tape); }
+  .tool .row .check { display: flex; align-items: center; gap: 8px; font-size: 14px; min-width: 0; }
+  .tool .row .check input { width: 18px; height: 18px; accent-color: var(--tape); }
+</style>

@@ -1,0 +1,67 @@
+---
+import Base from '../../layouts/Base.astro';
+import ToolShell from '../../components/ToolShell.astro';
+import ToolFooter from '../../components/ToolFooter.astro';
+import { rename as t } from '../../content/imageTools';
+---
+<Base title={t.seoTitle} description={t.seoDescription}>
+  <div class="work">
+    <ToolShell {...t}>
+      <Fragment slot="settings">
+        <div class="row">
+          <label for="prefix">接頭辞</label>
+          <input id="prefix" type="text" placeholder="空欄なら元のファイル名を使います" />
+        </div>
+        <div class="row">
+          <label for="start">開始番号</label>
+          <input id="start" type="number" value="1" min="0" max="99999" />
+        </div>
+        <div class="row">
+          <label for="digits">連番の桁</label>
+          <select id="digits">
+            <option value="0" selected>枚数に合わせる</option>
+            <option value="2">2桁（01）</option>
+            <option value="3">3桁（001）</option>
+            <option value="4">4桁（0001）</option>
+          </select>
+        </div>
+        <div class="row">
+          <label for="sort">並び順</label>
+          <select id="sort">
+            <option value="picked" selected>選んだ順</option>
+            <option value="name">ファイル名順</option>
+            <option value="date">更新日時が古い順</option>
+          </select>
+        </div>
+      </Fragment>
+    </ToolShell>
+    <ToolFooter {...t} />
+  </div>
+</Base>
+
+<script>
+  import { setupTool } from '../../lib/toolRunner';
+  import { outputName, sortFiles, stripExtension, type SortKey } from '../../lib/image';
+
+  const $ = (id: string) => document.getElementById(id) as HTMLInputElement & HTMLSelectElement;
+
+  // 並び順は「実行を押した時点」で確定させる。同じ結果を2回出すため
+  let order: File[] = [];
+
+  const runner = setupTool({
+    zipName: 'renamed.zip',
+    convert: async (file, i, total) => {
+      if (i === 0) order = sortFiles(runner.getPicked(), $('sort').value as SortKey);
+      const target = order[i] ?? file;
+      const ext = stripExtension(target.name) === target.name
+        ? 'jpg' : target.name.slice(target.name.lastIndexOf('.') + 1).toLowerCase();
+      // 再圧縮しない。元のデータをそのまま渡すので画質は変わらない
+      const name = outputName(target.name, i, total, ext, {
+        prefix: $('prefix').value,
+        start: Number($('start').value) || 0,
+        digits: Number($('digits').value),
+      });
+      return { blob: target, name };
+    },
+  });
+</script>

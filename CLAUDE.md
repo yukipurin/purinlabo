@@ -64,19 +64,45 @@ public/fonts/             … サブセット済みwoff2 ＋ OFLライセンス
 tools/subset_fonts.py     … 文言を足したら実行する
 ```
 
-## 4. ツールを1本足す手順
+## 4. 画像ツールを1本足す手順
 
-1. `src/pages/tools/index.astro` の `tools` 配列に1行足す（`ready: false` で準備中表示）
-2. **文言を `src/content/<slug>.ts` に置く。** ページ側に文字列を直書きしない
-3. **処理ロジックは純粋関数として `src/lib/<slug>.ts` に置く**（DOMに触らない）
-4. テストを `src/lib/<slug>.test.ts` に書く
-5. `src/pages/tools/<slug>.astro` を作る。`tools/square.astro` を写すのが速い
-6. ページ構成は固定：見出し／一言説明／ツール本体／送信しない旨／使い方／できないこと／製作者について
-7. 文言を足したら `python3 tools/subset_fonts.py`
-8. `npx vitest run` と `npx astro build` を通す
-9. `/app-review`（デザイン）と `/code-review`（バグ）を1回ずつ通す
+**共通の土台があるので、書くのは「設定欄」と「変換関数」だけ。**
+
+| ファイル | 役割 |
+|---|---|
+| `src/lib/image.ts` | 寸法・ファイル名・品質探索などの純粋関数（DOM非依存） |
+| `src/lib/toolRunner.ts` | ファイルの受け取り・実行ループ・結果表示・ZIP書き出し |
+| `src/components/ToolShell.astro` | ドロップ欄・設定欄の枠・送信しない旨・結果一覧 |
+| `src/components/ToolFooter.astro` | 使い方／できないこと／製作者について |
+
+手順：
+
+1. **文言を `src/content/imageTools.ts` に足す**（`common` を展開して差分だけ書く）
+2. `src/pages/tools/<slug>.astro` を作る。既存の `resize.astro` を写すのが速い
+   - `<Fragment slot="settings">` に設定欄を置く
+   - `<script>` で `setupTool({ zipName, convert })` を呼ぶ。`convert` は1枚をどう変換するか
+3. **計算が要るなら `src/lib/image.ts` に純粋関数として足し、テストも書く**
+4. `src/content/tools.ts` の配列に1行足す（`ready: true` で一覧に出る）
+5. 文言を足したら `python3 tools/subset_fonts.py`
+6. `npx vitest run` と `npx astro build` を通す
+7. **実際に画像を流して動作を確認する。** ビルドが通っただけでは動く証拠にならない
+   （compress は「目標に収まらない」バグを実測で見つけた）
+8. `/app-review`（デザイン）と `/code-review`（バグ）を1回ずつ通す
 
 **この手順が重くなる変更は却下する。**
+
+### 検証の型（ブラウザで実測する）
+
+ペインが隠れていると `img.decode()` が返らないので、`createImageBitmap` で測る：
+
+```js
+for (const im of document.querySelectorAll('#grid img')) {
+  const b = await (await fetch(im.src)).blob();
+  const bm = await createImageBitmap(b);
+  console.log(bm.width + 'x' + bm.height, b.size);
+  bm.close();
+}
+```
 
 ## 4-b. お知らせ・開発記録を1本書く
 

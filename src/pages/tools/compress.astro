@@ -1,0 +1,83 @@
+---
+import Base from '../../layouts/Base.astro';
+import ToolShell from '../../components/ToolShell.astro';
+import ToolFooter from '../../components/ToolFooter.astro';
+import { compress as t } from '../../content/imageTools';
+---
+<Base title={t.seoTitle} description={t.seoDescription}>
+  <div class="work">
+    <ToolShell {...t} accept="image/*,.heic,.heif">
+      <Fragment slot="settings">
+        <div class="row">
+          <label for="target">目標のファイルサイズ</label>
+          <select id="target">
+            <option value="1000">1 MB 以下</option>
+            <option value="500" selected>500 KB 以下</option>
+            <option value="300">300 KB 以下</option>
+            <option value="200">200 KB 以下</option>
+            <option value="100">100 KB 以下</option>
+          </select>
+        </div>
+        <div class="row">
+          <label for="long">長辺の上限</label>
+          <select id="long">
+            <option value="0" selected>変えない</option>
+            <option value="2000">2000 px</option>
+            <option value="1600">1600 px</option>
+            <option value="1200">1200 px</option>
+            <option value="800">800 px</option>
+          </select>
+        </div>
+        <div class="row">
+          <label for="fmt">書き出す形式</label>
+          <select id="fmt">
+            <option value="jpg" selected>JPG</option>
+            <option value="webp">WebP（より軽い）</option>
+          </select>
+        </div>
+      </Fragment>
+    </ToolShell>
+    <ToolFooter {...t} />
+  </div>
+</Base>
+
+<script>
+  import { setupTool, drawTo, readSize } from '../../lib/toolRunner';
+  import { fitLongSide, outputName, searchQuality, SHRINK_STEPS, MIME } from '../../lib/image';
+
+  const $ = (id: string) => document.getElementById(id) as HTMLInputElement & HTMLSelectElement;
+
+  setupTool({
+    zipName: 'compressed.zip',
+    showReduction: true,
+    convert: async (file, i, total) => {
+      const targetBytes = Number($('target').value) * 1024;
+      const long = Number($('long').value);
+      const fmt = $('fmt').value;
+      const src = await readSize(file);
+      const base = long > 0
+        ? fitLongSide(src.width, src.height, long)
+        : { width: src.width, height: src.height };
+
+      // まず品質だけで試し、届かなければ寸法を落として試し直す
+      let best: { blob: Blob; w: number; h: number; fit: boolean } | null = null;
+      for (const shrink of SHRINK_STEPS) {
+        const w = Math.max(1, Math.round(base.width * shrink));
+        const h = Math.max(1, Math.round(base.height * shrink));
+        const found = await searchQuality(
+          async (q) => (await drawTo(file, w, h, MIME[fmt], q)).size, targetBytes);
+        const blob = await drawTo(file, w, h, MIME[fmt], found.quality);
+        if (!best || blob.size < best.blob.size) best = { blob, w, h, fit: found.fit };
+        if (found.fit && blob.size <= targetBytes) { best = { blob, w, h, fit: true }; break; }
+      }
+
+      const r = best!;
+      const shrunk = r.w !== base.width;
+      const note = !r.fit || r.blob.size > targetBytes
+        ? `目標に届きませんでした（${r.w}×${r.h}）`
+        : shrunk ? `${r.w}×${r.h} に縮小しました` : undefined;
+
+      return { blob: r.blob, name: outputName(file.name, i, total, fmt), note };
+    },
+  });
+</script>

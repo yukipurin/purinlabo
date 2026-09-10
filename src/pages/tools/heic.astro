@@ -1,0 +1,63 @@
+---
+import Base from '../../layouts/Base.astro';
+import ToolShell from '../../components/ToolShell.astro';
+import ToolFooter from '../../components/ToolFooter.astro';
+import { heic as t } from '../../content/imageTools';
+---
+<Base title={t.seoTitle} description={t.seoDescription}>
+  <div class="work">
+    <ToolShell {...t} accept=".heic,.heif,image/heic,image/heif">
+      <Fragment slot="settings">
+        <div class="row">
+          <label for="fmt">書き出す形式</label>
+          <select id="fmt">
+            <option value="jpg" selected>JPG</option>
+            <option value="png">PNG</option>
+          </select>
+        </div>
+        <div class="row">
+          <label for="q">画質</label>
+          <select id="q">
+            <option value="0.95">高い（ファイルは大きい）</option>
+            <option value="0.88" selected>ふつう</option>
+            <option value="0.75">低い（ファイルは小さい）</option>
+          </select>
+        </div>
+        <div class="row">
+          <label for="long">長辺の上限</label>
+          <select id="long">
+            <option value="0" selected>変えない</option>
+            <option value="2000">2000 px</option>
+            <option value="1600">1600 px</option>
+            <option value="1200">1200 px</option>
+          </select>
+        </div>
+      </Fragment>
+    </ToolShell>
+    <ToolFooter {...t} />
+  </div>
+</Base>
+
+<script>
+  import { setupTool, drawTo, readSize } from '../../lib/toolRunner';
+  import { fitLongSide, outputName, MIME } from '../../lib/image';
+
+  const $ = (id: string) => document.getElementById(id) as HTMLInputElement & HTMLSelectElement;
+
+  setupTool({
+    zipName: 'converted.zip',
+    accept: (f) => /\.hei[cf]$/i.test(f.name) || /hei[cf]/i.test(f.type),
+    convert: async (file, i, total) => {
+      const fmt = $('fmt').value;
+      const long = Number($('long').value);
+      const src = await readSize(file);
+      const { width, height } = long > 0
+        ? fitLongSide(src.width, src.height, long)
+        : { width: src.width, height: src.height };
+      const blob = await drawTo(file, width, height, MIME[fmt],
+        fmt === 'png' ? 1 : Number($('q').value));
+      // 連番を付けず、元の名前のまま拡張子だけ変える
+      return { blob, name: outputName(file.name, i, total, fmt, { noSequence: true }) };
+    },
+  });
+</script>

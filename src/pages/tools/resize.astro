@@ -1,0 +1,57 @@
+---
+import Base from '../../layouts/Base.astro';
+import ToolShell from '../../components/ToolShell.astro';
+import ToolFooter from '../../components/ToolFooter.astro';
+import { resize as t } from '../../content/imageTools';
+---
+<Base title={t.seoTitle} description={t.seoDescription}>
+  <div class="work">
+    <ToolShell {...t} accept="image/*,.heic,.heif">
+      <Fragment slot="settings">
+        <div class="row">
+          <label for="long">長辺のピクセル数</label>
+          <select id="long">
+            <option value="1600">1600 px</option>
+            <option value="1200" selected>1200 px</option>
+            <option value="1080">1080 px</option>
+            <option value="800">800 px</option>
+            <option value="640">640 px</option>
+          </select>
+        </div>
+        <div class="row">
+          <label for="fmt">書き出す形式</label>
+          <select id="fmt">
+            <option value="jpg" selected>JPG</option>
+            <option value="webp">WebP（より軽い）</option>
+            <option value="png">PNG（透過を保つ）</option>
+          </select>
+        </div>
+        <div class="row">
+          <label>元より大きくする</label>
+          <span class="check"><input id="up" type="checkbox" /><label for="up">小さい画像も指定サイズまで拡大する</label></span>
+        </div>
+      </Fragment>
+    </ToolShell>
+    <ToolFooter {...t} />
+  </div>
+</Base>
+
+<script>
+  import { setupTool, drawTo, readSize } from '../../lib/toolRunner';
+  import { fitLongSide, outputName, MIME } from '../../lib/image';
+
+  const $ = (id: string) => document.getElementById(id) as HTMLInputElement & HTMLSelectElement;
+
+  setupTool({
+    zipName: 'resized.zip',
+    convert: async (file, i, total) => {
+      const long = Number($('long').value);
+      const fmt = $('fmt').value;
+      const up = $('up').checked;
+      const src = await readSize(file);
+      const { width, height } = fitLongSide(src.width, src.height, long, up);
+      const blob = await drawTo(file, width, height, MIME[fmt], fmt === 'png' ? 1 : 0.9);
+      return { blob, name: outputName(file.name, i, total, fmt) };
+    },
+  });
+</script>
