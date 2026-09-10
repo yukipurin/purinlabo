@@ -1,0 +1,77 @@
+---
+import Base from '../../layouts/Base.astro';
+import TextToolShell from '../../components/TextToolShell.astro';
+import ToolFooter from '../../components/ToolFooter.astro';
+import { textLines as t } from '../../content/textTools';
+---
+<Base title={t.seoTitle} description={t.seoDescription}>
+  <div class="work">
+    <TextToolShell {...t} category={{ slug: 'text', name: 'テキスト' }}>
+      <Fragment slot="settings">
+        <div class="row">
+          <label>やること</label>
+          <span class="checks">
+            <label class="c"><input id="trim" type="checkbox" checked /> 前後の空白を落とす</label>
+            <label class="c"><input id="empty" type="checkbox" checked /> 空行を消す</label>
+            <label class="c"><input id="dedupe" type="checkbox" checked /> 重複を消す</label>
+            <label class="c"><input id="num" type="checkbox" /> 番号をふる</label>
+          </span>
+        </div>
+        <div class="row">
+          <label for="sort">並べ替え</label>
+          <select id="sort">
+            <option value="none" selected>しない</option>
+            <option value="asc">あいうえお順</option>
+            <option value="desc">逆順</option>
+          </select>
+        </div>
+        <div class="row">
+          <label for="prefix">各行の前に足す</label>
+          <input id="prefix" type="text" placeholder="例：- " />
+        </div>
+        <div class="row">
+          <label for="suffix">各行の後ろに足す</label>
+          <input id="suffix" type="text" placeholder="例：、" />
+        </div>
+      </Fragment>
+    </TextToolShell>
+    <ToolFooter {...t} />
+  </div>
+</Base>
+
+<script>
+  import { setupTextTool } from '../../lib/textRunner';
+  import { processLines, countLines } from '../../lib/text';
+
+  const $ = (id: string) => document.getElementById(id) as HTMLInputElement & HTMLSelectElement;
+
+  setupTextTool({
+    defaultFileName: 'lines.txt',
+    run: (input) => {
+      const out = processLines(input, {
+        trim: $('trim').checked,
+        removeEmpty: $('empty').checked,
+        dedupe: $('dedupe').checked,
+        numbering: $('num').checked,
+        sort: $('sort').value as 'none' | 'asc' | 'desc',
+        prefix: $('prefix').value,
+        suffix: $('suffix').value,
+      });
+      const before = countLines(input);
+      const after = countLines(out);
+      return {
+        text: out,
+        reportHtml: `<div class="sum">
+          <span><b>${after}</b>行</span>
+          <span>${before} 行から ${before - after > 0 ? `${before - after} 行 減りました` : '変わっていません'}</span>
+        </div>`,
+      };
+    },
+  });
+</script>
+
+<style is:global>
+  .tool .checks { display: flex; flex-direction: column; gap: 8px; }
+  .tool .checks .c { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--ink-2); min-width: 0; }
+  .tool .checks input { width: 18px; height: 18px; accent-color: var(--tape); }
+</style>

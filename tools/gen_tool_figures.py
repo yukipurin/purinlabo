@@ -230,4 +230,60 @@ for i in range(3):
     d.rounded_rectangle([620, 92 + i * 66, 862, 103 + i * 66], 5, fill=(150, 180, 158))
 save(im, "subtitle-text")
 
+
+# ================================================================ テキスト
+def bars(d, x, y, widths, color=(206, 196, 178), h=12, gap=20):
+    for i, w in enumerate(widths):
+        d.rounded_rectangle([x, y + i * gap, x + w, y + i * gap + h], 6, fill=color)
+
+
+# ---- text-count：投稿先ごとに収まるかを見る
+im, d = canvas()
+d.rounded_rectangle([60, 60, 380, 300], 8, fill=CARD, outline=FRAME, width=3)
+bars(d, 84, 92, [270, 250, 272, 190], gap=26)
+rows = [("X", 0.55, TAPE), ("Instagram", 0.3, TAPE), ("meta desc", 1.0, STAMP)]
+for i, (name, ratio, col) in enumerate(rows):
+    y = 92 + i * 74
+    label(d, 470, y, name, 17, INK, True, "la")
+    d.rounded_rectangle([470, y + 24, 890, y + 38], 7, fill=(226, 214, 192))
+    d.rounded_rectangle([470, y + 24, 470 + int(420 * ratio), y + 38], 7, fill=col)
+save(im, "text-count")
+
+# ---- text-convert：全角と半角
+im, d = canvas()
+for text, x, col in [("ＡＢＣ１２３", 100, MUTED), ("ABC123", 590, KRAFT)]:
+    d.rounded_rectangle([x, 130, x + 260, 230], 10, fill=CARD, outline=col, width=3)
+    label(d, x + 130, 180, text, 30, col, True, "mm")
+arrow(d, 400, 180, 150)
+save(im, "text-convert")
+
+# ---- text-lines：重複と空行が落ちる
+im, d = canvas()
+d.rounded_rectangle([60, 50, 380, 310], 8, fill=CARD, outline=FRAME, width=3)
+items = [(240, False), (200, False), (240, True), (0, True), (170, False)]
+for i, (w, drop) in enumerate(items):
+    y = 78 + i * 46
+    if w:
+        bars(d, 86, y, [w], (214, 168, 158) if drop else (206, 196, 178))
+    if drop:
+        d.line([78, y + 6, 350, y + 6], fill=STAMP, width=3)
+arrow(d, 440, 180)
+d.rounded_rectangle([600, 50, 900, 310], 8, fill=CARD, outline=TAPE, width=3)
+for i, w in enumerate([240, 200, 170]):
+    label(d, 622, 92 + i * 60, f"{i+1}.", 15, TAPE, True, "lm")
+    bars(d, 656, 86 + i * 60, [w - 40], (150, 180, 158))
+save(im, "text-lines")
+
+# ---- text-newline：CRLFとLF
+im, d = canvas()
+for text, x, col in [("CRLF", 110, MUTED), ("LF", 600, KRAFT)]:
+    d.rounded_rectangle([x, 120, x + 240, 240], 10, fill=CARD, outline=col, width=3)
+    label(d, x + 120, 180, text, 34, col, True, "mm")
+d.line([380, 158, 580, 158], fill=MUTED, width=5)
+d.polygon([(576, 146), (608, 158), (576, 170)], fill=MUTED)
+d.line([380, 202, 580, 202], fill=MUTED, width=5)
+d.polygon([(384, 190), (352, 202), (384, 214)], fill=MUTED)
+label(d, 470, 300, "Windows / Mac", 17, MUTED, False, "ma")
+save(im, "text-newline")
+
 print("\n完了")

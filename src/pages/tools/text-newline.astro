@@ -1,0 +1,51 @@
+---
+import Base from '../../layouts/Base.astro';
+import TextToolShell from '../../components/TextToolShell.astro';
+import ToolFooter from '../../components/ToolFooter.astro';
+import { textNewline as t } from '../../content/textTools';
+---
+<Base title={t.seoTitle} description={t.seoDescription}>
+  <div class="work">
+    <TextToolShell {...t} acceptFile=".txt,.csv,.md,text/plain"
+                   category={{ slug: 'text', name: 'テキスト' }}>
+      <Fragment slot="settings">
+        <div class="row">
+          <label for="to">揃える先</label>
+          <select id="to">
+            <option value="lf" selected>LF（Mac / Linux / 多くの開発現場）</option>
+            <option value="crlf">CRLF（Windows / メモ帳）</option>
+            <option value="cr">CR（古いMac）</option>
+          </select>
+        </div>
+      </Fragment>
+    </TextToolShell>
+    <ToolFooter {...t} />
+  </div>
+</Base>
+
+<script>
+  import { setupTextTool, withExtension } from '../../lib/textRunner';
+  import { convertNewline, detectNewline, countLines, type Newline } from '../../lib/text';
+
+  const runner = setupTextTool({
+    defaultFileName: 'converted.txt',
+    run: (input) => {
+      const to = (document.getElementById('to') as HTMLSelectElement).value as Newline;
+      const before = detectNewline(input);
+      const out = convertNewline(input, to);
+      const parts = [
+        before.crlf > 0 ? `CRLF ${before.crlf}` : '',
+        before.lf > 0 ? `LF ${before.lf}` : '',
+        before.cr > 0 ? `CR ${before.cr}` : '',
+      ].filter(Boolean).join(' / ') || '改行なし';
+      return {
+        text: out,
+        reportHtml: `<div class="sum">
+          <span>変換前 ${parts}${before.mixed ? '（混ざっています）' : ''}</span>
+          <span><b>${countLines(out)}</b>行を ${to.toUpperCase()} に揃えました</span>
+        </div>`,
+        fileName: withExtension(runner.getSourceName(), 'txt', 'converted.txt'),
+      };
+    },
+  });
+</script>

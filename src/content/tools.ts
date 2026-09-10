@@ -36,7 +36,8 @@ export type Tool = {
 };
 
 export const GROUPS = ['出品の写真', 'サイズと形式', 'アイコンを作る',
-  '字幕を整える', '字幕を変換する'] as const;
+  '字幕を整える', '字幕を変換する',
+  '数える', '表記を揃える'] as const;
 
 /**
  * ツールの大分類。ジャンルが増えたらここに1行足して、/tools/<slug>/ のページを作る。
@@ -71,6 +72,17 @@ export const categories: Category[] = [
       '/img/tools/subtitle-check.webp',
       '/img/tools/subtitle-shift.webp',
       '/img/tools/subtitle-text.webp',
+    ],
+    ready: true,
+  },
+  {
+    slug: 'text',
+    name: 'テキスト',
+    lead: '文字数と投稿先ごとの上限、全角半角の統一、重複行の削除、改行コードの変換。文章を整えるための道具です。',
+    thumbs: [
+      '/img/tools/text-count.webp',
+      '/img/tools/text-lines.webp',
+      '/img/tools/text-convert.webp',
     ],
     ready: true,
   },
@@ -193,5 +205,41 @@ export const tools: Tool[] = [
     image: '/img/tools/subtitle-text.webp',
     imageAlt: '番号と時刻が落ちて、本文だけが残る様子',
     category: 'subtitle', group: '字幕を変換する', ready: true,
+  },
+  {
+    slug: 'text-count', short: '文字数を数える',
+    name: '文字数カウントと投稿先ごとの上限チェック',
+    lead: 'X・Instagram・YouTube・メルカリの上限に収まるかを同時に見ます。',
+    body: '文字数、空白を除いた数、行数、段落数、バイト数を数えます。あわせて主な投稿先の上限に収まるかを判定します。',
+    image: '/img/tools/text-count.webp',
+    imageAlt: '文章が投稿先ごとの上限に収まるかどうかを見比べる図',
+    category: 'text', group: '数える', ready: true,
+  },
+  {
+    slug: 'text-lines', short: '行を整える',
+    name: '重複行の削除・並べ替え・番号ふり',
+    lead: '重複を消す、空行を消す、並べ替える、番号をふる。',
+    body: '前後に文字を足すこともできます。処理の順番は固定なので、同じ設定なら同じ結果になります。',
+    image: '/img/tools/text-lines.webp',
+    imageAlt: '重複した行と空行が落ちて、番号がふられる様子',
+    category: 'text', group: '数える', ready: true,
+  },
+  {
+    slug: 'text-convert', short: '全角半角',
+    name: '全角半角・大文字小文字・かなカナを変換',
+    lead: '表記のゆれをまとめて直します。',
+    body: '記号と空白まで変換するか、英数だけにするかを選べます。',
+    image: '/img/tools/text-convert.webp',
+    imageAlt: '全角の英数字が半角になる様子',
+    category: 'text', group: '表記を揃える', ready: true,
+  },
+  {
+    slug: 'text-newline', short: '改行コード',
+    name: '改行コードを変換（CRLF・LF）',
+    lead: 'WindowsのCRLFとMac・LinuxのLFを揃えます。',
+    body: '混ざっているかどうかも判定します。文字コードは変えません。',
+    image: '/img/tools/text-newline.webp',
+    imageAlt: 'CRLFとLFが相互に変換できることを示す図',
+    category: 'text', group: '表記を揃える', ready: true,
   },
 ];

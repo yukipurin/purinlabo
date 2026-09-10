@@ -1,0 +1,49 @@
+---
+import Base from '../../layouts/Base.astro';
+import TextToolShell from '../../components/TextToolShell.astro';
+import ToolFooter from '../../components/ToolFooter.astro';
+import { textConvert as t } from '../../content/textTools';
+---
+<Base title={t.seoTitle} description={t.seoDescription}>
+  <div class="work">
+    <TextToolShell {...t} category={{ slug: 'text', name: 'テキスト' }}>
+      <Fragment slot="settings">
+        <div class="row">
+          <label for="kind">変換のしかた</label>
+          <select id="kind">
+            <option value="toHalf" selected>全角 → 半角（記号と空白も）</option>
+            <option value="toHalfAlnum">全角 → 半角（英数だけ）</option>
+            <option value="toFull">半角 → 全角（記号と空白も）</option>
+            <option value="toFullAlnum">半角 → 全角（英数だけ）</option>
+            <option value="upper">英字を大文字に</option>
+            <option value="lower">英字を小文字に</option>
+            <option value="hiragana">カタカナ → ひらがな</option>
+            <option value="katakana">ひらがな → カタカナ</option>
+            <option value="trim">行の前後の空白を落とす</option>
+          </select>
+        </div>
+      </Fragment>
+    </TextToolShell>
+    <ToolFooter {...t} />
+  </div>
+</Base>
+
+<script>
+  import { setupTextTool } from '../../lib/textRunner';
+  import { convertText, countText, type ConvertKind } from '../../lib/text';
+
+  setupTextTool({
+    defaultFileName: 'converted.txt',
+    run: (input) => {
+      const kind = (document.getElementById('kind') as HTMLSelectElement).value as ConvertKind;
+      const out = convertText(input, kind);
+      const before = countText(input).chars;
+      const after = countText(out).chars;
+      return {
+        text: out,
+        reportHtml: `<div class="sum"><span><b>${after.toLocaleString()}</b>文字</span>${
+          before !== after ? `<span>変換前は ${before.toLocaleString()} 文字</span>` : ''}</div>`,
+      };
+    },
+  });
+</script>

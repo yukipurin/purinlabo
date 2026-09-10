@@ -1,0 +1,59 @@
+---
+import Base from '../../layouts/Base.astro';
+import TextToolShell from '../../components/TextToolShell.astro';
+import ToolFooter from '../../components/ToolFooter.astro';
+import { textCount as t } from '../../content/textTools';
+---
+<Base title={t.seoTitle} description={t.seoDescription}>
+  <div class="work">
+    <TextToolShell {...t} category={{ slug: 'text', name: 'テキスト' }} />
+    <ToolFooter {...t} />
+  </div>
+</Base>
+
+<script>
+  import { setupTextTool, escapeHtml } from '../../lib/textRunner';
+  import { countText, checkLimits } from '../../lib/text';
+
+  setupTextTool({
+    defaultFileName: 'count.txt',
+    run: (input) => {
+      const c = countText(input);
+      const limits = checkLimits(input);
+
+      const sum = `<div class="sum">
+        <span><b>${c.chars.toLocaleString()}</b>文字</span>
+        <span><b>${c.charsNoSpace.toLocaleString()}</b>空白なし</span>
+        <span><b>${c.lines}</b>行</span>
+        <span><b>${c.paragraphs}</b>段落</span>
+        <span><b>${c.bytesUtf8.toLocaleString()}</b>バイト</span>
+      </div>`;
+
+      const rows = limits.map((r) => {
+        const pct = Math.min(100, Math.round((r.used / r.limit.max) * 100));
+        const color = r.fits ? 'var(--tape)' : 'var(--stamp)';
+        const state = r.fits ? `あと ${r.limit.max - r.used}` : `${r.over} 超過`;
+        return `<li>
+          <span class="at" style="min-width:11em;color:var(--ink-2)">${escapeHtml(r.limit.name)}</span>
+          <span style="flex:1;min-width:120px">
+            <span style="display:block;height:8px;background:var(--rule);border-radius:4px;overflow:hidden">
+              <span style="display:block;height:100%;width:${pct}%;background:${color}"></span>
+            </span>
+            ${r.limit.note ? `<span class="what" style="font-size:12px">${escapeHtml(r.limit.note)}</span>` : ''}
+          </span>
+          <span style="min-width:9em;text-align:right;color:${color};font-weight:700">
+            ${r.used} / ${r.limit.max}　${state}
+          </span>
+        </li>`;
+      }).join('');
+
+      const text = [
+        `文字数 ${c.chars} / 空白なし ${c.charsNoSpace} / ${c.lines}行 / ${c.paragraphs}段落 / ${c.bytesUtf8}バイト`,
+        '',
+        ...limits.map((r) => `${r.limit.name}\t${r.used} / ${r.limit.max}\t${r.fits ? 'OK' : `${r.over}超過`}`),
+      ].join('\n') + '\n';
+
+      return { reportHtml: sum + `<ul>${rows}</ul>`, text };
+    },
+  });
+</script>
