@@ -64,6 +64,22 @@ public/fonts/             … サブセット済みwoff2 ＋ OFLライセンス
 tools/subset_fonts.py     … 文言を足したら実行する
 ```
 
+## 3-b. URLの階層（変えない）
+
+```
+/tools/              カテゴリ一覧（画像／これから増える）
+/tools/<category>/   そのジャンルの索引（例 /tools/image/）
+/tools/<slug>/       各ツール。**カテゴリを挟まない**
+```
+
+**ツールのURLにカテゴリを入れない。** 入れると、ジャンルの整理をするたびにURLが動いて
+検索の評価を失う。カテゴリはあくまで見せ方であって、ツールの住所ではない。
+
+新しいジャンルを足すとき：
+1. `src/content/tools.ts` の `categories` に1行足す
+2. `src/pages/tools/<category>.astro` を作る（`image.astro` を写す）
+3. 各ツールの `category` にそのslugを入れる
+
 ## 4. 画像ツールを1本足す手順
 
 **共通の土台があるので、書くのは「設定欄」と「変換関数」だけ。**

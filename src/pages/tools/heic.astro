@@ -7,7 +7,7 @@ import { heic as t } from '../../content/imageTools';
 ---
 <Base title={t.seoTitle} description={t.seoDescription}>
   <div class="work">
-    <ToolShell {...t} figure="/img/tools/heic.webp"
+    <ToolShell {...t} category={{ slug: "image", name: "画像" }} figure="/img/tools/heic.webp"
                 figureAlt={tools.find((x) => x.slug === 'heic')?.imageAlt} accept=".heic,.heif,image/heic,image/heif">
       <Fragment slot="settings">
         <div class="row">

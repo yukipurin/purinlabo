@@ -1,8 +1,10 @@
 ---
 import Base from '../../layouts/Base.astro';
-import { toolsPage as t, tools, GROUPS } from '../../content/tools';
+import { toolsPage as t, tools, categories } from '../../content/tools';
 
-const ready = tools.filter((x) => x.ready);
+const ready = categories.filter((c) => c.ready);
+const countOf = (slug: string) => tools.filter((x) => x.category === slug && x.ready).length;
+const total = tools.filter((x) => x.ready).length;
 ---
 <Base
   title="無料Webツール"
@@ -13,31 +15,29 @@ const ready = tools.filter((x) => x.ready);
       <p class="label">{t.label}</p>
       <h1 class="display-lg">{t.title}</h1>
       <p class="lead muted">{t.lead}</p>
-      <p class="count muted">いま {ready.length} 本</p>
+      <p class="count muted">いま {total} 本</p>
     </div>
   </section>
 
   <section class="band band-deep">
     <div class="read">
-      {GROUPS.map((group) => {
-        const items = ready.filter((x) => x.group === group);
-        return items.length === 0 ? null : (
-          <div class="group">
-            <h2 class="gname">{group}<span class="rule-wave"></span></h2>
-            <ul class="grid">
-              {items.map((x) => (
-                <li>
-                  <a href={`/tools/${x.slug}/`}>
-                    <img src={x.image} width="940" height="360" alt={x.imageAlt} loading="lazy" />
-                    <span class="n">{x.short}</span>
-                    <span class="d">{x.lead}</span>
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-        );
-      })}
+      <ul class="cats">
+        {ready.map((c) => (
+          <li>
+            <a href={`/tools/${c.slug}/`}>
+              <span class="thumbs">
+                {c.thumbs.map((src) => <img src={src} width="940" height="360" alt="" loading="lazy" />)}
+              </span>
+              <span class="body">
+                <span class="n">{c.name}<span class="num">{countOf(c.slug)} 本</span></span>
+                <span class="d">{c.lead}</span>
+                <span class="go">一覧を見る</span>
+              </span>
+            </a>
+          </li>
+        ))}
+      </ul>
+      {ready.length === 1 && <p class="only muted">{t.onlyOneCategory}</p>}
     </div>
   </section>
 
@@ -59,35 +59,36 @@ const ready = tools.filter((x) => x.ready);
   .head h1 { margin-bottom: 20px; }
   .count { margin-top: 14px; font-size: 13px; letter-spacing: .12em; }
 
-  .group + .group { margin-top: 56px; }
-  .gname {
-    display: flex; align-items: center; gap: 12px;
-    font-size: 15px; letter-spacing: .1em; color: var(--kraft); margin-bottom: 20px;
-  }
+  .cats { list-style: none; margin: 0; padding: 0; }
+  .cats li + li { margin-top: 40px; }
+  .cats a { display: grid; grid-template-columns: minmax(0, 420px) 1fr; gap: 36px; align-items: center;
+            text-decoration: none; color: inherit; }
 
-  /* カードを敷き詰めず、図そのものを見せる。図がツールごとに違うので識別が効く */
-  .grid { list-style: none; margin: 0; padding: 0; display: grid; gap: 28px 26px;
-          grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
-  .grid a { display: block; text-decoration: none; color: inherit; }
-  .grid img {
+  /* 代表的な図を3枚重ねて、そのジャンルの中身を見せる */
+  .thumbs { display: grid; gap: 8px; }
+  .thumbs img {
     display: block; width: 100%; height: auto; background: var(--paper);
     border: 2px solid rgba(184, 125, 69, .35);
     border-radius: 12px 5px 14px 6px / 6px 13px 5px 12px;
   }
-  .grid a:hover img { border-color: var(--kraft); }
-  .grid .n {
-    display: block; margin-top: 12px;
-    font-family: var(--display); font-weight: 700; font-size: 17px;
-  }
-  .grid a:hover .n { color: #8fd0ae; }
-  .grid .d { display: block; margin-top: 4px; font-size: 13px; color: var(--muted-on-ink); line-height: 1.7; }
+  .cats a:hover .thumbs img { border-color: var(--kraft); }
+
+  .n { display: flex; align-items: baseline; gap: 14px;
+       font-family: var(--display); font-weight: 700; font-size: 30px; }
+  .num { font-family: var(--body); font-size: 13px; letter-spacing: .12em; color: var(--kraft); }
+  .d { display: block; margin-top: 14px; font-size: 15px; color: var(--muted-on-ink); line-height: 1.9; }
+  .go { display: inline-block; margin-top: 20px; font-size: 14px; font-weight: 700; color: #8fd0ae; }
+  .cats a:hover .go { text-decoration: underline; }
+
+  .only { margin-top: 44px; font-size: 13.5px; }
 
   .notes { list-style: none; margin: 24px 0 0; padding: 0; }
   .notes li { font-size: 15px; color: var(--muted); padding: 5px 0 5px 20px; position: relative; }
   .notes li::before { content: ""; position: absolute; left: 0; top: 1em; width: 10px; height: 2px; background: var(--kraft); }
 
-  @media (max-width: 700px) {
+  @media (max-width: 760px) {
     .head { padding-block: 64px 44px; }
-    .grid { grid-template-columns: 1fr; gap: 24px; }
+    .cats a { grid-template-columns: 1fr; gap: 22px; }
+    .n { font-size: 24px; }
   }
 </style>

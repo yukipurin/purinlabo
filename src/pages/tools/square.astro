@@ -7,7 +7,7 @@ import { tools } from '../../content/tools';
 ---
 <Base title={t.seoTitle} description={t.seoDescription}>
   <div class="work">
-    <ToolShell {...t} accept="image/*,.heic,.heif"
+    <ToolShell {...t} category={{ slug: "image", name: "画像" }} accept="image/*,.heic,.heif"
                figure="/img/tools/square-before-after.webp"
                figureAlt={tools.find((x) => x.slug === 'square')?.imageAlt}>
       <Fragment slot="settings">

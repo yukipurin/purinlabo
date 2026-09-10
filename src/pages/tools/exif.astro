@@ -7,7 +7,7 @@ import { exif as t } from '../../content/imageTools';
 ---
 <Base title={t.seoTitle} description={t.seoDescription}>
   <div class="work">
-    <ToolShell {...t} figure="/img/tools/exif.webp"
+    <ToolShell {...t} category={{ slug: "image", name: "画像" }} figure="/img/tools/exif.webp"
                 figureAlt={tools.find((x) => x.slug === 'exif')?.imageAlt} accept="image/jpeg,image/png">
       <Fragment slot="settings">
         <div class="row">

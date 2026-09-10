@@ -7,7 +7,7 @@ import { convert as t } from '../../content/imageTools';
 ---
 <Base title={t.seoTitle} description={t.seoDescription}>
   <div class="work">
-    <ToolShell {...t} figure="/img/tools/convert.webp"
+    <ToolShell {...t} category={{ slug: "image", name: "画像" }} figure="/img/tools/convert.webp"
                 figureAlt={tools.find((x) => x.slug === 'convert')?.imageAlt} accept="image/*,.heic,.heif">
       <Fragment slot="settings">
         <div class="row">

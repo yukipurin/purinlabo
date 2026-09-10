@@ -15,7 +15,7 @@ const common = {
     "ぷりんラボ。ひとりでゲームアプリとWebツールを作っています。YouTubeでは異世界ケルト音楽の作業用BGMを公開しています。",
   ],
   aboutLinks: [
-    { label: "ほかのツール", url: "/tools/" },
+    { label: "ほかの画像ツール", url: "/tools/image/" },
     { label: "ゲーム・アプリ", url: "/games/" },
     { label: "X", url: "https://x.com/Purin_Labo" },
   ],

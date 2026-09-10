@@ -19,17 +19,24 @@ export interface Props {
   accept?: string;      // input の accept
   figure?: string;      // 何をするツールかを示す図
   figureAlt?: string;
+  /** パンくず。属するカテゴリ */
+  category?: { slug: string; name: string };
 }
 const {
   title, titleMark, lead, dropTitle, dropNote, button, buttonNote,
   runButton, privacy, resultHeading, downloadZip, clearButton,
-  accept = 'image/*', figure, figureAlt,
+  accept = 'image/*', figure, figureAlt, category,
 } = Astro.props;
 
 const heading = titleMark
   ? title.replace(titleMark, `<span class="mark">${titleMark}</span>`)
   : title;
 ---
+{category && (
+  <p class="crumb">
+    <a href="/tools/">ツール</a> ／ <a href={`/tools/${category.slug}/`}>{category.name}</a>
+  </p>
+)}
 <h1 class="page-h1" set:html={heading} />
 <p class="lead">{lead}</p>
 
@@ -74,6 +81,10 @@ const heading = titleMark
 </section>
 
 <style>
+  .crumb { margin: 34px 0 10px; font-size: 13px; letter-spacing: .08em; color: var(--muted); }
+  .crumb a { color: var(--kraft-deep); text-decoration: none; }
+  .crumb a:hover { text-decoration: underline; }
+  .crumb + .page-h1 { margin-top: 0; }
   .page-h1 { margin: 34px 0 6px; font-size: 30px; }
   .lead { margin-bottom: 22px; font-size: 15px; color: var(--muted); }
 
