@@ -14,7 +14,7 @@ export const home = {
   seoTitle: "ぷりんラボ｜ゲームとWebツール開発ラボ",
   seoDescription:
     "ひとりでゲームアプリとWebツールを作っている開発ラボです。" +
-    "App Storeでゲームを5本、ブラウザだけで動く無料Webツールを公開しています。",
+    "App Storeでゲームを6本、ブラウザだけで動く無料Webツールを公開しています。",
 
   // ---- 帯1：名乗る ----
   heroLabel: "Purin Labo",                                    // 1
@@ -29,7 +29,7 @@ export const home = {
   makeTitle: "やっていること",                                  // 6
   columns: [
     { title: "ゲーム",                                          // 7
-      body: "放置ゲームから言葉パズルまで、App Storeで5本公開しています。", // 8
+      body: "放置ゲームから言葉パズルまで、App Storeで6本公開しています。", // 8
       linkLabel: "一覧を見る", href: "/games/" },               // 9
     { title: "Webツール",                                       // 10
       body: "便利だな、と思ったツールを公開していきます。登録不要。", // 11

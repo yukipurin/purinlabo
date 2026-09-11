@@ -7,6 +7,9 @@ webp に変換して保存する。手でスクショを用意する必要はな
     python3 tools/fetch_store_assets.py            # 公開中の全アプリ
     python3 tools/fetch_store_assets.py 6796961427 # 特定のアプリだけ
 
+公開した直後は、開発者一覧のAPIがまだ新作を返さないことがある。
+その場合はIDを直接指定する（指定したときは一覧を経由せず引く）。
+
 slug は SLUGS の対応表で決まる。新しいアプリを足すときは、
 ここに `trackId: "slug"` を1行足してから実行する。
 """
@@ -29,6 +32,7 @@ SLUGS = {
     6781580333: "kotoba",
     6780852897: "shuuki",
     6796961427: "fishing",
+    6809984816: "ebibokujo",
 }
 
 
@@ -41,15 +45,19 @@ def sized(url: str, spec: str) -> str:
     return re.sub(r"/[^/]+$", "/" + spec, url)
 
 
-def main() -> int:
-    only = {int(a) for a in sys.argv[1:] if a.isdigit()}
+def lookup(ids: str) -> list[dict]:
     data = json.loads(fetch(
-        f"https://itunes.apple.com/lookup?id={DEVELOPER_ID}&country=jp&entity=software&limit=50"))
-    apps = [r for r in data["results"] if r.get("wrapperType") == "software"]
-    if only:
-        apps = [r for r in apps if r["trackId"] in only]
+        f"https://itunes.apple.com/lookup?id={ids}&country=jp&entity=software&limit=50"))
+    return [r for r in data["results"] if r.get("wrapperType") == "software"]
+
+
+def main() -> int:
+    only = [a for a in sys.argv[1:] if a.isdigit()]
+    # IDを指定したときは直接引く。開発者一覧は公開直後の新作を返さないことがある
+    # （同じURLで返る件数が変わるのを実際に踏んだ）
+    apps = lookup(",".join(only)) if only else lookup(DEVELOPER_ID)
     if not apps:
-        print("公開中のアプリが見つからない。まだ審査中か、IDが違う。", file=sys.stderr)
+        print("アプリが見つからない。まだ審査中か、IDが違う。", file=sys.stderr)
         return 1
 
     OUT.mkdir(parents=True, exist_ok=True)

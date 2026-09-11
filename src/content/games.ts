@@ -23,6 +23,14 @@ export const games: Game[] = [
     appStore: 'https://apps.apple.com/jp/app/id6796961427',
   },
   {
+    slug: 'ebibokujo',
+    name: 'エビ牧場 - 惣菜になるエビの放置育成ゲーム',
+    lead: 'パン粉をあげるとエビフライになる。',
+    body: '草原でエビを育てる放置ゲームです。与えた餌で何の惣菜になるかが決まります。パン粉ならエビフライ、天ぷら粉なら海老天、豆板醤ならエビチリ。エビ7種と餌7種の組み合わせに突然変異を加えて、全114種を図鑑に集めます。',
+    shots: 3,
+    appStore: 'https://apps.apple.com/jp/app/id6809984816',
+  },
+  {
     slug: 'gohenkan',
     name: '誤変換大戦',
     lead: '「こうげき」と打ったのに、出てきたのは「公的」。',
