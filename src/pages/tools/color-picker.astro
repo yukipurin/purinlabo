@@ -2,11 +2,15 @@
 import Base from '../../layouts/Base.astro';
 import ToolFooter from '../../components/ToolFooter.astro';
 import { colorPicker as t } from '../../content/colorTools';
+
+const heading = t.titleMark
+  ? t.title.replace(t.titleMark, `<span class="mark">${t.titleMark}</span>`)
+  : t.title;
 ---
 <Base title={t.seoTitle} description={t.seoDescription}>
   <div class="work">
     <p class="crumb"><a href="/tools/">ツール</a> ／ <a href="/tools/color/">カラー</a></p>
-    <h1 class="page-h1">画像から、<span class="mark">色を抜き出す</span>。</h1>
+    <h1 class="page-h1" set:html={heading} />
     <p class="lead">{t.lead}</p>
 
     <figure class="fig"><img src="/img/tools/color-picker.webp" width="940" height="360"
