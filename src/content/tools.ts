@@ -10,13 +10,13 @@ export const toolsPage = {
   label: "Tools",
   title: "Webツール",
   lead:
-    "便利だな、と思ったツールを公開していきます。登録もインストールも要りません。" +
+    "自分の作業で必要になったツールを整えて置いています。登録もインストールも要りません。" +
     "処理はすべてブラウザ内で行うため、ファイルが外部に送信されることはありません。",
   soonLabel: "Coming",
   soonTitle: "準備中",
   cta: "使ってみる",
   // カテゴリ一覧に出す一言。増えたら書き換える
-  onlyOneCategory: "いまは画像だけです。どれが使われるかを見てから、次のジャンルを決めます。",
+  onlyOneCategory: "いまはこの1ジャンルだけです。どれが使われるかを見てから、次を決めます。",
 } as const;
 
 export type Tool = {
@@ -58,7 +58,7 @@ export const categories: Category[] = [
   {
     slug: 'image',
     name: '画像',
-    lead: 'リサイズ、圧縮、形式の変換、EXIFの削除、アイコンの書き出し。出品写真やサイトの素材を整えるための道具です。',
+    lead: 'リサイズ、圧縮、形式の変換、EXIFの削除、アイコンの書き出し。出品写真やサイトの素材を整えるツールです。',
     thumbs: [
       '/img/tools/square-before-after.webp',
       '/img/tools/compress.webp',
@@ -69,7 +69,7 @@ export const categories: Category[] = [
   {
     slug: 'subtitle',
     name: '字幕',
-    lead: 'SRTとVTTの変換、タイミングのずらし、本文の取り出し。それと、読みきれるかどうかの検査。動画に字幕をつける作業のための道具です。',
+    lead: 'SRTとVTTの変換、タイミングのずらし、本文の取り出し。それと、読みきれるかどうかの検査。動画に字幕をつける作業で使うツールです。',
     thumbs: [
       '/img/tools/subtitle-check.webp',
       '/img/tools/subtitle-shift.webp',
@@ -80,7 +80,7 @@ export const categories: Category[] = [
   {
     slug: 'text',
     name: 'テキスト',
-    lead: '文字数と投稿先ごとの上限、全角半角の統一、重複行の削除、改行コードの変換。文章を整えるための道具です。',
+    lead: '文字数と投稿先ごとの上限、全角半角の統一、重複行の削除、改行コードの変換。文章を整えるツールです。',
     thumbs: [
       '/img/tools/text-count.webp',
       '/img/tools/text-lines.webp',
@@ -102,7 +102,7 @@ export const categories: Category[] = [
   {
     slug: 'color',
     name: 'カラー',
-    lead: '文字色と背景色が読めるかどうかの判定、HEX・RGB・HSLの変換、画像からの色の取り出し。配色を決めるための道具です。',
+    lead: '文字色と背景色が読めるかどうかの判定、HEX・RGB・HSLの変換、画像からの色の取り出し。配色を決めるツールです。',
     thumbs: [
       '/img/tools/color-contrast.webp',
       '/img/tools/color-convert.webp',
@@ -116,8 +116,8 @@ export const tools: Tool[] = [
   {
     slug: 'square', short: '正方形にする',
     name: '出品写真をまとめて正方形にする',
-    lead: 'メルカリ・ヤフオク・BASEのサイズにそろえます。',
-    body: '複数枚をまとめて1080×1080にそろえます。余白は白で埋めるか、正方形に切り抜くかを選べます。連番でのリネームとZIPでの書き出しに対応しています。写真はブラウザ内で処理します。',
+    lead: 'メルカリ・ヤフオク・BASEのサイズに揃えます。',
+    body: '複数枚をまとめて1080×1080に揃えます。余白は白で埋めるか、正方形に切り抜くかを選べます。連番でのリネームとZIPでの書き出しに対応しています。写真はブラウザ内で処理します。',
     image: '/img/tools/square-before-after.webp',
     imageAlt: '縦横比のばらばらな写真が、すべて同じ正方形にそろう様子',
     category: 'image', group: '出品の写真', ready: true,
@@ -180,7 +180,7 @@ export const tools: Tool[] = [
     slug: 'favicon', short: 'ファビコン',
     name: 'ファビコンを作る',
     lead: '1枚の画像から、必要なサイズをまとめて書き出します。',
-    body: '16 / 32 / 48 / 180 / 192 / 512 px を一度に。ZIPで受け取れます。',
+    body: '16・32・48・180・192・512pxを一度に書き出して、ZIPで受け取れます。',
     image: '/img/tools/favicon.webp',
     imageAlt: '1枚の画像から、512pxから16pxまでの正方形が書き出される様子',
     category: 'image', group: 'アイコンを作る', ready: true,
@@ -188,7 +188,7 @@ export const tools: Tool[] = [
   {
     slug: 'appicon', short: 'アプリアイコン',
     name: 'アプリアイコンのサイズを一括生成',
-    lead: 'App Store と Google Play に必要なサイズを一度に。',
+    lead: 'App Store と Google Play に必要なサイズを一度に書き出します。',
     body: '1024pxの画像を1枚入れるだけです。透過を白で埋めるかどうかも選べます。',
     image: '/img/tools/appicon.webp',
     imageAlt: '1枚の画像から、App StoreとGoogle Playに必要なサイズが書き出される様子',

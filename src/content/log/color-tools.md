@@ -8,7 +8,7 @@ summary: 文字色と背景色が読めるかどうかの判定、HEX・RGB・HS
 カラーまわりを3本公開しました。
 
 - [コントラスト比をチェック](/tools/color-contrast/) … その配色で文字が読めるかを判定します
-- [カラーコードを変換](/tools/color-convert/) … HEX・RGB・HSLと、明るさの段階・配色
+- [カラーコードを変換](/tools/color-convert/) … HEX・RGB・HSLを変換して、明るさの段階と配色も出します
 - [画像から色を抜き出す](/tools/color-picker/)
 
 ## 判定を主役にした理由

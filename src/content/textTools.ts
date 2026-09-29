@@ -17,9 +17,9 @@ export const textCount = {
   ...common,
   seoTitle: "文字数カウントと投稿先ごとの上限チェック",
   seoDescription: "文字数・行数・段落数を数えて、X・Instagram・YouTube・メルカリ・meta descriptionの上限に収まるかを同時に判定します。アップロード不要・登録不要。",
-  title: "その文章、どこまで<br />入りますか。",
-  titleMark: "どこまで",
-  lead: "文字数を数えるだけでなく、X・Instagram・YouTube・メルカリ・検索結果の上限に収まるかを同時に見ます。",
+  title: "文字数を数えて、投稿先の<br />上限に収まるかを見ます。",
+  titleMark: "上限に収まるか",
+  lead: "文字数を数えて、X・Instagram・YouTube・メルカリ・検索結果の上限に収まるかを同時に見ます。",
   placeholder: "ここに文章を貼り付けてください。",
   runButton: "数える",
   resultLabel: "結果",
@@ -73,7 +73,7 @@ export const textLines = {
   limits: [
     "重複を消すときは、最初に出てきたものを残します",
     "並べ替えは日本語の並び順です。漢字は読みではなく文字の順で並びます",
-    "処理の順番は「前後の空白を落とす → 空行を消す → 重複を消す → 並べ替え → 前後に足す → 番号」で固定です",
+    "処理の順番は固定です。前後の空白を落とし、空行を消し、重複を消し、並べ替え、前後に足してから番号をふります",
   ],
 } as const;
 

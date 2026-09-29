@@ -10,7 +10,7 @@ summary: 形式の変換、EXIF・位置情報の削除、ファビコン生成�
 - [画像の形式を変換](/tools/convert/) … JPG・PNG・WebPを相互に変換します
 - [EXIF・位置情報を削除](/tools/exif/) … 撮影日時やカメラの機種、位置情報だけを取り除きます
 - [ファビコンを作る](/tools/favicon/) … 1枚から6サイズをまとめて書き出します
-- [アプリアイコンを一括生成](/tools/appicon/) … App Store と Google Play に必要なサイズを一度に
+- [アプリアイコンを一括生成](/tools/appicon/) … App Store と Google Play に必要なサイズを一度に書き出します
 
 ## EXIF削除について
 

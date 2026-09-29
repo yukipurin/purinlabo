@@ -47,8 +47,8 @@ export const LIMITS: Limit[] = [
   { name: 'Instagram のキャプション', max: 2200, unit: 'chars' },
   { name: 'YouTube のタイトル', max: 100, unit: 'chars' },
   { name: 'YouTube の説明欄', max: 5000, unit: 'chars' },
-  { name: 'メルカリ の商品説明', max: 1000, unit: 'chars' },
-  { name: 'メルカリ の商品名', max: 40, unit: 'chars' },
+  { name: 'メルカリの商品説明', max: 1000, unit: 'chars' },
+  { name: 'メルカリの商品名', max: 40, unit: 'chars' },
   { name: 'meta description', max: 120, unit: 'chars', note: '検索結果に出る長さの目安です' },
   { name: 'ページタイトル', max: 32, unit: 'chars', note: '検索結果で切られない長さの目安です' },
 ];

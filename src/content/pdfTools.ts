@@ -41,7 +41,7 @@ export const pdfSplit = {
   ...common,
   seoTitle: "PDFを分割する（アップロード不要）",
   seoDescription: "PDFを指定したページで切り出したり、決まったページ数ごとに分けたりします。処理はすべてブラウザ内で行います。登録不要。",
-  title: "PDFを、必要なページだけに。",
+  title: "PDFを、必要なページだけにします。",
   titleMark: "必要なページだけ",
   lead: "「1-3,7」のように指定して切り出すか、決まったページ数ごとに分けます。",
   dropTitle: "ここにPDFをドラッグ＆ドロップ",

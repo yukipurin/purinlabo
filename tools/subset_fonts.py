@@ -2,8 +2,12 @@
 """見出し用の日本語フォントを、サイトで実際に使う文字だけに絞って woff2 にする。
 
 日本語フォントは全部入りだと数MBある。見出しにしか使わないので、
-src/ 以下の .astro に出てくる文字だけ残せば数十KBで済む。
-ツールのページを足したら、これを実行し直す。
+src/ に出てくる文字だけ残せば数十KBで済む。
+ツールのページを足したときと、文言を直したときに実行し直す。
+
+文言は .astro だけでなく content/*.ts と content/log/*.md にもある。
+.astro しか見ないと、ゲーム名やお知らせの見出しの字が抜けて、
+その字だけ別のフォントで表示される。
 
     python3 tools/subset_fonts.py
 """
@@ -27,8 +31,11 @@ ALWAYS = set(
 
 def used_chars() -> set[str]:
     chars = set(ALWAYS)
-    for p in SRC.rglob("*.astro"):
-        chars |= set(p.read_text(encoding="utf-8"))
+    for ext in ("*.astro", "*.ts", "*.md"):
+        for p in SRC.rglob(ext):
+            if p.name.endswith(".test.ts"):
+                continue
+            chars |= set(p.read_text(encoding="utf-8"))
     # 制御文字は落とす
     return {c for c in chars if ord(c) >= 0x20}
 

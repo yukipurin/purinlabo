@@ -8,9 +8,9 @@ summary: SRTとVTTの相互変換、タイミングのずらし、本文の取�
 字幕まわりを4本公開しました。
 
 - [文字数・表示速度をチェック](/tools/subtitle-check/) … 読みきれない字幕を洗い出します
-- [タイミングをずらす](/tools/subtitle-shift/) … 全体の時刻をまとめて前後に
+- [タイミングをずらす](/tools/subtitle-shift/) … 全体の時刻をまとめて前後にずらします
 - [SRTとVTTを相互変換](/tools/subtitle-convert/)
-- [本文だけを取り出す](/tools/subtitle-text/) … 台本や説明欄の下書きに
+- [本文だけを取り出す](/tools/subtitle-text/) … 台本や説明欄の下書きに使えます
 
 ## チェックのツールについて
 
